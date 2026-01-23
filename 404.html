@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Empeal - Page Not Found</title>
+    <script type="text/javascript">
+        // Example: Keep the first segment of the path and redirect to a default page
+        var pathSegmentsToKeep = 1;
+        var newPath = window.location.protocol + "//" + window.location.hostname + (window.location.port? ":" + window.location.port : "") + "/default-page.html";
+
+        // Check if we have more than one segment and adjust accordingly
+        if (window.location.pathname.split("/").length > 1) {
+            newPath += "/" + window.location.pathname.split("/")[pathSegmentsToKeep];
+        }
+
+        // Redirect to the new path
+        window.location.href = newPath;
+    </script>
+</head>
+<body>
+    <h1>Page Not Found</h1>
+    <p>The page you are looking for does not exist.</p>
+    <p><a href="/">Return to Home</a></p>
+</body>
+</html>

@@ -1,0 +1,18 @@
+[
+    {
+        "name": "LFGswap",
+        "address": "0x2f21ff788e14a531847e6658afbd725555757da5"
+    },
+    {
+        "name": "UniswapV2",
+        "address": "0xc14441CBD763FBad2Db823CCa77AFAdeCbcdd0c4"
+    },
+    {
+        "name": "PoWSwap",
+        "address": "0x1FB42F76F101F8EB2ed7a12aC16b028500907F80"
+    },
+    {
+        "name": "UniswapV3",
+        "address": "0xcd05ae7369e14d0fd232f0d3c025d9703b779d80"
+    }
+]

@@ -1,0 +1,122 @@
+[
+    {
+        "name": "Ayush",
+        "ticker": "PLS",
+        "address": "0x0000000000000000000000000000000000000000",
+        "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/24735.png",
+        "decimal": "18",
+        "featured": true
+    },
+    {
+        "name": "WRAPPED PULSECHAIN",
+        "ticker": "WPLS",
+        "address": "0xA1077a294dDE1B09bB078844df40758a5D0f9a27",
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0xA1077a294dDE1B09bB078844df40758a5D0f9a27.png",
+        "decimal": "18",
+        "featured": true
+    },
+    {
+        "name": "PULSEX",
+        "ticker": "PLSX",
+        "address": "0x95B303987A60C71504D99Aa1b13B4DA07b0790ab",
+        "image": "https://dd.dexscreener.com/ds-data/dexes/pulsex.png",
+        "decimal": "18",
+        "featured": true
+    },
+    {
+        "chainId": 369,
+        "name": "Incentive",
+        "address": "0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d",
+        "ticker": "INC",
+        "decimal": 18,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d.png"
+    },
+    {
+        "name": "HEX pulsechain",
+        "ticker": "pHEX",
+        "address": "0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39",
+        "image": "https://tokens.app.pulsex.com/images/tokens/0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39.png",
+        "decimal": "8",
+        "featured": true
+    },
+    {
+        "name": "DAI ethereum",
+        "ticker": "DAI",
+        "address": "0xefD766cCb38EaF1dfd701853BFCe31359239F305",
+        "image": "https://s2.coinmarketcap.com/static/img/coins/64x64/4943.png",
+        "decimal": "18",
+        "featured": true
+    },
+    {
+        "name": "USDC",
+        "ticker": "eUSDC",
+        "address": "0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07",
+        "image": "https://tokens.app.pulsex.com/images/tokens/0x15D38573d2feeb82e7ad5187aB8c1D52810B1f07.png",
+        "decimal": "6",
+        "featured": true
+    },
+    {
+        "name": "USDT - ethereum",
+        "ticker": "eUSDT",
+        "address": "0x0Cb6F5a34ad42ec934882A05265A7d5F59b51A2f",
+        "image": "https://tokens.app.pulsex.com/images/tokens/0x0Cb6F5a34ad42ec934882A05265A7d5F59b51A2f.png",
+        "decimal": "6",
+        "featured": true
+    },
+    {
+        "chainId": 369,
+        "name": "Wrapped BTC from Ethereum",
+        "address": "0xb17D901469B9208B17d916112988A3FeD19b5cA1",
+        "ticker": "WBTC",
+        "decimal": 8,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0xb17D901469B9208B17d916112988A3FeD19b5cA1.png"
+    },
+    {
+        "name": "Wrapped ETH - ethereum",
+        "ticker": "eWETH",
+        "address": "0x02DcdD04e3F455D838cd1249292C58f3B79e3C3C",
+        "image": "https://tokens.app.pulsex.com/images/tokens/0x02DcdD04e3F455D838cd1249292C58f3B79e3C3C.png",
+        "decimal": "18",
+        "featured": true
+    },
+    {
+        "chainId": 369,
+        "name": "9MM",
+        "address": "0x7b39712Ef45F7dcED2bBDF11F3D5046bA61dA719",
+        "ticker": "9MM",
+        "decimal": 18,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x7b39712Ef45F7dcED2bBDF11F3D5046bA61dA719.png"
+    },
+    {
+        "chainId": 369,
+        "name": "9INCH",
+        "address": "0x3ca80d83277e721171284667829c686527B8b3c5",
+        "ticker": "9INCH",
+        "decimal": 18,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x3ca80d83277e721171284667829c686527B8b3c5.png"
+    },
+    {
+        "name": "The Rise of Cock",
+        "ticker": "COCK",
+        "address": "0x40b49a9e5B8E3CC137E9CA57A5F4382D1B3dF6FE",
+        "image": "https://raw.githubusercontent.com/TheRiseofCOCK/Media/refs/heads/main/30px%20logo.png",
+        "decimal": "18",
+        "featured": true
+    },
+    {
+        "chainId": 369,
+        "name": "Hex Orange Address",
+        "address": "0x7901a3569679AEc3501dbeC59399F327854a70fe",
+        "ticker": "HOA",
+        "decimal": 18,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x7901a3569679AEc3501dbeC59399F327854a70fe.png"
+    },
+    {
+        "chainId": 369,
+        "name": "Coast",
+        "address": "0x600136dA8cc6D1Ea07449514604dc4ab7098dB82",
+        "ticker": "CST",
+        "decimal": 6,
+        "image": "https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/0x600136dA8cc6D1Ea07449514604dc4ab7098dB82.png"
+    }
+]

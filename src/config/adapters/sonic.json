@@ -1,0 +1,66 @@
+[
+    {
+        "name": "ShadowV2",
+        "address": "0x1FB42F76F101F8EB2ed7a12aC16b028500907F80"
+    },
+    {
+        "name": "ShadowV3",
+        "address": "0x3Ad3e05fA6ea10053D1da2B95a8b4b6672d3b933"
+    },
+    {
+        "name": "SwapxV2",
+        "address": "0xc1Bb27E7AE8af9164Cb6B5D3A465478415EdEbB7"
+    },
+    {
+        "name": "WagmiV3",
+        "address": "0x12dA769027A9A6121eB176346697d81Ff6673a22"
+    },
+    {
+        "name": "MetropolisV2",
+        "address": "0xE15F3Eb9475C513593EAC49a8AF066B71e268556"
+    },
+    {
+        "name": "MetropolisLB",
+        "address": "0xce032ac88ad11E6f8374B3760F5a98a77c6584f0"
+    },
+    {
+        "name": "EqualizerV2",
+        "address": "0xcD05Ae7369e14D0Fd232F0D3C025D9703B779d80"
+    },
+    {
+        "name": "SpookySwapV2",
+        "address": "0xe40c877e06095417557C3bB874F4e2e8D08f11Fd"
+    },
+    {
+        "name": "SpookySwapV3",
+        "address": "0x6ce282f748514df878c396d3d1a024bd5bb26871"
+    },
+    {
+        "name": "OkuTrade",
+        "address": "0xE18947547EB1f49B725c3Ca4f95bD45A84F6c24A"
+    },
+    {
+        "name": "9MMV2",
+        "address": "0x86B1b88B2BBFe49999fA9A415270997ed1Bfd803"
+    },
+    {
+        "name": "9MMV3",
+        "address": "0xB7e18d1ddc55D5c0748573AC97519F7b309aaA1B"
+    },
+    {
+        "name": "CurveUSDC/SCUSD",
+        "address": "0x2fdd76fC5A8F6081E059DF76756E347f6B8278d8"
+    },
+    {
+        "name": "CurvescUSD/frxUSD",
+        "address": "0x94b9E87E90223925fE92AaAcf255f3b405e78a19"
+    },
+    {
+        "name": "CurvescETH/frxETH",
+        "address": "0x88fe52B16d005a437DC29Ee43e34fD623660D77F"
+    },
+    {
+        "name": "CurvescETH/WETH",
+        "address": "0x6b7c81207240a38e03e5e9b138c53c4762515ccd"
+    }
+]

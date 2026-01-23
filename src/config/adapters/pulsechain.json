@@ -1,0 +1,46 @@
+[
+    {
+        "name": "PulsexV2",
+        "address": "0x842e05D2cAF940B25d7B7Db291ABDc88748d7F90"
+    },
+    {
+        "name": "PulsexV1",
+        "address": "0xa5ab0aF6eE886770B31Fb9350f7FC8F433dC2C59"
+    },
+    {
+        "name": "9MM",
+        "address": "0xb6a9140DaeBE265708785B093C0Ef561eEf26159"
+    },
+    {
+        "name": "9Inch",
+        "address": "0x0F1cffE422EF2C85f5983Fb0B015c781BAb8A74f"
+    },
+    {
+        "name": "Dextop",
+        "address": "0x34FD3c37c2A40e925744e102d2Cae83635CC64C3"
+    },
+    {
+        "name": "Sparkswap",
+        "address": "0x6AeC9Ab81A6D66Cae61B1F11c9A5c3d06020bfCB"
+    },
+    {
+        "name": "9MMV3",
+        "address": "0x8fb6314678a9287f9B47B96e54122444e43dDE1F"
+    },
+    {
+        "name": "9InchV3",
+        "address": "0x0f5416Efd26E2EbFAB6DdCcD58859B6cfD7Df556"
+    },
+    {
+        "name": "UniswapV3",
+        "address": "0xcfE09D7f35131DAfebD12356C4f52b17f65Da2E5"
+    },
+    {
+        "name": "EmpXStable",
+        "address": "0xf586000c24e2b640a0478dcf51de856df5e3328a"
+    },
+    {
+        "name": "PhuxV2",
+        "address": "0x5fdd3f245ae060953dcC3C89Da8Dd4c6c26629c0"
+    }
+]

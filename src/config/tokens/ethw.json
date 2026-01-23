@@ -1,0 +1,337 @@
+[
+    {
+        "address": "0x0000000000000000000000000000000000000000",
+        "name": "EthW",
+        "ticker": "ETHW",
+        "decimal": 18,
+        "image": "https://coin-images.coingecko.com/coins/images/27470/large/wethw.png?1696526509",
+        "featured": true
+    },
+    {
+        "address": "0x7Bf88d2c0e32dE92CdaF2D43CcDc23e8Edfd5990",
+        "name": "Wrapped ETHPoW",
+        "ticker": "WETHW",
+        "decimal": 18,
+        "image": "https://static.oklink.com/cdn/web3/currency/token/small/10001-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-96?v=1744743262491&x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1",
+        "featured":true
+    },
+    {
+        "address": "0x25DE68ef588cb0c2c8F3537861E828Ae699CD0DB",
+        "name": "USDC",
+        "ticker": "USDC",
+        "decimal": 6,
+        "image": "https://static.oklink.com/cdn/wallet/logo/USDC.png?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0x6b175474e89094c44da98b954eedeac495271d0f",
+        "name": "Dai Stablecoin",
+        "ticker": "DAI",
+        "decimal": 18,
+        "image": "https://static.oklink.com/cdn/wallet/logo/dai01.png?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+        "name": "Wrapped BTC",
+        "ticker": "WBTC",
+        "decimal": 8,
+        "image": "https://static.oklink.com/cdn/wallet/logo/WBTC-20230804.png?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0x45804880de22913dafe09f4980848ece6ecbaf78",
+        "name": "Paxos Gold",
+        "ticker": "PAXG",
+        "decimal": 18,
+        "image": "https://static.oklink.com/cdn/wallet/logo/PAXG-0x45804880de22913dafe09f4980848ece6ecbaf78.png?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1",
+        "featured":true
+    },
+    {
+        "address": "0x215bea7017e606de10e383f562de55afc57676a8",
+        "name": "EW PRO",
+        "ticker": "EW PRO",
+        "decimal": 16,
+        "image": "https://assets.geckoterminal.com/2eiftjzwfoac7r2cy8sh7b9bxiev"
+    },
+    {
+        "address": "0xf9736ec3926703e85c843fc972bd89a7f8e827c0",
+        "name": "Waifu",
+        "ticker": "Waifu",
+        "decimal": 18,
+        "image": "https://coin-images.coingecko.com/coins/images/28181/large/200.png?1710945346"
+    },
+    {
+        "address": "0x51717dc712134a71de6cfd1713bf34cf3e3120ba",
+        "name": "Leonidas",
+        "ticker": "♆",
+        "decimal": 18,
+        "image": "https://static.oklink.com/cdn/web3/currency/token/default-logo/token_custom_logo_unknown.png/type=default_350_0?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0x68749665FF8D2d112Fa859AA293F07A622782F38",
+        "name": "Tether Gold",
+        "ticker": "XAUt",
+        "decimal": 6,
+        "image": "https://static.oklink.com/cdn/wallet/logo/XAUt-a6ffe97849ae42c1912519b37e6eeace-20220719.png?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce",
+        "name": "SHIBA INU",
+        "ticker": "SHIB",
+        "decimal": 18,
+        "image": "https://static.oklink.com/cdn/wallet/logo/SHIB-20220328.png?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1",
+        "featured":true
+    },
+    {
+        "address": "0xfd483e333cbe8fe7a418d9398d6bb81cc2b8e07b",
+        "name": "LfgSwap Finance Token",
+        "ticker": "LFG",
+        "decimal": 18,
+        "image": "https://coin-images.coingecko.com/coins/images/27669/large/lfg.png?1696526697"
+    },
+    {
+        "address": "0x2a0cf46ecaaead92487577e9b737ec63b0208a33",
+        "name": "UniWswap",
+        "ticker": "UNIW",
+        "decimal": 18,
+        "image": "https://coin-images.coingecko.com/coins/images/27487/large/UniWswap-05_%282%29.png?1696526526"
+    },
+    {
+        "address": "0x2ad7868ca212135c6119fd7ad1ce51cfc5702892",
+        "name": "Tether",
+        "ticker": "USDT",
+        "decimal": 6,
+        "image": "https://coin-images.coingecko.com/coins/images/35001/large/logo.png?1706959346"
+    },
+    {
+        "address": "0x2ab0e9e4ee70fff1fb9d67031e44f6410170d00e",
+        "name": "XEN Crypto",
+        "ticker": "vvXEN",
+        "decimal": 18,
+        "featured":true,
+        "image": "https://coin-images.coingecko.com/coins/images/27713/large/Xen.jpeg?1696526739"
+    },
+    {
+        "address": "0x02cc78362d8124a17d3f884dbd7476c4ec534cdb",
+        "name": "Powswap",
+        "ticker": "POW",
+        "decimal": 18,
+        "image": "https://coin-images.coingecko.com/coins/images/27354/large/Pow!_2x.png?1696526400"
+    },
+    {
+        "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+        "name": "Wrapped Ether",
+        "ticker": "WETH",
+        "decimal": 18,
+        "image": "https://static.oklink.com/cdn/web3/currency/token/small/10001-0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2-96?v=1744743262491&x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0xFE9Edf36e9EbA23FE9b3Fc95115476a552b96F5F",
+        "name": "DxChain Token",
+        "ticker": "DX",
+        "decimal": 18,
+        "featured": true,
+        "image": "https://static.oklink.com/cdn/web3/currency/token/default-logo/token_custom_logo_default_D.png/type=default_350_0?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0x15a126dc268ad12c13aced13bd033509ce84c4bd",
+        "name": "Rabity Finance",
+        "ticker": "RBF",
+        "decimal": 18,
+        "image": "https://coin-images.coingecko.com/coins/images/28768/small/Logo.png?1696527748"
+    },
+    {
+        "address": "0x0d0257d46e4acb26df0e68d48bd253b68a9a0a14",
+        "name": "ShibaW Inu",
+        "ticker": "ShibaW",
+        "decimal": 9,
+        "image": "https://coin-images.coingecko.com/coins/images/27767/small/EgmaZtUF_400x400.jpeg?1696526788"
+    },
+    {
+        "address": "0x488e206a6e0ad2aedc2af73592f759c24f256153",
+        "name": "EDILWEB.PRO  Interest Rates",
+        "ticker": "EDILWEB.PRO  Interest Rates",
+        "decimal": 18,
+        "image": "https://assets.geckoterminal.com/5kngtnx1iu0ud2p9lw66bvkld64j"
+    },
+    {
+        "address": "0x5f87de9a604a3cda5fefc5789944ad9527224081",
+        "name": "Pepe Ethw",
+        "ticker": "Pepe",
+        "decimal": 9,
+        "image": "https://assets.geckoterminal.com/2z2nl2rlhypjym3ibyjdxpt314rg"
+    },
+    {
+        "address": "0x583b009392f969df7eb3ad2d8b8e2a79e4c7fbdc",
+        "name": "BitQueen",
+        "ticker": "BITQ",
+        "decimal": 18,
+        "image": "https://assets.geckoterminal.com/0mm55dg1jvl1fbhfag2hk4uqe3w9"
+    },
+    {
+        "address": "0xba7889bb0eb7d78612b08769d0b11a3b72e9484a",
+        "name": "Virtucoin",
+        "ticker": "V",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/35620/small/IMG_20231016_172706_142.jpg?1709288699"
+    },
+    {
+        "address": "0x78132543d8e20d2417d8a07d9ae199d458a0d581",
+        "name": "Luna Inu",
+        "ticker": "LINU",
+        "decimal": 18,
+        "image": "https://static.oklink.com/cdn/wallet/logo/LINU-8e7bb62b253d4ce5aeb6a83beab52758-20220719.png?x-oss-process=image/format,webp/resize,w_240,h_240,type_6/ignore-error,1"
+    },
+    {
+        "address": "0xb6761d5184f693c7955e8d5d8803e6ad9ed17e8b",
+        "name": "SafuuPoW",
+        "ticker": "SAPW",
+        "decimal": 5,
+        "image": null
+    },
+    {
+        "address": "0x631921801492651da68100ea7d4c0e7e87b81295",
+        "name": "Trojan",
+        "ticker": "TRJ",
+        "decimal": 18,
+        "image": null
+    },
+    {
+        "address": "0xc2dd872700564c894214c29c964670d7e3393de5",
+        "name": "Football World Cup",
+        "ticker": "FWC",
+        "decimal": 18,
+        "image": null
+    },
+    {
+        "address": "0x08a496b7d7838c99983af93e3b196088a9304c8f",
+        "name": "THORPOW",
+        "ticker": "TPOW",
+        "decimal": 9,
+        "image": null
+    },
+    {
+        "address": "0x224c2d9a07fde9e594d28280f441a13d11e575c4",
+        "name": "THORPOW",
+        "ticker": "TPOW",
+        "decimal": 9,
+        "image": null
+    },
+    {
+        "address": "0xed0e06df89e120bb7e2d5f1cac58b60a5c5c6a63",
+        "name": "ETHEREUM CSS",
+        "ticker": "ECSS",
+        "decimal": 18,
+        "image": "https://assets.geckoterminal.com/mn4nk8z77pby4pzkd364qy41nwl9"
+    },
+    {
+        "address": "0x2b591e99afe9f32eaa6214f7b7629768c40eeb39",
+        "name": "HEX",
+        "ticker": "HEX",
+        "decimal": 8,
+        "image": "https://assets.coingecko.com/coins/images/27498/small/hex.jpeg?1664274438"
+    },
+    {
+        "address": "0x8a521189bfedf99b1dc84bc21571cf8b799dbd4d",
+        "name": "CakeWSwap",
+        "ticker": "CAKEW",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27726/small/200x200.png?1665548541"
+    },
+    {
+        "address": "0x2fdc2aec4bad85a06d87c8248716a5dedd647074",
+        "name": "Power Vault",
+        "ticker": "POWV",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/28090/small/PWV-Icons.png?1667446385"
+    },
+    {
+        "address": "0xb6334bedf341d111525a1db8fbe7805de57de957",
+        "name": "Wrapped Tether",
+        "ticker": "USDT",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27459/small/busdt.png?1664158636"
+    },
+    {
+        "address": "0x552b0c29966a4b90002ffd3daa8f107439d242e7",
+        "name": "POWPAD",
+        "ticker": "PP",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/28210/small/logo-token.png?1669460073"
+    },
+    {
+        "address": "0x5fc51602ce9c329520cb40fd245bfcc786c86e01",
+        "name": "Solaris",
+        "ticker": "SLR",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27920/small/solarislogo.png?1666352919"
+    },
+    {
+        "address": "0x5186c4fb5752eb4a952c7ef03fae3e543f48383e",
+        "name": "Tether Pow",
+        "ticker": "USDW",
+        "decimal": 6,
+        "image": "https://assets.coingecko.com/coins/images/28132/small/LOGO.png?1667718856"
+    },
+    {
+        "address": "0xfb351555ce949c67a956e8f4a16ecf4a85711e26",
+        "name": "EID Token",
+        "ticker": "EID",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/28081/small/jWUF0xEF_400x400.jpeg?1667398009"
+    },
+    {
+        "address": "0x884c700e63f10dffe9ef3f5f6d246448a07321b7",
+        "name": "SHIWATOKEN",
+        "ticker": "SHIWA",
+        "decimal": 9,
+        "image": "https://assets.coingecko.com/coins/images/28070/small/shiwa200.png?1667376980"
+    },
+    {
+        "address": "0xd4e36a1044f9ca3ac3c598351c68518d1053f932",
+        "name": "Baby UNIW",
+        "ticker": "BUNIW",
+        "decimal": 9,
+        "image": "https://assets.coingecko.com/coins/images/27536/small/photo_2022-09-25_21.42.03.jpeg?1664419973"
+    },
+    {
+        "address": "0xae315e9ca25b34396dcd04cab5ae944868c10d76",
+        "name": "WorldCup Fan Token PoW",
+        "ticker": "WTF",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27775/small/Logo_WTF_%281%29.png?1665725399"
+    },
+    {
+        "address": "0xb61b46422ed95deeb5145adc9b405047ecd9a822",
+        "name": "CakePoW",
+        "ticker": "CAKEPOW",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27541/small/photo_2022-09-25_17-45-24.jpg?1664423159"
+    },
+    {
+        "address": "0x70c7bc6d7efa2144495e2fbfa6513286ce304da4",
+        "name": "Dejitaru Tsuka POW",
+        "ticker": "TSUKAW",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27537/small/200Artboard_1.png?1664420056"
+    },
+    {
+        "address": "0x178582531538e781d20e0cdfce9f4e548b3e7e2b",
+        "name": "DogePoW",
+        "ticker": "DogeW",
+        "decimal": 9,
+        "image": "https://assets.coingecko.com/coins/images/27518/small/dogepowlogo.png?1664355123"
+    },
+    {
+        "address": "0xa1e0a0ccd40f58cb4324f9f69cf3bcf638ff8413",
+        "name": "OKDEX",
+        "ticker": "OKDEX",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27485/small/ok_dex_preto2.png?1664251209"
+    },
+    {
+        "address": "0x5f9ee0642d58795a94ee1c2db055254d55a2974e",
+        "name": "YZZ Token",
+        "ticker": "YZZ",
+        "decimal": 18,
+        "image": "https://assets.coingecko.com/coins/images/27519/small/02fNnB63_400x400.jpeg?1664357984"
+    }
+]
