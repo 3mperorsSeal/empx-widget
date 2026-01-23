@@ -17,7 +17,7 @@ export default function TermsModal({ onClose }) {
   return (
     <div
       ref={cardRef}
-      className="relative bg-black text-white md:p-8 p-4 rounded-2xl flex flex-col items-center gap-4 md:max-w-[700px] w-full"
+      className="relative bg-[var(--bg-color)] text-white md:p-8 p-4 rounded-2xl flex flex-col items-center gap-4 md:max-w-[700px] w-full"
     >
       <svg
         onClick={onClose}

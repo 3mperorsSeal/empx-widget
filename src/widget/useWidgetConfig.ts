@@ -5,7 +5,7 @@ export const useWidgetConfig = () => {
     chain: params.get('chain') || 'pulsechain',
     theme: params.get('theme') || 'dark',
     background: params.get('background') || '#000000',
-    primaryColor: params.get('primaryColor') || '#01e401',
+    primaryColor: params.get('primaryColor') || '#e49c01ff',
 
     defaultTokenIn: params.get('from'),
     defaultTokenOut: params.get('to'),
