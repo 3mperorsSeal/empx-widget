@@ -77,11 +77,11 @@ const Amount = ({
 
   return (
     <>
-      <div className="px-4 bg-black bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full fixed top-0 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
+      <div className="px-4 bg-[var(--bg-color)] bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full fixed top-0 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
         <div className="w-full flex justify-center items-center">
           <div
             ref={modalRef}
-            className="md:max-w-[600px] w-full bg-black clip-bg rounded-3xl relative py-10 md:px-8 px-6 mx-auto border border-[#222]"
+            className="md:max-w-[600px] w-full bg-[var(--bg-color)] clip-bg rounded-3xl relative py-10 md:px-8 px-6 mx-auto border border-[#222]"
           >
             <svg
               onClick={onClose}
@@ -163,8 +163,8 @@ const Amount = ({
 
             {/* Price Alert */}
             {showPriceAlert && (
-              <div className="p-4 rounded-xl w-full mt-4 border-2 border-[#FF9900] bg-[#FF9900]/10">
-                <h3 className="text-lg font-bold roboto mb-3 text-[#FF9900]">
+              <div className="p-4 rounded-xl w-full mt-4 border-2 border-[var(--primary-color)] bg-[var(--primary-color)]/10">
+                <h3 className="text-lg font-bold roboto mb-3 text-[var(--primary-color)]">
                   Price Update
                 </h3>
                 <div className="mb-4">
@@ -187,7 +187,7 @@ const Amount = ({
                 </div>
                 <button
                   onClick={onAcceptNewQuote}
-                  className="w-full px-4 py-3 bg-[#FF9900] text-black rounded-xl hover:bg-opacity-80 transition-colors text-sm font-bold roboto uppercase"
+                  className="w-full px-4 py-3 bg-[var(--primary-color)] text-black rounded-xl hover:bg-opacity-80 transition-colors text-sm font-bold roboto uppercase"
                 >
                   Accept New Price
                 </button>
@@ -200,9 +200,9 @@ const Amount = ({
                 disabled={disabled || isLoading || showPriceAlert}
                 usdValueTokenA={usdValueTokenA}
                 usdValueTokenB={usdValueTokenB}
-                className="gtw relative w-full rounded-xl py-4 bg-[#FF9900] flex gap-4 items-center mt-6 justify-center border border-[#FF9900] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="gtw relative w-full rounded-xl py-4 bg-[var(--primary-color)] flex gap-4 items-center mt-6 justify-center border border-[var(--primary-color)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                <div className="w-full absolute md:top-2 top-2 md:-left-3 -left-3 z-[1] bg-transparent border-2 border-[#FF9900] rounded-xl h-[58px]"></div>
+                <div className="w-full absolute md:top-2 top-2 md:-left-3 -left-3 z-[1] bg-transparent border-2 border-[var(--primary-color)] rounded-xl h-[58px]"></div>
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -293,11 +293,11 @@ export default Amount;
 
 //   return (
 //     <>
-//       <div className="bg-black bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
+//       <div className="bg-[var(--bg-color)] bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
 //         <div className="w-full flex justify-center my-auto items-center">
 //           <div
 //             ref={modalRef}
-//             className="md:max-w-[390px] w-full bg-black border border-white rounded-3xl relative py-6 px-6 mx-auto"
+//             className="md:max-w-[390px] w-full bg-[var(--bg-color)] border border-white rounded-3xl relative py-6 px-6 mx-auto"
 //           >
 //             <svg
 //               onClick={onClose}
@@ -415,7 +415,7 @@ export default Amount;
 //             <button
 //               onClick={handleClick}
 //               disabled={disabled || isLoading}
-//               className="w-full rounded-xl px-4 py-4 bg-[#FF9900] flex gap-4 items-center mt-6 justify-center hover:bg-transparent border border-[#FF9900] hover:text-[#FF9900] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+//               className="w-full rounded-xl px-4 py-4 bg-[var(--primary-color)] flex gap-4 items-center mt-6 justify-center hover:bg-transparent border border-[var(--primary-color)] hover:text-[var(--primary-color)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
 //             >
 //               {isLoading ? (
 //                 <div className="flex items-center gap-2">

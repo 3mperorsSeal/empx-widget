@@ -108,10 +108,10 @@ const Routing = ({ routing }) => {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         // id="hover"
-        className="w-full border-3 border-white rounded-xl-view py-4 2xl:px-7 lg:px-5 px-4 bg-black min-w-[240px] scale81 relative max-w-[302px] mxauto round"
+        className="w-full border-3 border-white rounded-xl-view py-4 2xl:px-7 lg:px-5 px-4 bg-[var(--bg-color)] min-w-[240px] scale81 relative max-w-[302px] mxauto round"
       >
         <div className="flex justify-center gap-2 md:flex-nowrap flex-wrap absolute left-0 right-0 -top-7">
-          <p className="w-[194px] h-[28px] flex justify-center items-center bg-[#FF9900] font-orbitron text-black text-base font-semibold border-2 border-white border-b-0 py-2 border-radius-w">
+          <p className="w-[194px] h-[28px] flex justify-center items-center bg-[var(--primary-color)] font-orbitron text-black text-base font-semibold border-2 border-white border-b-0 py-2 border-radius-w">
             Routing
           </p>
         </div>
@@ -157,7 +157,7 @@ const Routing = ({ routing }) => {
       {isHovered && (
         <div
           // id="stuff"
-          className="flex justify-between gap-2 bg-black py-4 items-center mt-6 absolute transition-all top-[40px] mx-auto w-max left-0 right-0 px-4 border border-white rounded-lg"
+          className="flex justify-between gap-2 bg-[var(--bg-color)] py-4 items-center mt-6 absolute transition-all top-[40px] mx-auto w-max left-0 right-0 px-4 border border-white rounded-lg"
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >

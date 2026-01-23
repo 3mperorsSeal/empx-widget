@@ -170,11 +170,11 @@ export default function WalletConnect({
           return (
             <>
               <button
-                className="wallet-bg-bridge1 gtw transition-all text-center font-extrabold"
+                className="px-6 py-1.5 rounded-lg border border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
                 onClick={() => setShowConnectPopup(true)}
                 type="button"
               >
-                Connect
+                Connect Wallet
               </button>
               {/* <button
                 className="wallet-bg-bridge1 gtw transition-all text-center font-extrabold"
@@ -300,7 +300,7 @@ export default function WalletConnect({
           return (
             <>
               <button
-                className="wallet-bg-bridge1 hover:opacity-80 transition-all text-[#FF494A] font-extrabold"
+                className="px-4 py-1.5 rounded-lg border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all font-bold font-orbitron text-xs lg:text-sm"
                 onClick={() => setShowChainPopup(true)}
                 type="button"
               >
@@ -326,47 +326,43 @@ export default function WalletConnect({
               switchChain={switchChain}
               allowUnsupported={allowUnsupported}
             />
-            <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+
+            <div className="flex items-center gap-2">
               <button
-                className="wallet-bg-bridge1 gtw transition-all text-center font-extrabold"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
+                onClick={() => setShowChainPopup(true)}
+                type="button"
+              >
+                {chain ? (
+                  <>
+                    <img
+                      src={
+                        chainIcons[chain.name.toLowerCase()] ||
+                        chain.iconUrl ||
+                        dummyImage
+                      }
+                      alt={chain.name}
+                      className="w-4 h-4 object-contain rounded-full"
+                      onError={(e) => (e.currentTarget.src = dummyImage)}
+                    />
+                    <span className="hidden md:block truncate max-w-[100px]">
+                      {chain.name}
+                    </span>
+                  </>
+                ) : (
+                  "Select Chain"
+                )}
+              </button>
+
+              <button
+                className="px-3 py-1.5 rounded-lg border border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
                 onClick={() => setShowPopup(true)}
                 type="button"
               >
-                Disconnect
+                <span className="hidden md:block">Disconnect</span>
+                <span className="md:hidden">Wallet</span>
               </button>
             </div>
-
-            <button
-              className="wallet-bg-bridge1 gtw transition-all font-extrabold flex items-center justify-center gap-2 px-4"
-              onClick={() => setShowChainPopup(true)}
-              type="button"
-            >
-              {chain ? (
-                <>
-                  <img
-                    src={
-                      chainIcons[chain.name.toLowerCase()] ||
-                      chain.iconUrl ||
-                      dummyImage
-                    }
-                    alt={chain.name}
-                    className="w-5 h-5 object-contain rounded-full"
-                    onError={(e) => (e.currentTarget.src = dummyImage)}
-                  />
-                  <span
-                    className={
-                      chain.name.length > 11
-                        ? "truncate md:w-[150px] w-[110px]"
-                        : ""
-                    }
-                  >
-                    {chain.name}
-                  </span>
-                </>
-              ) : (
-                "Select Chain"
-              )}
-            </button>
 
             {/* Address popup */}
             {showPopup && (
