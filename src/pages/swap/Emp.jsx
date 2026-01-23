@@ -34,6 +34,7 @@ import {
 import { toast } from "react-toastify";
 import { usePriceMonitor } from "../../hooks/usePriceMonitor";
 import { useWidgetConfig } from "../../widget/useWidgetConfig";
+import WalletConnect from "./WalletConnect/WalletConnect";
 
 import { WPLS } from "../../utils/abis/wplsABI";
 import { WETHW } from "../../utils/abis/wethwABI";
@@ -154,26 +155,69 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   }, [publicClient, routerAddress, adapters]);
 
   // Handle Widget Config Configuration
+  const processedConfigIn = useRef(null);
+  const processedConfigOut = useRef(null);
+
   useEffect(() => {
     if (tokenList && tokenList.length > 0) {
-      if (config.defaultTokenIn && !selectedTokenA) {
-        const token = tokenList.find(t =>
-          t.symbol.toLowerCase() === config.defaultTokenIn?.toLowerCase() ||
-          t.address.toLowerCase() === config.defaultTokenIn?.toLowerCase()
-        );
-        if (token) setSelectedTokenA(token);
-        else setSelectedTokenA(tokenList[0]);
+      // Process Token IN
+      if (config.defaultTokenIn) {
+        // Only retry if we haven't successfully processed this specific config value yet
+        // OR if the current selection doesn't match the config (e.g. list update revealed the token)
+        const shouldRetry = processedConfigIn.current !== config.defaultTokenIn ||
+          (selectedTokenA &&
+            selectedTokenA.address?.toLowerCase() !== config.defaultTokenIn.toLowerCase() &&
+            selectedTokenA.symbol?.toLowerCase() !== config.defaultTokenIn.toLowerCase());
+
+        if (shouldRetry) {
+          let token = tokenList.find(t =>
+            t.address?.toLowerCase() === config.defaultTokenIn?.toLowerCase()
+          );
+
+          if (!token) {
+            token = tokenList.find(t =>
+              t.symbol?.toLowerCase() === config.defaultTokenIn?.toLowerCase()
+            );
+          }
+
+          if (token) {
+            setSelectedTokenA(token);
+            processedConfigIn.current = config.defaultTokenIn;
+          } else if (!selectedTokenA && processedConfigIn.current !== config.defaultTokenIn) {
+            // Only set default if we haven't selected anything AND we haven't tried this config yet
+            // Don't mark as processed so we keep looking for the configured token
+            setSelectedTokenA(tokenList[0]);
+          }
+        }
       } else if (!selectedTokenA) {
         setSelectedTokenA(tokenList[0]);
       }
 
-      if (config.defaultTokenOut && !selectedTokenB) {
-        const token = tokenList.find(t =>
-          t.symbol.toLowerCase() === config.defaultTokenOut?.toLowerCase() ||
-          t.address.toLowerCase() === config.defaultTokenOut?.toLowerCase()
-        );
-        if (token) setSelectedTokenB(token);
-        else setSelectedTokenB(tokenList[1]);
+      // Process Token OUT
+      if (config.defaultTokenOut) {
+        const shouldRetry = processedConfigOut.current !== config.defaultTokenOut ||
+          (selectedTokenB &&
+            selectedTokenB.address?.toLowerCase() !== config.defaultTokenOut.toLowerCase() &&
+            selectedTokenB.symbol?.toLowerCase() !== config.defaultTokenOut.toLowerCase());
+
+        if (shouldRetry) {
+          let token = tokenList.find(t =>
+            t.address?.toLowerCase() === config.defaultTokenOut?.toLowerCase()
+          );
+
+          if (!token) {
+            token = tokenList.find(t =>
+              t.symbol?.toLowerCase() === config.defaultTokenOut?.toLowerCase()
+            );
+          }
+
+          if (token) {
+            setSelectedTokenB(token);
+            processedConfigOut.current = config.defaultTokenOut;
+          } else if (!selectedTokenB && processedConfigOut.current !== config.defaultTokenOut) {
+            setSelectedTokenB(tokenList[1]);
+          }
+        }
       } else if (!selectedTokenB) {
         setSelectedTokenB(tokenList[1]);
       }
@@ -850,16 +894,36 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       <div
         className={`w-full rounded-xl xl:pb-10 lg:pt-1 pt-20 2xl:px-8 lg:px-8 md:px-6 px-1 md:mt-0 mt-4 relative 2xl:pb-20 xl:pb-10 lg:pb-0 pb-80`}
       >
+
         <div className={`scales8 top70`}>
-          <div className="md:max-w-[1100px] mx-auto w-full flex flex-col justify-center items-center md:flex-nowrap flex-wrap lg:mt-1 mt-6 px-3 pb-4">
-            <h1 className="md:text-5xl text-2xl text-center text-[#FF9900] font-orbitron font-bold md:mb-2">
+          {/* Header: Chain Switcher & Wallet */}
+          <div className="md:max-w-[700px] w-full mx-auto flex justify-between items-center mb-4 px-1">
+            {/* Left side: could be a logo or chain selector if WalletConnect doesn't handle it fully */}
+            <div className="flex items-center gap-2">
+              {/* Chain Switcher is handled inside WalletConnect usually, but we might want to expose it better if needed. 
+                      For now, WalletConnect component handles both Chain and Connect/Disconnect. 
+                      We will rely on WalletConnect to render the buttons. 
+                  */}
+            </div>
+
+            {/* Right side: Wallet Connect/Disconnect */}
+            <div className="flex gap-2">
+              <WalletConnect />
+            </div>
+          </div>
+
+          <div className="md:max-w-[1100px] mx-auto w-full flex flex-col justify-center items-center md:flex-nowrap flex-wrap mobile-hidden lg:mt-1 mt-6 px-3 pb-4">
+            {/* Title removed or kept small? User didn't ask to remove it but "exact type of widget" usually implies minimal title. 
+                   Keeping it for now but maybe making it smaller or removing if it looks cluttered. 
+               */}
+            {/* <h1 className="md:text-5xl text-2xl text-center text-[var(--primary-color)] font-orbitron font-bold md:mb-2">
               <>
                 Optimized <span className="text-white">Aggregation</span>
               </>
-            </h1>
+            </h1> */}
           </div>
           <div className="lg:max-w-[700px] md:max-w-[600px] mx-auto w-full flex gap-3 items-center md:justify-start justify-start md:flex-nowrap flex- my-6 lg:px-1 px-0">
-            <div className="border-[#FF9900] text-black bg-[#FF9900] cursor-pointer hoverswap transition-all leading-none md:w-[100px] w-[52px] md:h-[47px] h-7 flex justify-center items-center md:rounded-lg rounded-md border md:text-sm text-[7px] font-bold font-orbitron">
+            <div className="border-[var(--primary-color)] text-black bg-[var(--primary-color)] cursor-pointer hoverswap transition-all leading-none md:w-[100px] w-[52px] md:h-[47px] h-7 flex justify-center items-center md:rounded-lg rounded-md border md:text-sm text-[7px] font-bold font-orbitron">
               SWAP
             </div>
             <div
@@ -910,7 +974,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   <div className="flex justify-between gap-4 items-center cursor-pointer">
                     <div className="flex gap-2 items-center md:mt-5 mt-6">
                       {/* md:w-[220px] w-[160px] */}
-                      <div className="flex md:gap-4 gap-1 items-center bg-black md:border-2 border border-white md:rounded-xl rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 margin_left lg:w-[280px] md:w-[220px] w-[125px] justify-center">
+                      <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] md:border-2 border border-white md:rounded-xl rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 margin_left lg:w-[280px] md:w-[220px] w-[125px] justify-center">
                         <div
                           onClick={() => {
                             if (config.lockTokenIn) return;
@@ -928,12 +992,12 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                                 src={selectedTokenA.image || selectedTokenA.logoURI}
                                 alt={selectedTokenA.name}
                               />
-                              <div className="text-[#FF9900] lg:text-3xl text-sm font-bold font-orbitron leading-normal bg-black appearance-none outline-none">
+                              <div className="text-[var(--primary-color)] lg:text-3xl text-sm font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
                                 {selectedTokenA.ticker || selectedTokenA.symbol}
                               </div>
                             </>
                           ) : (
-                            <span className="text-[#FF9900] font-bold font-orbitron md:text-3xl text-sm">
+                            <span className="text-[var(--primary-color)] font-bold font-orbitron md:text-3xl text-sm">
                               Select token
                             </span>
                           )}
@@ -965,10 +1029,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       <button
                         key={value}
                         type="button"
-                        className={`py-1 border bg-black text-white flex justify-center items-center rounded-[10px] md:text-[12px] text-[7px] font-extrabold font-orbitron md:w-[70px] w-11 px-2
+                        className={`py-1 border bg-[var(--bg-color)] text-white flex justify-center items-center rounded-[10px] md:text-[12px] text-[7px] font-extrabold font-orbitron md:w-[70px] w-11 px-2
             ${selectedPercentage === value
                             ? "!text-black !bg-[#FFE6C0] border-[#FFE6C0]"
-                            : "bg-[#FFE7C3] text-[#040404] border-black hover:border-black hover:bg-[#FF9900] hover:text-black"
+                            : "bg-[#FFE7C3] text-[#040404] border-black hover:border-black hover:bg-[var(--primary-color)] hover:text-black"
                           }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
@@ -1030,7 +1094,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
 
                   {dollarinfo && (
                     <div
-                      className="roboto fixed rt0 z-50 mt-2 md:w-[500px] w-[300px] whitespace-pre-wrap rounded-lg bg-black px-4 py-3 text-center md:text-sm text-[10px] font-bold text-white shadow-lg
+                      className="roboto fixed rt0 z-50 mt-2 md:w-[500px] w-[300px] whitespace-pre-wrap rounded-lg bg-[var(--bg-color)] px-4 py-3 text-center md:text-sm text-[10px] font-bold text-white shadow-lg
           "
                       onMouseEnter={() => setDollarInfo(true)}
                       onMouseLeave={() => setDollarInfo(false)}
@@ -1152,10 +1216,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       <button
                         key={value}
                         type="button"
-                        className={`py-1 border border-[#FF9900] flex justify-center items-center rounded-xl md:text-[12px] text-[7px] md:w-[70px] w-11 font-extrabold font-orbitron px-2
+                        className={`py-1 border border-[var(--primary-color)] flex justify-center items-center rounded-xl md:text-[12px] text-[7px] md:w-[70px] w-11 font-extrabold font-orbitron px-2
             ${selectedPercentage === value
-                            ? " text-white bg-black"
-                            : "bg-[#FF9900] text-[#040404] hover:border-[#FF9900] hover:bg-transparent hover:text-[#FF9900]"
+                            ? " text-white bg-[var(--bg-color)]"
+                            : "bg-[var(--primary-color)] text-[#040404] hover:border-[var(--primary-color)] hover:bg-transparent hover:text-[var(--primary-color)]"
                           }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
@@ -1231,7 +1295,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   />
                   {dollarinfo1 && (
                     <div
-                      className="roboto fixed rt0 z-50 mt-2 md:w-[500px] w-[300px] whitespace-pre-wrap rounded-lg bg-black px-4 py-3 text-center md:text-sm text-[10px] font-bold text-white shadow-lg
+                      className="roboto fixed rt0 z-50 mt-2 md:w-[500px] w-[300px] whitespace-pre-wrap rounded-lg bg-[var(--bg-color)] px-4 py-3 text-center md:text-sm text-[10px] font-bold text-white shadow-lg
           "
                       onMouseEnter={() => setDollarInfo1(true)}
                       onMouseLeave={() => setDollarInfo1(false)}
@@ -1252,6 +1316,28 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                 )}
               </div>
             </div>
+
+            {/* Route Info - Integrated into widget flow */}
+            {selectedTokenA && selectedTokenB && amountOut && parseFloat(amountOut) > 0 && (
+              <div className="w-full mt-8 px-2">
+                <div className="bg-[#FFE6C0] border-2 border-[var(--primary-color)] p-3 rounded-xl shadow-sm md:w-[450px] mx-auto">
+                  <div className="font-orbitron text-[10px] md:text-sm text-black">
+                    <div className="flex justify-between gap-4 mb-1">
+                      <span className="font-bold">Rate:</span>
+                      <span className="rigamesh">1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} = {getRateDisplay()} {isRateReversed ? selectedTokenA.ticker : selectedTokenB.ticker}</span>
+                    </div>
+                    <div className="flex justify-between gap-4 mb-1">
+                      <span className="font-bold">Min Received:</span>
+                      <span className="rigamesh">{formatNumber(parseFloat(minToReceiveAfterFee).toFixed(6))} {selectedTokenB.ticker}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span className="font-bold">Price Impact:</span>
+                      <span className={`rigamesh ${getPriceImpactColor(priceImpact)}`}>{priceImpact}%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div
               className={`relative flex justify-center flex-row md:mt-16 mt-11 xl:pt-0 pt-0 top-0`}
             >
@@ -1263,19 +1349,19 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   }
                 }}
                 disabled={isInsufficientBalance()}
-                className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[#FF9900] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${isInsufficientBalance()
+                className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[var(--primary-color)] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${isInsufficientBalance()
                   ? "opacity-50 cursor-not-allowed"
                   : " "
                   } font-orbitron lg:text-3xl text-base font-black`}
               >
-                <div className="group-hover:opacity-100 w-full absolute md:top-4 top-2 md:-left-5 -left-3 z-[-1] bg-transparent border-2 border-[#FF9900] md:rounded-[10px] rounded-md md:h-[68px] h-11"></div>
+                <div className="group-hover:opacity-100 w-full absolute md:top-4 top-2 md:-left-5 -left-3 z-[-1] bg-transparent border-2 border-[var(--primary-color)] md:rounded-[10px] rounded-md md:h-[68px] h-11"></div>
                 <span>{getButtonText()}</span>
               </button>
             </div>
           </div>
           {/* Ends */}
         </div>
-      </div>
+      </div >
 
       {isSlippageVisible && (
         <SlippageCalculator
@@ -1283,7 +1369,8 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           onSlippageCalculated={handleSlippageCalculated}
           onClose={() => setSlippageVisible(false)}
         />
-      )}
+      )
+      }
 
       <div aria-label="Modal Success">
         {swapSuccess && (
@@ -1330,46 +1417,18 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           />
         )}
       </div>
-      {selectedTokenA && selectedTokenB && (
-        <div className="xl:fixed absolute bg-[#FFE6C0] left-0 lefts mw300 2xl:bottom-[9%] lg:bottom-[5%] bottom-[120px] scale8 border-4 border-l-2 border-[#FF9900] md:p-6 p-4 rounded-xl-view">
-          <h6 className="font-orbitron md:text-sm text-[10px]">
-            <span>
-              <span className="font-extrabold">Min Received</span> :{" "}
-              <span className="rigamesh truncate">
-                {formatNumber(parseFloat(minToReceiveAfterFee).toFixed(6))}{" "}
-              </span>
-              <span className="font-extrabold">{selectedTokenB.ticker}</span>
-            </span>
-          </h6>
-          <h6 className="font-orbitron md:text-sm text-[10px] py-3">
-            <span>
-              <span className="font-extrabold">Rate :</span>{" "}
-              <span className="font-bold">1</span>{" "}
-              <span className="font-extrabold">
-                {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} ={" "}
-              </span>
-              <span className="rigamesh truncate">{getRateDisplay()}</span>{" "}
-              <span className="font-extrabold">
-                {isRateReversed ? selectedTokenA.ticker : selectedTokenB.ticker}
-              </span>
-            </span>
-          </h6>
-          <h6 className="font-orbitron md:text-sm text-[10px]">
-            <span>
-              <span className="font-extrabold">Price Impact:</span>{" "}
-              <span
-                className={`rigamesh truncate ${getPriceImpactColor(
-                  priceImpact
-                )}`}
-              >
-                {" "}
-                {/* {((amountOut / 1000) * 0.01).toFixed(3)} % */}
-                {priceImpact} %
-              </span>
-            </span>
-          </h6>
-        </div>
-      )}
+
+      <div className="w-full flex justify-center py-4 mt-4">
+        <a
+          href="https://empx.io"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs font-orbitron text-gray-500 hover:text-[var(--primary-color)] transition-colors opacity-70 hover:opacity-100"
+        >
+          Powered by EMPX
+        </a>
+      </div>
+      {/* <iframe src="https://switch.win/widget?network=pulsechain&background_color=000000&font_color=ffffff&secondary_font_color=7a7a7a&border_color=01e401&backdrop_color=f1f1f1&from=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&to=0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39" allow="clipboard-read; clipboard-write" width="100%" height="900px" /> */}
     </>
   );
 };

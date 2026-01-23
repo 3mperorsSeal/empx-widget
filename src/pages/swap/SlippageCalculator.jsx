@@ -138,10 +138,10 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
   const slippageOptions = [0.0, 0.5, 1.0, 2.0];
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 roboto px-4">
+    <div className="fixed inset-0 bg-[var(--bg-color)] bg-opacity-50 flex items-center justify-center z-50 roboto px-4">
       <div
         ref={modalRef}
-        className="bg-black clip-bg rounded-xl lg:px-12 lg:py-10 p-6 md:max-w-[700px] w-full relative"
+        className="bg-[var(--bg-color)] clip-bg rounded-xl lg:px-12 lg:py-10 p-6 md:max-w-[700px] w-full relative"
       >
         <button
           onClick={handleModalClose}
@@ -175,8 +175,8 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
           </div>
         )}
         <div className="flex gap-4 items-center justify-center flex-wrap">
-          {/* <div class="w-[168px] h-[40px] bg-black text-white flex items-center justify-center font-bold text-sm"
-     style="clip-path: polygon(0 0, 90% 0, 100% 20%, 100% 100%, 10% 100%, 0 80%); border: 1px solid #FF9900;">
+          {/* <div class="w-[168px] h-[40px] bg-[var(--bg-color)] text-white flex items-center justify-center font-bold text-sm"
+     style="clip-path: polygon(0 0, 90% 0, 100% 20%, 100% 100%, 10% 100%, 0 80%); border: 1px solid var(--primary-color);">
   0%
 </div> */}
           {slippageOptions.map((option, index) => (
@@ -217,20 +217,20 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             className={`gtw relative w-full md:h-16 rounded-xl h-12 flex items-center justify-center font-roboto font-black md:text-2xl text-xl transition-all font-orbitron
     ${error ? "opacity-100 cursor-not-allowed" : ""}`}
             style={{
-              background: "#FF9900",
-              border: "2px solid #FF9900",
+              background: "var(--primary-color)",
+              border: "2px solid var(--primary-color)",
               // clipPath:
               //   "polygon(0 0, 95% 0, 100% 30%, 100% 100%, 6% 100%, 0 60%)",
             }}
             disabled={!!error}
           >
-            <div className="w-full absolute md:top-4 top-1 md:-left-4 -left-3 z-[1] bg-transparent border-2 border-[#FF9900] rounded-xl md:h-[58px] h-[50px]"></div>
+            <div className="w-full absolute md:top-4 top-1 md:-left-4 -left-3 z-[1] bg-transparent border-2 border-[var(--primary-color)] rounded-xl md:h-[58px] h-[50px]"></div>
             Reset Slippage
           </button>
 
           <button
             onClick={handleModalClose}
-            className="px-4 py-1 mt-5 bg-black font-semibold md:text-2xl text-xl text-[#FF9900] rounded font-orbitron"
+            className="px-4 py-1 mt-5 bg-[var(--bg-color)] font-semibold md:text-2xl text-xl text-[var(--primary-color)] rounded font-orbitron"
           >
             Close
           </button>
