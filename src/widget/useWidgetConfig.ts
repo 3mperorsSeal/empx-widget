@@ -7,13 +7,16 @@ export const useWidgetConfig = () => {
     background: params.get('background') || '#000000',
     primaryColor: params.get('primaryColor') || '#e49c01ff',
 
-    defaultTokenIn: params.get('from'),
-    defaultTokenOut: params.get('to'),
+    // Token selection (disabled)
+    // defaultTokenIn: params.get('from'),
+    // defaultTokenOut: params.get('to'),
+    // lockTokenIn: params.get('lockFrom') === 'true',
+    // lockTokenOut: params.get('lockTo') === 'true',
 
-    lockTokenIn: params.get('lockFrom') === 'true',
-    lockTokenOut: params.get('lockTo') === 'true',
+    // Fee (disabled - using internal protocol fees)
+    // feePercent: Number(params.get('feePercent') || '0'),
 
-    feePercent: Number(params.get('feePercent') || '0'),
-    referrer: params.get('referrer'),
+    // Integrator support
+    integratorId: params.get('integratorId') || null,
   };
 };

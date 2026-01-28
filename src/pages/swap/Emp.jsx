@@ -19,6 +19,7 @@ import {
 } from "wagmi";
 import SlippageCalculator from "./SlippageCalculator";
 import { EmpsealRouterLiteV3 } from "../../utils/lite/EmpsealRouterLiteV3";
+import { EmpsealRouterV7 } from "../../utils/lite/EmpsealRouterV7";
 import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
 import { useStore } from "../../redux/store/routeStore";
@@ -155,84 +156,20 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   }, [publicClient, routerAddress, adapters]);
 
   // Handle Widget Config Configuration
-  const processedConfigIn = useRef(null);
-  const processedConfigOut = useRef(null);
-
+  // Handle Token Selection
   useEffect(() => {
     if (tokenList && tokenList.length > 0) {
-      // Process Token IN
-      if (config.defaultTokenIn) {
-        // Only retry if we haven't successfully processed this specific config value yet
-        // OR if the current selection doesn't match the config (e.g. list update revealed the token)
-        const shouldRetry = processedConfigIn.current !== config.defaultTokenIn ||
-          (selectedTokenA &&
-            selectedTokenA.address?.toLowerCase() !== config.defaultTokenIn.toLowerCase() &&
-            selectedTokenA.symbol?.toLowerCase() !== config.defaultTokenIn.toLowerCase());
-
-        if (shouldRetry) {
-          let token = tokenList.find(t =>
-            t.address?.toLowerCase() === config.defaultTokenIn?.toLowerCase()
-          );
-
-          if (!token) {
-            token = tokenList.find(t =>
-              t.symbol?.toLowerCase() === config.defaultTokenIn?.toLowerCase()
-            );
-          }
-
-          if (token) {
-            setSelectedTokenA(token);
-            processedConfigIn.current = config.defaultTokenIn;
-          } else if (!selectedTokenA && processedConfigIn.current !== config.defaultTokenIn) {
-            // Only set default if we haven't selected anything AND we haven't tried this config yet
-            // Don't mark as processed so we keep looking for the configured token
-            setSelectedTokenA(tokenList[0]);
-          }
-        }
-      } else if (!selectedTokenA) {
+      if (!selectedTokenA) {
         setSelectedTokenA(tokenList[0]);
       }
-
-      // Process Token OUT
-      if (config.defaultTokenOut) {
-        const shouldRetry = processedConfigOut.current !== config.defaultTokenOut ||
-          (selectedTokenB &&
-            selectedTokenB.address?.toLowerCase() !== config.defaultTokenOut.toLowerCase() &&
-            selectedTokenB.symbol?.toLowerCase() !== config.defaultTokenOut.toLowerCase());
-
-        if (shouldRetry) {
-          let token = tokenList.find(t =>
-            t.address?.toLowerCase() === config.defaultTokenOut?.toLowerCase()
-          );
-
-          if (!token) {
-            token = tokenList.find(t =>
-              t.symbol?.toLowerCase() === config.defaultTokenOut?.toLowerCase()
-            );
-          }
-
-          if (token) {
-            setSelectedTokenB(token);
-            processedConfigOut.current = config.defaultTokenOut;
-          } else if (!selectedTokenB && processedConfigOut.current !== config.defaultTokenOut) {
-            setSelectedTokenB(tokenList[1]);
-          }
-        }
-      } else if (!selectedTokenB) {
+      if (!selectedTokenB) {
         setSelectedTokenB(tokenList[1]);
       }
     }
-  }, [tokenList, config.defaultTokenIn, config.defaultTokenOut]);
+  }, [tokenList]);
 
   // Dynamic Fee Update
   useEffect(() => {
-    if (config.feePercent > 0) {
-      // Assuming feePercent is a percentage like 0.3 for 0.3%.
-      // protocolFee 28 means 0.28%. So multiply by 100.
-      setProtocolFee(Math.floor(config.feePercent * 100));
-      return;
-    }
-
     if (selectedTokenA && selectedTokenB) {
       const isStable = (address) =>
         stableTokens?.some(
@@ -250,7 +187,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
     } else {
       setProtocolFee(28); // Default for other chains or if undefined
     }
-  }, [chainId, selectedTokenA, selectedTokenB, stableTokens, config.feePercent]);
+  }, [chainId, selectedTokenA, selectedTokenB, stableTokens]);
 
   const handleCloseSuccessModal = () => {
     setSwapStatus("IDLE"); // Reset status when closing modal
@@ -476,11 +413,25 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
 
   const handleTokenSelect = (token) => {
     if (isSelectingTokenA) {
-      if (config.lockTokenIn) return; // Respect lock
-      setSelectedTokenA(token);
+      if (token === selectedTokenB) {
+        // Swap if same token selected
+        setSelectedTokenB(selectedTokenA);
+        setSelectedTokenA(token);
+        setAmountOut("0");
+        setAmountIn("0");
+      } else {
+        setSelectedTokenA(token);
+      }
     } else {
-      if (config.lockTokenOut) return; // Respect lock
-      setSelectedTokenB(token);
+      if (token === selectedTokenA) {
+        // Swap if same token selected
+        setSelectedTokenA(selectedTokenB);
+        setSelectedTokenB(token);
+        setAmountOut("0");
+        setAmountIn("0");
+      } else {
+        setSelectedTokenB(token);
+      }
     }
     setTokenVisible(false);
   };
@@ -659,7 +610,12 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       }
 
       setSwapStatus("SWAPPING");
-      const minAmountOut = (localBestRoute.amountOut * 995n) / 1000n; // Use localBestRoute
+      // Calculate minAmountOut with slippage tolerance
+      // Base: 0.5% slippage (995/1000)
+      // If integratorId is present, add extra buffer for integrator fee (max 3%)
+      // Using 1% total buffer (990/1000) when integrator is active to be safe
+      const slippageMultiplier = config.integratorId ? 990n : 995n;
+      const minAmountOut = (localBestRoute.amountOut * slippageMultiplier) / 1000n;
       const protocolFeeBigInt = BigInt(protocolFee);
 
       let tx;
@@ -681,9 +637,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         });
       } else if (localBestRoute.type === "CONVERGE") {
         // Use localBestRoute
+        // Prepare integratorId (bytes32) - null or hex string from config
+        const integratorIdBytes32 = config.integratorId
+          ? config.integratorId
+          : "0x0000000000000000000000000000000000000000000000000000000000000000";
+
         tx = await writeContractAsync({
           address: routerAddress,
-          abi: EmpsealRouterLiteV3,
+          abi: EmpsealRouterV7,
           functionName: "executeConvergeSwap",
           args: [
             localBestRoute.payload, // Use localBestRoute
@@ -691,6 +652,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             address,
             protocolFeeBigInt,
             deadline,
+            integratorIdBytes32, // NEW: integratorId
           ],
           value:
             selectedTokenA.address === EMPTY_ADDRESS
@@ -699,9 +661,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         });
       } else {
         // SPLIT
+        // Prepare integratorId (bytes32) - null or hex string from config
+        const integratorIdBytes32 = config.integratorId
+          ? config.integratorId
+          : "0x0000000000000000000000000000000000000000000000000000000000000000";
+
         tx = await writeContractAsync({
           address: routerAddress,
-          abi: EmpsealRouterLiteV3,
+          abi: EmpsealRouterV7,
           functionName: "executeSplitSwap",
           args: [
             localBestRoute.payload, // Use localBestRoute
@@ -710,6 +677,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             address,
             protocolFeeBigInt,
             deadline,
+            integratorIdBytes32, // NEW: integratorId
           ],
           value:
             selectedTokenA.address === EMPTY_ADDRESS
@@ -805,6 +773,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const getButtonText = () => {
     if (isInsufficientBalance()) return "Insufficient Balance";
     if (isQuoting) return "Loading...";
+    if (swapStatus === "APPROVING") return "Approving...";
     if (needsApproval) return "Approve";
     return "Swap";
   };
@@ -977,7 +946,6 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] md:border-2 border border-white md:rounded-xl rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 margin_left lg:w-[280px] md:w-[220px] w-[125px] justify-center">
                         <div
                           onClick={() => {
-                            if (config.lockTokenIn) return;
                             setIsSelectingTokenA(true);
                             setTokenVisible(true);
                             setSelectedPercentage("");
@@ -1166,7 +1134,6 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       <div className="flex md:gap-4 gap-1 items-center justify-center bg-[#FFE6C0] md:border-2 border border-white rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 lg:w-[280px] md:w-[220px] w-[125px] margin_left">
                         <div
                           onClick={() => {
-                            if (config.lockTokenOut) return;
                             setIsSelectingTokenA(false);
                             setTokenVisible(true);
                           }}
@@ -1406,6 +1373,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             percentChange={percentChange}
             onAcceptNewQuote={handleAcceptNewQuote}
             onRejectNewQuote={handleRejectNewQuote}
+            swapStatus={swapStatus}
           />
         )}
       </div>
@@ -1417,6 +1385,12 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           />
         )}
       </div>
+      {/* <iframe
+        src="https://empx-widget.netlify.app/?primaryColor=%233b82f6&background=%230f172a&integratorId=0x366b7ad069b00d2882bfbf40e341bb020d8c55bc20ac1de3ed7ceee0445cf079"
+        allow="clipboard-read; clipboard-write"
+        width="450"
+        height="900"
+      ></iframe> */}
 
       <div className="w-full flex justify-center py-4 mt-4">
         <a
