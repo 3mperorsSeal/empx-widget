@@ -24,6 +24,7 @@ const Amount = ({
   percentChange,
   onAcceptNewQuote,
   onRejectNewQuote,
+  swapStatus,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isConfirm, setConfirm] = useState(false);
@@ -47,7 +48,11 @@ const Amount = ({
 
     setIsLoading(true);
     try {
-      await confirm();
+      if (needsApproval) {
+        await handleApprove();
+      } else {
+        await confirm();
+      }
     } catch (error) {
       console.error("Confirmation failed:", error);
     } finally {
@@ -212,7 +217,11 @@ const Amount = ({
                   </div>
                 ) : (
                   <div className="md:text-xl text-base font-black text-center leading-normal uppercase font-orbitron">
-                    {needsApproval ? "Approve" : "Swap"}
+                    {needsApproval
+                      ? swapStatus === "APPROVING"
+                        ? "Approving..."
+                        : "Approve"
+                      : "Swap"}
                   </div>
                 )}
               </button>

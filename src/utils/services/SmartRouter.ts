@@ -5,11 +5,20 @@ import {
     Hop,
     SplitPath,
 } from "../types/router";
-import { EmpsealRouterLiteV3 } from "../lite/EmpsealRouterLiteV3";
+
 
 // Simple Adapter ABI for querying
 const IAdapterAbi = parseAbi([
     "function query(uint256 amountIn, address tokenIn, address tokenOut) view returns (uint256 amountOut)",
+]);
+
+// Minimal Router ABI to prevent excessive type instantiation depth
+const RouterMinimalAbi = parseAbi([
+    "function adaptersCount() view returns (uint256)",
+    "function ADAPTERS(uint256) view returns (address)",
+    "function WNATIVE() view returns (address)",
+    "function trustedTokensCount() view returns (uint256)",
+    "function TRUSTED_TOKENS(uint256) view returns (address)",
 ]);
 
 const FEE_DENOMINATOR = 10000;
@@ -117,7 +126,7 @@ export class SmartRouter {
             // Load adapters count
             const adapterCount = await this.publicClient.readContract({
                 address: this.routerAddress,
-                abi: EmpsealRouterLiteV3,
+                abi: RouterMinimalAbi,
                 functionName: "adaptersCount",
             });
 
@@ -125,9 +134,9 @@ export class SmartRouter {
             for (let i = 0; i < Number(adapterCount); i++) {
                 adapterCalls.push({
                     address: this.routerAddress,
-                    abi: EmpsealRouterLiteV3,
+                    abi: RouterMinimalAbi,
                     functionName: "ADAPTERS",
-                    args: [i],
+                    args: [BigInt(i)],
                 });
             }
 
@@ -139,7 +148,7 @@ export class SmartRouter {
             // Load WNATIVE
             const wnative = await this.publicClient.readContract({
                 address: this.routerAddress,
-                abi: EmpsealRouterLiteV3,
+                abi: RouterMinimalAbi,
                 functionName: "WNATIVE",
             });
             this.wnativeAddress = wnative as `0x${string}`;
@@ -147,7 +156,7 @@ export class SmartRouter {
             // Load trusted tokens
             const trustedCount = await this.publicClient.readContract({
                 address: this.routerAddress,
-                abi: EmpsealRouterLiteV3,
+                abi: RouterMinimalAbi,
                 functionName: "trustedTokensCount",
             });
 
@@ -155,9 +164,9 @@ export class SmartRouter {
             for (let i = 0; i < Number(trustedCount); i++) {
                 trustedCalls.push({
                     address: this.routerAddress,
-                    abi: EmpsealRouterLiteV3,
+                    abi: RouterMinimalAbi,
                     functionName: "TRUSTED_TOKENS",
-                    args: [i],
+                    args: [BigInt(i)],
                 });
             }
 
@@ -632,11 +641,11 @@ export class SmartRouter {
         // 2. Convert user input to wei
         const amountInWei = parseTokenAmount(amountInUser, decimalsIn);
 
-        // 3. Get best route (using wei)
+        // 3. Get best route (using wei) - pass ORIGINAL tokens for wrap/unwrap detection
         const route = await this.getBestQuote(
             amountInWei,
-            normalizedTokenIn,
-            normalizedTokenOut,
+            tokenIn,
+            tokenOut,
             fee
         );
 
@@ -801,9 +810,27 @@ export class SmartRouter {
         }
 
         // Simply select the route with the highest amountOut
-        const winner = candidates.reduce((best, current) =>
+        let winner = candidates.reduce((best, current) =>
             current.amountOut > best.amountOut ? current : best
         );
+
+        // Safety filter: If we have 3+ candidates, use median-based consensus to catch inflated quotes
+        if (candidates.length >= 3) {
+            const sorted = [...candidates].sort((a, b) =>
+                a.amountOut > b.amountOut ? 1 : -1
+            );
+            const medianIndex = Math.floor(sorted.length / 2);
+            const median = sorted[medianIndex].amountOut;
+
+            // Allow up to 10% above median (tightened from 20% to catch inflated quotes)
+            const upperThreshold = median + (median / 10n);
+
+            // If winner is suspiciously high, fall back to median route
+            if (winner.amountOut > upperThreshold) {
+                console.warn(`[SmartRouter] Filtered inflated quote: ${winner.amountOut} > threshold ${upperThreshold}, using median`);
+                winner = sorted[medianIndex];
+            }
+        }
 
         let winnerName = "Unknown";
         if (winner === converge) winnerName = "Omni-Converge";
