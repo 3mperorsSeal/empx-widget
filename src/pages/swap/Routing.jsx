@@ -111,7 +111,7 @@ const Routing = ({ routing }) => {
         className="w-full border-3 border-white rounded-xl-view py-4 2xl:px-7 lg:px-5 px-4 bg-[var(--bg-color)] min-w-[240px] scale81 relative max-w-[302px] mxauto round"
       >
         <div className="flex justify-center gap-2 md:flex-nowrap flex-wrap absolute left-0 right-0 -top-7">
-          <p className="w-[194px] h-[28px] flex justify-center items-center bg-[var(--primary-color)] font-orbitron text-black text-base font-semibold border-2 border-white border-b-0 py-2 border-radius-w">
+          <p className="w-[194px] h-[28px] flex justify-center items-center bg-[#FF9900] font-orbitron text-black text-base font-semibold border-2 border-white border-b-0 py-2 border-radius-w">
             Routing
           </p>
         </div>

@@ -170,7 +170,8 @@ export default function WalletConnect({
           return (
             <>
               <button
-                className="px-6 py-1.5 rounded-lg border border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
+              // FF9900
+                className="px-6 py-1.5 rounded-lg border border-[#FF9900] text-[#FF9900] hover:bg-[#FF9900] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
                 onClick={() => setShowConnectPopup(true)}
                 type="button"
               >
@@ -329,7 +330,7 @@ export default function WalletConnect({
 
             <div className="flex items-center gap-2">
               <button
-                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#FF9900] text-[#FF9900] hover:bg-[#FF9900] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
                 onClick={() => setShowChainPopup(true)}
                 type="button"
               >
@@ -355,7 +356,7 @@ export default function WalletConnect({
               </button>
 
               <button
-                className="px-3 py-1.5 rounded-lg border border-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
+                className="px-3 py-1.5 rounded-lg border border-[#FF9900] text-[#FF9900] hover:bg-[#FF9900] hover:text-black transition-all font-bold font-orbitron text-xs lg:text-sm"
                 onClick={() => setShowPopup(true)}
                 type="button"
               >
