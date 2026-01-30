@@ -5,6 +5,7 @@ import Ar from "../../assets/images/reverse.svg";
 import Sellbox from "../../assets/images/sell-box.png";
 import Buybox from "../../assets/images/buy-bg.png";
 import Swapbutton from "../../assets/images/swap-button.svg";
+import empLogo from "../../assets/images/emp-main-logo.png";
 
 import Usdc from "../../assets/images/usdc.svg";
 import Info from "../../assets/images/info.svg";
@@ -173,7 +174,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
     if (selectedTokenA && selectedTokenB) {
       const isStable = (address) =>
         stableTokens?.some(
-          (stable) => stable.toLowerCase() === address.toLowerCase()
+          (stable) => stable.toLowerCase() === address.toLowerCase(),
         ) || false;
 
       if (
@@ -227,7 +228,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           debouncedAmountIn,
           selectedTokenA.address,
           selectedTokenB.address,
-          protocolFee
+          protocolFee,
         );
 
         const route = quoteResult.route;
@@ -272,7 +273,13 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
     };
 
     getQuote();
-  }, [smartRouter, debouncedAmountIn, selectedTokenA, selectedTokenB, protocolFee]); // Added protocolFee dependency
+  }, [
+    smartRouter,
+    debouncedAmountIn,
+    selectedTokenA,
+    selectedTokenB,
+    protocolFee,
+  ]); // Added protocolFee dependency
 
   // Check approval status whenever token or amount changes
   useEffect(() => {
@@ -289,11 +296,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       }
 
       try {
-        const amountInBigInt = convertToBigInt(debouncedAmountIn, selectedTokenA.decimal);
+        const amountInBigInt = convertToBigInt(
+          debouncedAmountIn,
+          selectedTokenA.decimal,
+        );
         const allowance = await checkAllowance(
           chainId,
           selectedTokenA.address,
-          address
+          address,
         );
 
         setNeedsApproval(allowance.data < amountInBigInt);
@@ -316,7 +326,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       const allowance = await checkAllowance(
         chainId,
         selectedTokenA.address,
-        address
+        address,
       );
 
       if (allowance.data >= amountInBigInt) {
@@ -484,7 +494,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             : selectedTokenA?.address?.toLowerCase();
 
         const response = await fetch(
-          `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`
+          `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`,
         );
 
         if (!response.ok) {
@@ -529,7 +539,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             : selectedTokenB?.address?.toLowerCase();
 
         const response = await fetch(
-          `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`
+          `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`,
         );
 
         if (!response.ok) {
@@ -600,7 +610,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         const allowance = await checkAllowance(
           chainId,
           selectedTokenA.address,
-          address
+          address,
         );
         if (allowance.data < amountInBigInt) {
           toast.error("Please approve token first");
@@ -615,7 +625,8 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       // If integratorId is present, add extra buffer for integrator fee (max 3%)
       // Using 1% total buffer (990/1000) when integrator is active to be safe
       const slippageMultiplier = config.integratorId ? 990n : 995n;
-      const minAmountOut = (localBestRoute.amountOut * slippageMultiplier) / 1000n;
+      const minAmountOut =
+        (localBestRoute.amountOut * slippageMultiplier) / 1000n;
       const protocolFeeBigInt = BigInt(protocolFee);
 
       let tx;
@@ -709,7 +720,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
 
       console.error("Swap failed", error);
 
-      if (message.includes("User rejected") || message.includes("User denied")) {
+      if (
+        message.includes("User rejected") ||
+        message.includes("User denied")
+      ) {
         toast.error("Transaction rejected by user");
         return;
       }
@@ -841,10 +855,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const priceImpact =
     usdValueTokenA > 0
       ? (
-        ((parseFloat(usdValueTokenB) - parseFloat(usdValueTokenA)) /
-          parseFloat(usdValueTokenA)) *
-        100
-      ).toFixed(2)
+          ((parseFloat(usdValueTokenB) - parseFloat(usdValueTokenA)) /
+            parseFloat(usdValueTokenA)) *
+          100
+        ).toFixed(2)
       : 0;
   // Determine color based on value
   const getPriceImpactColor = (impact) => {
@@ -861,10 +875,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   return (
     <>
       <div
-        className={`w-full rounded-xl xl:pb-10 lg:pt-1 pt-20 2xl:px-8 lg:px-8 md:px-6 px-1 md:mt-0 mt-4 relative 2xl:pb-20 xl:pb-10 lg:pb-0 pb-80`}
+        className={`w-full rounded-xl xl:pb-10 lg:pt-1 pt-5 2xl:px-8 lg:px-8 md:px-6 px-1 md:mt-0 mt-4 relative 2xl:pb-20 xl:pb-10 lg:pb-0 pb-20`}
       >
-
-        <div className={`scales8 top70`}>
+        {/* scales8 top70 */}
+        <div className={`scales8`}>
           {/* Header: Chain Switcher & Wallet */}
           <div className="md:max-w-[700px] w-full mx-auto flex justify-between items-center mb-4 px-1">
             {/* Left side: could be a logo or chain selector if WalletConnect doesn't handle it fully */}
@@ -885,14 +899,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             {/* Title removed or kept small? User didn't ask to remove it but "exact type of widget" usually implies minimal title. 
                    Keeping it for now but maybe making it smaller or removing if it looks cluttered. 
                */}
-            {/* <h1 className="md:text-5xl text-2xl text-center text-[var(--primary-color)] font-orbitron font-bold md:mb-2">
+            {/* <h1 className="md:text-5xl text-2xl text-center text-[#FF9900] font-orbitron font-bold md:mb-2">
               <>
                 Optimized <span className="text-white">Aggregation</span>
               </>
             </h1> */}
           </div>
           <div className="lg:max-w-[700px] md:max-w-[600px] mx-auto w-full flex gap-3 items-center md:justify-start justify-start md:flex-nowrap flex- my-6 lg:px-1 px-0">
-            <div className="border-[var(--primary-color)] text-black bg-[var(--primary-color)] cursor-pointer hoverswap transition-all leading-none md:w-[100px] w-[52px] md:h-[47px] h-7 flex justify-center items-center md:rounded-lg rounded-md border md:text-sm text-[7px] font-bold font-orbitron">
+            <div className="border-[#FF9900] text-black bg-[#FF9900] cursor-pointer hoverswap transition-all leading-none md:w-[100px] w-[52px] md:h-[47px] h-7 flex justify-center items-center md:rounded-lg rounded-md border md:text-sm text-[7px] font-bold font-orbitron">
               SWAP
             </div>
             <div
@@ -911,10 +925,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             <div className="relative bg_swap_box">
               {/* <img className="bg-sell w-full" src={Sellbox} alt="sellbox" /> */}
               <div className="flex justify-between gap-3 items-center">
-                <div className="font-orbitron text-dark-400 md:text-2xl text-xs font-semibold leading-normal">
+                <div className="font-orbitron text-dark-400 md:text-2xl text-xs font-semibold leading-normal text-black">
                   You Sell
                 </div>
-                <div className="text-center absolute -top-8 md:right-0 right-5 gap-3 2xl:px-6 lg:px-4 lg:py-3 rounded-lg mt-2 border border-white bg-[#FFE6C0] md:text-sm text-[10px] px-2 py-2">
+                <div className="text-center absolute -top-8 md:right-0 right-5 gap-3 2xl:px-6 lg:px-4 lg:py-3 rounded-lg mt-2 text-black border border-white bg-[#FFE6C0] md:text-sm text-[10px] px-2 py-2">
                   <span className="font-extrabold font-orbitron leading-normal">
                     BAL
                   </span>
@@ -929,12 +943,15 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         ? "Loading.."
                         : selectedTokenA.address === EMPTY_ADDRESS
                           ? `${formatNumber(formattedBalance)}`
-                          : `${tokenBalance
-                            ? formatNumber(
-                              parseFloat(tokenBalance.formatted).toFixed(6)
-                            )
-                            : "0.00"
-                          }`}
+                          : `${
+                              tokenBalance
+                                ? formatNumber(
+                                    parseFloat(tokenBalance.formatted).toFixed(
+                                      6,
+                                    ),
+                                  )
+                                : "0.00"
+                            }`}
                   </span>
                 </div>
               </div>
@@ -957,15 +974,17 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                             <>
                               <img
                                 className="md:w-9 md:h-9 w-4 h-4"
-                                src={selectedTokenA.image || selectedTokenA.logoURI}
+                                src={
+                                  selectedTokenA.image || selectedTokenA.logoURI
+                                }
                                 alt={selectedTokenA.name}
                               />
-                              <div className="text-[var(--primary-color)] lg:text-3xl text-sm font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
+                              <div className="text-[#FF9900] lg:text-3xl text-sm font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
                                 {selectedTokenA.ticker || selectedTokenA.symbol}
                               </div>
                             </>
                           ) : (
-                            <span className="text-[var(--primary-color)] font-bold font-orbitron md:text-3xl text-sm">
+                            <span className="text-[#FF9900] font-bold font-orbitron md:text-3xl text-sm">
                               Select token
                             </span>
                           )}
@@ -978,7 +997,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                             className="rounded-md transition-colorss"
                           >
                             {copySuccess &&
-                              activeTokenAddress === selectedTokenA.address ? (
+                            activeTokenAddress === selectedTokenA.address ? (
                               <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
                             ) : (
                               <Copy className="md:w-4 md:h-4 w-3 h-3 text-white hover:text-white" />
@@ -998,10 +1017,11 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         key={value}
                         type="button"
                         className={`py-1 border bg-[var(--bg-color)] text-white flex justify-center items-center rounded-[10px] md:text-[12px] text-[7px] font-extrabold font-orbitron md:w-[70px] w-11 px-2
-            ${selectedPercentage === value
-                            ? "!text-black !bg-[#FFE6C0] border-[#FFE6C0]"
-                            : "bg-[#FFE7C3] text-[#040404] border-black hover:border-black hover:bg-[var(--primary-color)] hover:text-black"
-                          }`}
+            ${
+              selectedPercentage === value
+                ? "!text-black !bg-[#FFE6C0] border-[#FFE6C0]"
+                : "bg-[#FFE7C3] text-[#040404] border-black hover:border-black hover:bg-[#FF9900] hover:text-black"
+            }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
                       >
@@ -1022,14 +1042,11 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                     const FREE_DIGITS = window.innerWidth >= 768 ? 10 : 4;
                     const SHRINK_RATE = 3;
 
-                    const excessDigits = Math.max(
-                      0,
-                      inputLength - FREE_DIGITS
-                    );
+                    const excessDigits = Math.max(0, inputLength - FREE_DIGITS);
 
                     const dynamicFontSize = Math.max(
                       10,
-                      defaultFontSize - excessDigits * SHRINK_RATE
+                      defaultFontSize - excessDigits * SHRINK_RATE,
                     );
                     return (
                       <input
@@ -1068,9 +1085,9 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       onMouseLeave={() => setDollarInfo(false)}
                     >
                       Dollar value display <br />
-                      The dollar value displayed are fetched from 3rd party
-                      API. They may not be 100% accurate in some cases. For
-                      accuracy please check the Output units.
+                      The dollar value displayed are fetched from 3rd party API.
+                      They may not be 100% accurate in some cases. For accuracy
+                      please check the Output units.
                     </div>
                   )}
                 </div>
@@ -1103,7 +1120,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                 <div className="font-orbitron text-white md:text-2xl text-xs font-semibold leading-normal">
                   You Buy
                 </div>
-                <div className="text-center absolute -top-8 md:right-0 right-5 gap-3 2xl:px-6 lg:px-4 lg:py-3 rounded-lg mt-2 border border-white bg-[#FFE6C0] md:text-sm text-[10px] px-2 py-2">
+                <div className="text-center absolute -top-8 md:right-0 right-5 gap-3 2xl:px-6 lg:px-4 lg:py-3 rounded-lg mt-2 border !text-black border-white bg-[#FFE6C0] md:text-sm text-[10px] px-2 py-2">
                   <span className="font-extrabold leading-normal">BAL</span>
                   <span className="font-bold font-orbitron leading-normal">
                     {" "}
@@ -1116,12 +1133,15 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         ? "Loading.."
                         : selectedTokenB.address === EMPTY_ADDRESS
                           ? `${formatNumber(formattedChainBalanceTokenB)}`
-                          : `${tokenBBalance
-                            ? formatNumber(
-                              parseFloat(tokenBBalance.formatted).toFixed(6)
-                            )
-                            : "0.00"
-                          }`}
+                          : `${
+                              tokenBBalance
+                                ? formatNumber(
+                                    parseFloat(tokenBBalance.formatted).toFixed(
+                                      6,
+                                    ),
+                                  )
+                                : "0.00"
+                            }`}
                   </span>
                 </div>
               </div>
@@ -1131,7 +1151,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   <div className="flex justify-between gap-4 items-center cursor-pointer">
                     <div className="flex gap-2 items-center md:mt-5 mt-6">
                       {/* md:w-[220px] w-[160px] */}
-                      <div className="flex md:gap-4 gap-1 items-center justify-center bg-[#FFE6C0] md:border-2 border border-white rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 lg:w-[280px] md:w-[220px] w-[125px] margin_left">
+                      <div className="flex md:gap-4 gap-1 items-center justify-center bg-[#FFE6C0] md:border-2 border !text-black border-white rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 lg:w-[280px] md:w-[220px] w-[125px] margin_left">
                         <div
                           onClick={() => {
                             setIsSelectingTokenA(false);
@@ -1143,7 +1163,9 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                             <>
                               <img
                                 className="md:w-9 md:h-9 w-4 h-4"
-                                src={selectedTokenB.image || selectedTokenB.logoURI}
+                                src={
+                                  selectedTokenB.image || selectedTokenB.logoURI
+                                }
                                 alt={selectedTokenB.name}
                               />
                               <div className="text-dark lg:text-3xl text-sm font-bold font-orbitron leading-normal appearance-none outline-none">
@@ -1151,7 +1173,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                               </div>
                             </>
                           ) : (
-                            <span className="text-dark font-bold font-orbitron md:text-3xl text-sm">
+                            <span className="text-black font-bold font-orbitron md:text-3xl text-sm">
                               Select token
                             </span>
                           )}
@@ -1164,7 +1186,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                             className="rounded-md transition-colors"
                           >
                             {copySuccess &&
-                              activeTokenAddress === selectedTokenB.address ? (
+                            activeTokenAddress === selectedTokenB.address ? (
                               <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
                             ) : (
                               <Copy className="md:w-4 md:h-4 w-3 h-3 text-black hover:text-black" />
@@ -1183,11 +1205,12 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       <button
                         key={value}
                         type="button"
-                        className={`py-1 border border-[var(--primary-color)] flex justify-center items-center rounded-xl md:text-[12px] text-[7px] md:w-[70px] w-11 font-extrabold font-orbitron px-2
-            ${selectedPercentage === value
-                            ? " text-white bg-[var(--bg-color)]"
-                            : "bg-[var(--primary-color)] text-[#040404] hover:border-[var(--primary-color)] hover:bg-transparent hover:text-[var(--primary-color)]"
-                          }`}
+                        className={`py-1 border border-[#FF9900] flex justify-center items-center rounded-xl md:text-[12px] text-[7px] md:w-[70px] w-11 font-extrabold font-orbitron px-2
+            ${
+              selectedPercentage === value
+                ? " text-white bg-[var(--bg-color)]"
+                : "bg-[#FF9900] text-[#040404] hover:border-[#FF9900] hover:bg-transparent hover:text-[#FF9900]"
+            }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
                       >
@@ -1218,12 +1241,12 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
 
                     const excessDigits = Math.max(
                       0,
-                      outputLength - FREE_DIGITS
+                      outputLength - FREE_DIGITS,
                     );
 
                     const dynamicFontSize = Math.max(
                       10,
-                      defaultFontSize - excessDigits * SHRINK_RATE
+                      defaultFontSize - excessDigits * SHRINK_RATE,
                     );
 
                     return (
@@ -1268,9 +1291,9 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       onMouseLeave={() => setDollarInfo1(false)}
                     >
                       Dollar value display <br />
-                      The dollar value displayed are fetched from 3rd party
-                      API. They may not be 100% accurate in some cases. For
-                      accuracy please check the Output units.
+                      The dollar value displayed are fetched from 3rd party API.
+                      They may not be 100% accurate in some cases. For accuracy
+                      please check the Output units.
                     </div>
                   )}
                 </div>
@@ -1285,26 +1308,47 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             </div>
 
             {/* Route Info - Integrated into widget flow */}
-            {selectedTokenA && selectedTokenB && amountOut && parseFloat(amountOut) > 0 && (
-              <div className="w-full mt-8 px-2">
-                <div className="bg-[#FFE6C0] border-2 border-[var(--primary-color)] p-3 rounded-xl shadow-sm md:w-[450px] mx-auto">
-                  <div className="font-orbitron text-[10px] md:text-sm text-black">
-                    <div className="flex justify-between gap-4 mb-1">
-                      <span className="font-bold">Rate:</span>
-                      <span className="rigamesh">1 {isRateReversed ? selectedTokenB.ticker : selectedTokenA.ticker} = {getRateDisplay()} {isRateReversed ? selectedTokenA.ticker : selectedTokenB.ticker}</span>
-                    </div>
-                    <div className="flex justify-between gap-4 mb-1">
-                      <span className="font-bold">Min Received:</span>
-                      <span className="rigamesh">{formatNumber(parseFloat(minToReceiveAfterFee).toFixed(6))} {selectedTokenB.ticker}</span>
-                    </div>
-                    <div className="flex justify-between gap-4">
-                      <span className="font-bold">Price Impact:</span>
-                      <span className={`rigamesh ${getPriceImpactColor(priceImpact)}`}>{priceImpact}%</span>
+            {selectedTokenA &&
+              selectedTokenB &&
+              amountOut &&
+              parseFloat(amountOut) > 0 && (
+                <div className="w-full mt-8 px-2">
+                  <div className="bg-[#FFE6C0] border-2 border-[#FF9900] p-3 rounded-xl shadow-sm md:w-[450px] mx-auto">
+                    <div className="font-orbitron text-[10px] md:text-sm text-black">
+                      <div className="flex justify-between gap-4 mb-1">
+                        <span className="font-bold">Rate:</span>
+                        <span className="rigamesh">
+                          1{" "}
+                          {isRateReversed
+                            ? selectedTokenB.ticker
+                            : selectedTokenA.ticker}{" "}
+                          = {getRateDisplay()}{" "}
+                          {isRateReversed
+                            ? selectedTokenA.ticker
+                            : selectedTokenB.ticker}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-4 mb-1">
+                        <span className="font-bold">Min Received:</span>
+                        <span className="rigamesh">
+                          {formatNumber(
+                            parseFloat(minToReceiveAfterFee).toFixed(6),
+                          )}{" "}
+                          {selectedTokenB.ticker}
+                        </span>
+                      </div>
+                      <div className="flex justify-between gap-4">
+                        <span className="font-bold">Price Impact:</span>
+                        <span
+                          className={`rigamesh ${getPriceImpactColor(priceImpact)}`}
+                        >
+                          {priceImpact}%
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
             <div
               className={`relative flex justify-center flex-row md:mt-16 mt-11 xl:pt-0 pt-0 top-0`}
             >
@@ -1316,19 +1360,20 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   }
                 }}
                 disabled={isInsufficientBalance()}
-                className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[var(--primary-color)] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${isInsufficientBalance()
-                  ? "opacity-50 cursor-not-allowed"
-                  : " "
-                  } font-orbitron lg:text-3xl text-base font-black`}
+                className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[#FF9900] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${
+                  isInsufficientBalance()
+                    ? "opacity-50 cursor-not-allowed"
+                    : " "
+                } font-orbitron lg:text-3xl text-base font-black`}
               >
-                <div className="group-hover:opacity-100 w-full absolute md:top-4 top-2 md:-left-5 -left-3 z-[-1] bg-transparent border-2 border-[var(--primary-color)] md:rounded-[10px] rounded-md md:h-[68px] h-11"></div>
+                <div className="group-hover:opacity-100 w-full absolute md:top-4 top-2 md:-left-5 -left-3 z-[-1] bg-transparent border-2 border-[#FF9900] md:rounded-[10px] rounded-md md:h-[68px] h-11"></div>
                 <span>{getButtonText()}</span>
               </button>
             </div>
           </div>
           {/* Ends */}
         </div>
-      </div >
+      </div>
 
       {isSlippageVisible && (
         <SlippageCalculator
@@ -1336,8 +1381,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           onSlippageCalculated={handleSlippageCalculated}
           onClose={() => setSlippageVisible(false)}
         />
-      )
-      }
+      )}
 
       <div aria-label="Modal Success">
         {swapSuccess && (
@@ -1360,7 +1404,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             amountOut={parseFloat(amountOut).toFixed(6)}
             tokenA={selectedTokenA}
             tokenB={selectedTokenB}
-            refresh={() => { }}
+            refresh={() => {}}
             confirm={confirmSwap}
             handleApprove={handleApprove}
             needsApproval={needsApproval}
@@ -1385,24 +1429,22 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           />
         )}
       </div>
-      {/* <iframe
-        src="https://empx-widget.netlify.app/?primaryColor=%233b82f6&background=%230f172a&integratorId=0x366b7ad069b00d2882bfbf40e341bb020d8c55bc20ac1de3ed7ceee0445cf079"
-        allow="clipboard-read; clipboard-write"
-        width="450"
-        height="900"
-      ></iframe> */}
-
+      
       <div className="w-full flex justify-center py-4 mt-4">
         <a
           href="https://empx.io"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-orbitron text-gray-500 hover:text-[var(--primary-color)] transition-colors opacity-70 hover:opacity-100"
+          className="text-xs font-orbitron text-gray-500 hover:text-[#FF9900] transition-colors opacity-70 hover:opacity-100"
         >
-          Powered by EMPX
+          Powered by 
+          <img
+            src={empLogo}
+            alt="Empx Logo"
+            className="inline-block ml-1 md:w-12 w-8 align-middle"
+          />
         </a>
       </div>
-      {/* <iframe src="https://switch.win/widget?network=pulsechain&background_color=000000&font_color=ffffff&secondary_font_color=7a7a7a&border_color=01e401&backdrop_color=f1f1f1&from=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&to=0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39" allow="clipboard-read; clipboard-write" width="100%" height="900px" /> */}
     </>
   );
 };

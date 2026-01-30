@@ -15,7 +15,7 @@
 //           ✕
 //         </button>
 //         {/* Title */}
-//         <h2 className="mb-8 text-center tracking-wide text-[var(--primary-color)] text-xl font-bold font-orbitron">
+//         <h2 className="mb-8 text-center tracking-wide text-[#FF9900] text-xl font-bold font-orbitron">
 //           Routing <br /> Split
 //         </h2>
 //         {/* Grid */}
@@ -41,11 +41,11 @@
 
 // function TideBox() {
 //   return (
-//     <div className="flex flex-col items-center justify-center rounded border border-[var(--primary-color)] bg-[var(--bg-color)] py-2 text-center">
-//       <span className="mb-1 md:text-xs text-[8px] font-semibold text-black py-1 bg-[var(--primary-color)] w-full">
+//     <div className="flex flex-col items-center justify-center rounded border border-[#FF9900] bg-[var(--bg-color)] py-2 text-center">
+//       <span className="mb-1 md:text-xs text-[8px] font-semibold text-black py-1 bg-[#FF9900] w-full">
 //         TIDE
 //       </span>
-//       <div className="md:text-[10px] text-[6px] font-bold text-[var(--primary-color)] md:px-4 px-1 md:pb-2 pb-1 pt-1 flex gap-1 items-center">
+//       <div className="md:text-[10px] text-[6px] font-bold text-[#FF9900] md:px-4 px-1 md:pb-2 pb-1 pt-1 flex gap-1 items-center">
 //         PLSX
 //         <svg
 //           className="mt-[-1px] md:w-[10px] w-[5px]"
@@ -57,7 +57,7 @@
 //         >
 //           <path
 //             d="M4.24268 2.48291L7.71843 5.95867L4.24268 9.43443"
-//             stroke="var(--primary-color)"
+//             stroke="#FF9900"
 //             strokeWidth="3.43231"
 //             strokeLinecap="round"
 //             strokeLinejoin="round"
@@ -71,7 +71,7 @@
 
 // function PercentBox({ value }) {
 //   return (
-//     <div className="flex flex-col items-center justify-center rounded border border-[var(--primary-color)] bg-[var(--bg-color)] md:px-2 px-1 py-1">
+//     <div className="flex flex-col items-center justify-center rounded border border-[#FF9900] bg-[var(--bg-color)] md:px-2 px-1 py-1">
 //       <div className="mb-1 md:h-7 md:w-7 w-5 h-5 rounded-full bg-[#363636] flex justify-center items-center">
 //         <svg
 //           width={20}
@@ -118,7 +118,7 @@
 //           />
 //         </svg>
 //       </div>
-//       <span className="md:text-[10.42px] text-[7px] font-medium text-[var(--primary-color)]">{value}</span>
+//       <span className="md:text-[10.42px] text-[7px] font-medium text-[#FF9900]">{value}</span>
 //     </div>
 //   );
 // }
@@ -416,11 +416,11 @@ function AdapterBox({
   const tokenOut = path[adapterIndex + 1] || path[path.length - 1];
 
   return (
-    <div className="flex flex-col items-center justify-center rounded border border-[var(--primary-color)] bg-[var(--bg-color)] md:py-2 py-1 md:h-[73px] text-center md:min-w-[100px] min-w-20">
-      <span className="mb-1 md:text-xs text-[8px] font-semibold text-black py-1 bg-[var(--primary-color)] w-full">
+    <div className="flex flex-col items-center justify-center rounded border border-[#FF9900] bg-[var(--bg-color)] md:py-2 py-1 md:h-[73px] text-center md:min-w-[100px] min-w-20">
+      <span className="mb-1 md:text-xs text-[8px] font-semibold text-black py-1 bg-[#FF9900] w-full">
         {adapterName}
       </span>
-      <div className="md:text-[10px] text-[6px] font-bold text-[var(--primary-color)] md:px-4 px-1 md:pb-2 pb-1 pt-1 flex gap-1 items-center">
+      <div className="md:text-[10px] text-[6px] font-bold text-[#FF9900] md:px-4 px-1 md:pb-2 pb-1 pt-1 flex gap-1 items-center">
         {getTokenSymbol(tokenIn)}
         <svg
           className="mt-[-1px] md:w-[10px] w-[5px]"
@@ -432,7 +432,7 @@ function AdapterBox({
         >
           <path
             d="M4.24268 2.48291L7.71843 5.95867L4.24268 9.43443"
-            stroke="var(--primary-color)"
+            stroke="#FF9900"
             strokeWidth="3.43231"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -446,7 +446,7 @@ function AdapterBox({
 
 function PercentBox({ value, tokenAddress, tokenSymbol, tokenImage, isStart }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded border border-[var(--primary-color)] bg-[var(--bg-color)] md:px-3 px-2 py-1 md:h-[73px] md:min-w-[65px] min-w-[50px]">
+    <div className="flex flex-col items-center justify-center rounded border border-[#FF9900] bg-[var(--bg-color)] md:px-3 px-2 py-1 md:h-[73px] md:min-w-[65px] min-w-[50px]">
       <div className="mb-1 flex justify-center items-center overflow-hidden">
         {tokenImage ? (
           <img
@@ -455,16 +455,16 @@ function PercentBox({ value, tokenAddress, tokenSymbol, tokenImage, isStart }) {
             className="w-6 h-6 object-cover"
           />
         ) : (
-          <div className="w-6 h-6 bg-[var(--primary-color)] flex justify-center items-center text-white text-xs"></div>
+          <div className="w-6 h-6 bg-[#FF9900] flex justify-center items-center text-white text-xs"></div>
         )}
       </div>
-      {/* <span className="md:text-sm text-xs font-medium text-[var(--primary-color)] mb-1">
+      {/* <span className="md:text-sm text-xs font-medium text-[#FF9900] mb-1">
         {isStart ? "Token In" : "Token Out"}
       </span> */}
       {/* <span className="md:text-xs text-[10px] font-bold text-white">
         {tokenSymbol}
       </span> */}
-      <span className="md:text-[10.42px] text-[7px] font-medium text-[var(--primary-color)]">
+      <span className="md:text-[10.42px] text-[7px] font-medium text-[#FF9900]">
         {value}
       </span>
     </div>
