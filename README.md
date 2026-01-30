@@ -8,7 +8,7 @@ Embed the widget using the following iframe code. You can adjust the `width` and
 
 ```html
 <iframe
-  src="https://empx-widget.netlify.app/?primaryColor=%23e49c01&background=%23000000&chain=pulsechain"
+  src="https://widget.empx.io/?primaryColor=%23e49c01&background=%23000000&chain=pulsechain"
   allow="clipboard-read; clipboard-write"
   width="450"
   height="900"
@@ -32,7 +32,7 @@ The widget behavior and appearance can be customized using URL search parameters
 ### Color Customization Example
 To match a "Blue & Navy" brand identity:
 ```
-https://empx-widget.netlify.app/?primaryColor=%233b82f6&background=%230f172a&theme=dark
+https://widget.empx.io/?primaryColor=%233b82f6&background=%230f172a
 ```
 *Note: Any hex color code should be URL-encoded (e.g., `#` becomes `%23`).*
 
@@ -77,7 +77,7 @@ To participate, you must pass your unique `integratorId` in the widget URL.
 
 ```html
 <iframe
-  src="https://empx-widget.netlify.app/?integratorId=0x366b7ad069b00d2882bfbf40e341bb020d8c55bc20ac1de3ed7ceee0445cf079"
+  src="https://widget.empx.io/?integratorId=0x366b7ad069b00d2882bfbf40e341bb020d8c55bc20ac1de3ed7ceee0445cf079"
 ></iframe>
 ```
 
