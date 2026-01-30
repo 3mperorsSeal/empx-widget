@@ -5,6 +5,7 @@ import Ar from "../../assets/images/reverse.svg";
 import Sellbox from "../../assets/images/sell-box.png";
 import Buybox from "../../assets/images/buy-bg.png";
 import Swapbutton from "../../assets/images/swap-button.svg";
+import empLogo from "../../assets/images/emp-main-logo.png";
 
 import Usdc from "../../assets/images/usdc.svg";
 import Info from "../../assets/images/info.svg";
@@ -1428,13 +1429,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           />
         )}
       </div>
-      {/* <iframe
-        src="https://empx-widget.netlify.app/?primaryColor=%233b82f6&background=%230f172a&integratorId=0x366b7ad069b00d2882bfbf40e341bb020d8c55bc20ac1de3ed7ceee0445cf079"
-        allow="clipboard-read; clipboard-write"
-        width="450"
-        height="900"
-      ></iframe> */}
-
+      
       <div className="w-full flex justify-center py-4 mt-4">
         <a
           href="https://empx.io"
@@ -1442,10 +1437,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           rel="noopener noreferrer"
           className="text-xs font-orbitron text-gray-500 hover:text-[#FF9900] transition-colors opacity-70 hover:opacity-100"
         >
-          Powered by EMPX
+          Powered by 
+          <img
+            src={empLogo}
+            alt="Empx Logo"
+            className="inline-block ml-1 md:w-12 w-8 align-middle"
+          />
         </a>
       </div>
-      {/* <iframe src="https://switch.win/widget?network=pulsechain&background_color=000000&font_color=ffffff&secondary_font_color=7a7a7a&border_color=01e401&backdrop_color=f1f1f1&from=0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee&to=0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39" allow="clipboard-read; clipboard-write" width="100%" height="900px" /> */}
     </>
   );
 };
