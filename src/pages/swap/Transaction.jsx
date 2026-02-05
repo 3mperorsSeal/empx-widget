@@ -11,7 +11,7 @@ const Transaction = ({ onClose, transactionHash }) => {
     <>
       <div className="bg-[var(--bg-color)] bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
         <div className="w-full flex justify-center my-auto items-center">
-          <div className="md:max-w-[390px] w-full bg-[var(--bg-color)] border border-white rounded-3xl relative py-6 px-6 mx-auto">
+          <div className="md:max-w-[390px] w-full bg-[var(--bg-color)] border border-[var(--primary)] rounded-3xl relative py-6 px-6 mx-auto">
             <svg
               onClick={onClose}
               className="absolute cursor-pointer right-8 top-9"

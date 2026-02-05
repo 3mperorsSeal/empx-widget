@@ -168,8 +168,8 @@ const Amount = ({
 
             {/* Price Alert */}
             {showPriceAlert && (
-              <div className="p-4 rounded-xl w-full mt-4 border-2 border-[#FF9900] bg-[#FF9900]/10">
-                <h3 className="text-lg font-bold roboto mb-3 text-[#FF9900]">
+              <div className="p-4 rounded-xl w-full mt-4 border-2 border-[var(--primary)] bg-[rgba(var(--primary-rgb),0.1)]">
+                <h3 className="text-lg font-bold roboto mb-3 text-[var(--primary)]">
                   Price Update
                 </h3>
                 <div className="mb-4">
@@ -192,7 +192,7 @@ const Amount = ({
                 </div>
                 <button
                   onClick={onAcceptNewQuote}
-                  className="w-full px-4 py-3 bg-[#FF9900] text-black rounded-xl hover:bg-opacity-80 transition-colors text-sm font-bold roboto uppercase"
+                  className="w-full px-4 py-3 bg-[var(--primary)] text-black rounded-xl hover:bg-opacity-80 transition-colors text-sm font-bold roboto uppercase"
                 >
                   Accept New Price
                 </button>
@@ -205,9 +205,9 @@ const Amount = ({
                 disabled={disabled || isLoading || showPriceAlert}
                 usdValueTokenA={usdValueTokenA}
                 usdValueTokenB={usdValueTokenB}
-                className="gtw relative w-full rounded-xl py-4 bg-[#FF9900] flex gap-4 items-center mt-6 justify-center border border-[#FF9900] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                className="gtw relative w-full rounded-xl py-4 bg-[var(--primary)] flex gap-4 items-center mt-6 justify-center border border-[var(--primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
-                <div className="w-full absolute md:top-2 top-2 md:-left-3 -left-3 z-[1] bg-transparent border-2 border-[#FF9900] rounded-xl h-[58px]"></div>
+                <div className="w-full absolute md:top-2 top-2 md:-left-3 -left-3 z-[1] bg-transparent border-2 border-[var(--primary)] rounded-xl h-[58px]"></div>
                 {isLoading ? (
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
