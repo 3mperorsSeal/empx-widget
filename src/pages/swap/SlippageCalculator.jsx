@@ -183,7 +183,7 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             <button
               key={index}
               onClick={() => handleSlippageSelect(option)}
-              className={`px-4 py-1.5 justify-center md:w-[100px] w-20 relative md:text-base text-sm border border-[#ff9900] rounded-xl ${slippage === option
+              className={`px-4 py-1.5 justify-center md:w-[100px] w-20 relative md:text-base text-sm border border-[var(--primary)] rounded-xl ${slippage === option
                   ? "bg- text-white"
                   : "bg-transparent text-white"
                 } ${error ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -199,7 +199,7 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             inputMode="decimal"
             value={customSlippage}
             onChange={handleCustomSlippageChange}
-            className={`md:w-[120px] w-20 md:h-9 h-9 text-center font-bold text-sm text-white focus:outline-none bg-[#382B19] border border-[#ff9900] rounded-xl
+            className={`md:w-[120px] w-20 md:h-9 h-9 text-center font-bold text-sm text-white focus:outline-none bg-[#382B19] border border-[var(--primary)] rounded-xl
       ${error ? "opacity-50 cursor-not-allowed" : ""}`}
             // style={{
             //   background: "#382B19",
@@ -217,20 +217,20 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             className={`gtw relative w-full md:h-16 rounded-xl h-12 flex items-center justify-center font-roboto font-black md:text-2xl text-xl transition-all font-orbitron
     ${error ? "opacity-100 cursor-not-allowed" : ""}`}
             style={{
-              background: "#FF9900",
-              border: "2px solid #FF9900",
+              background: "var(--primary)",
+              border: "2px solid var(--primary)",
               // clipPath:
               //   "polygon(0 0, 95% 0, 100% 30%, 100% 100%, 6% 100%, 0 60%)",
             }}
             disabled={!!error}
           >
-            <div className="w-full absolute md:top-4 top-1 md:-left-4 -left-3 z-[1] bg-transparent border-2 border-[#FF9900] rounded-xl md:h-[58px] h-[50px]"></div>
+            <div className="w-full absolute md:top-4 top-1 md:-left-4 -left-3 z-[1] bg-transparent border-2 border-[var(--primary)] rounded-xl md:h-[58px] h-[50px]"></div>
             Reset Slippage
           </button>
 
           <button
             onClick={handleModalClose}
-            className="px-4 py-1 mt-5 bg-[var(--bg-color)] font-semibold md:text-2xl text-xl text-[#FF9900] rounded font-orbitron"
+            className="px-4 py-1 mt-5 bg-[var(--bg-color)] font-semibold md:text-2xl text-xl text-[var(--primary)] rounded font-orbitron"
           >
             Close
           </button>

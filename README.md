@@ -24,7 +24,7 @@ The widget behavior and appearance can be customized using URL search parameters
 
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `chain` | `string` | `pulsechain` | The initial blockchain network to load. Supported: `pulsechain`. |
+| `chain` | `string` | `pulsechain` | The initial blockchain network to load. Currently `pulsechain`, with more chains planned. |
 | `background` | `hex` | `#000000` | The main background color (hex code). |
 | `primaryColor` | `hex` | `#e49c01ff` | The primary accent color for buttons and highlights (hex code). |
 | `integratorId` | `string` | `null` | Your unique Integrator ID (bytes32 hex). If provided, enables fee sharing. |
@@ -38,7 +38,19 @@ https://widget.empx.io/?primaryColor=%233b82f6&background=%230f172a
 
 ---
 
-## 3. Integrator Program
+## 3. Widget Builder (UI Configurator)
+
+You can generate a custom embed URL and iframe snippet using the builder UI:
+
+```
+https://widget.empx.io/builder
+```
+
+The builder does not change widget behavior at runtime; it simply helps compose URL parameters and previews them.
+
+---
+
+## 4. Integrator Program
 
 The EmpX Integrator Program allows partners to earn per transaction revenue by hosting the swap widget.
 

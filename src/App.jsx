@@ -10,6 +10,7 @@ import Emp from "./pages/swap/Emp";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useWidgetConfig } from "./widget/useWidgetConfig";
+import WidgetBuilder from "./pages/WidgetBuilder";
 
 // ChainSwitcher logic
 const ChainSwitcher = ({ children }) => {
@@ -57,11 +58,33 @@ const WidgetLayout = () => {
     setTokenB(tB);
   };
 
+  const parseHexToRgb = (value) => {
+    if (!value) {
+      return null;
+    }
+    const normalized = value.trim().replace('#', '');
+    if (normalized.length < 6) {
+      return null;
+    }
+    const hex = normalized.slice(0, 6);
+    if (!/^[0-9a-fA-F]{6}$/.test(hex)) {
+      return null;
+    }
+    const r = Number.parseInt(hex.slice(0, 2), 16);
+    const g = Number.parseInt(hex.slice(2, 4), 16);
+    const b = Number.parseInt(hex.slice(4, 6), 16);
+    return `${r}, ${g}, ${b}`;
+  };
+
+  const primaryRgb = parseHexToRgb(config.primaryColor) || '255, 153, 0';
+
   const widgetStyle = {
     '--primary-color': config.primaryColor,
+    '--primary': config.primaryColor,
+    '--primary-rgb': primaryRgb,
     '--bg-color': config.background,
     backgroundColor: 'var(--bg-color)',
-    color: config.theme === 'light' ? '#000000' : '#ffffff',
+    color: '#ffffff',
   };
 
   return (
@@ -79,6 +102,12 @@ const WidgetLayout = () => {
 };
 
 function App() {
+  const isBuilderRoute = window.location.pathname.startsWith('/builder');
+
+  if (isBuilderRoute) {
+    return <WidgetBuilder />;
+  }
+
   return (
     <WagmiProviderWrapper appType="swap">
       <Provider store={store}>

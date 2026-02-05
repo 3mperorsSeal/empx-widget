@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from "react";
 import Logo from "../../assets/images/swap-emp.png";
 import Sett from "../../assets/images/setting.svg";
-import Ar from "../../assets/images/reverse.svg";
 import Sellbox from "../../assets/images/sell-box.png";
 import Buybox from "../../assets/images/buy-bg.png";
 import Swapbutton from "../../assets/images/swap-button.svg";
@@ -855,10 +854,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const priceImpact =
     usdValueTokenA > 0
       ? (
-          ((parseFloat(usdValueTokenB) - parseFloat(usdValueTokenA)) /
-            parseFloat(usdValueTokenA)) *
-          100
-        ).toFixed(2)
+        ((parseFloat(usdValueTokenB) - parseFloat(usdValueTokenA)) /
+          parseFloat(usdValueTokenA)) *
+        100
+      ).toFixed(2)
       : 0;
   // Determine color based on value
   const getPriceImpactColor = (impact) => {
@@ -943,15 +942,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         ? "Loading.."
                         : selectedTokenA.address === EMPTY_ADDRESS
                           ? `${formatNumber(formattedBalance)}`
-                          : `${
-                              tokenBalance
-                                ? formatNumber(
-                                    parseFloat(tokenBalance.formatted).toFixed(
-                                      6,
-                                    ),
-                                  )
-                                : "0.00"
-                            }`}
+                          : `${tokenBalance
+                            ? formatNumber(
+                              parseFloat(tokenBalance.formatted).toFixed(
+                                6,
+                              ),
+                            )
+                            : "0.00"
+                          }`}
                   </span>
                 </div>
               </div>
@@ -997,7 +995,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                             className="rounded-md transition-colorss"
                           >
                             {copySuccess &&
-                            activeTokenAddress === selectedTokenA.address ? (
+                              activeTokenAddress === selectedTokenA.address ? (
                               <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
                             ) : (
                               <Copy className="md:w-4 md:h-4 w-3 h-3 text-white hover:text-white" />
@@ -1017,11 +1015,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         key={value}
                         type="button"
                         className={`py-1 border bg-[var(--bg-color)] text-white flex justify-center items-center rounded-[10px] md:text-[12px] text-[7px] font-extrabold font-orbitron md:w-[70px] w-11 px-2
-            ${
-              selectedPercentage === value
-                ? "!text-black !bg-[#FFE6C0] border-[#FFE6C0]"
-                : "bg-[#FFE7C3] text-[#040404] border-black hover:border-black hover:bg-[#FF9900] hover:text-black"
-            }`}
+            ${selectedPercentage === value
+                            ? "!text-black !bg-[#FFE6C0] border-[#FFE6C0]"
+                            : "bg-[#FFE7C3] text-[#040404] border-black hover:border-black hover:bg-[#FF9900] hover:text-black"
+                          }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
                       >
@@ -1097,7 +1094,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
               </div>
             </div>
             <div
-              className="cursor-pointer mx-auto my-4 md:pt-7 relative md:top-[-16px] top-[-10px] pt-[20px] md:w-[70px] w-12"
+              className="cursor-pointer mx-auto my-4 md:pt-7 relative md:top-[-16px] top-[-10px] pt-[20px] md:w-[50px] w-[50px]"
               onClick={() => {
                 const _tokenA = selectedTokenA;
                 const _tokenB = selectedTokenB;
@@ -1108,11 +1105,29 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                 setDebouncedAmountIn("0");
               }}
             >
-              <img
-                src={Ar}
-                alt="Ar"
+              <svg
+                width="50"
+                height="50"
+                viewBox="0 0 70 70"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
                 className="hoverswap transition-all rounded-xl"
-              />
+                aria-label="Swap tokens"
+              >
+                <rect width="70" height="70" rx="12" fill="var(--primary)" />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M48.737 36.0911C49.3094 36.5901 49.3689 37.4588 48.8699 38.0311L39.5366 48.7371C39.1599 49.1692 38.5544 49.3221 38.0177 49.121C37.4808 48.9198 37.1252 48.4067 37.1252 47.8334L37.1252 22.1667C37.1252 21.4074 37.7408 20.7917 38.5002 20.7917C39.2595 20.7917 39.8751 21.4074 39.8751 22.1667L39.8751 44.1638L46.797 36.224C47.2961 35.6516 48.1646 35.5921 48.737 36.0911Z"
+                  fill="#000000"
+                />
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M21.2632 33.9089C20.6907 33.4099 20.6313 32.5412 21.1303 31.9689L30.4636 21.263C30.8404 20.8309 31.4457 20.6778 31.9825 20.879C32.5193 21.0802 32.875 21.5933 32.875 22.1666L32.875 47.8332C32.875 48.5926 32.2594 49.2082 31.5 49.2082C30.7406 49.2082 30.125 48.5926 30.125 47.8332L30.125 25.8362L23.2031 33.776C22.704 34.3483 21.8356 34.4079 21.2632 33.9089Z"
+                  fill="#000000"
+                />
+              </svg>
             </div>
             <div className="relative bg_swap_box_black">
               {/* <img className="bg-sell w-full" src={Buybox} alt="Buybox" /> */}
@@ -1133,15 +1148,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         ? "Loading.."
                         : selectedTokenB.address === EMPTY_ADDRESS
                           ? `${formatNumber(formattedChainBalanceTokenB)}`
-                          : `${
-                              tokenBBalance
-                                ? formatNumber(
-                                    parseFloat(tokenBBalance.formatted).toFixed(
-                                      6,
-                                    ),
-                                  )
-                                : "0.00"
-                            }`}
+                          : `${tokenBBalance
+                            ? formatNumber(
+                              parseFloat(tokenBBalance.formatted).toFixed(
+                                6,
+                              ),
+                            )
+                            : "0.00"
+                          }`}
                   </span>
                 </div>
               </div>
@@ -1186,7 +1200,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                             className="rounded-md transition-colors"
                           >
                             {copySuccess &&
-                            activeTokenAddress === selectedTokenB.address ? (
+                              activeTokenAddress === selectedTokenB.address ? (
                               <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
                             ) : (
                               <Copy className="md:w-4 md:h-4 w-3 h-3 text-black hover:text-black" />
@@ -1206,11 +1220,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         key={value}
                         type="button"
                         className={`py-1 border border-[#FF9900] flex justify-center items-center rounded-xl md:text-[12px] text-[7px] md:w-[70px] w-11 font-extrabold font-orbitron px-2
-            ${
-              selectedPercentage === value
-                ? " text-white bg-[var(--bg-color)]"
-                : "bg-[#FF9900] text-[#040404] hover:border-[#FF9900] hover:bg-transparent hover:text-[#FF9900]"
-            }`}
+            ${selectedPercentage === value
+                            ? " text-white bg-[var(--bg-color)]"
+                            : "bg-[#FF9900] text-[#040404] hover:border-[#FF9900] hover:bg-transparent hover:text-[#FF9900]"
+                          }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
                       >
@@ -1360,11 +1373,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   }
                 }}
                 disabled={isInsufficientBalance()}
-                className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[#FF9900] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${
-                  isInsufficientBalance()
+                className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[#FF9900] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${isInsufficientBalance()
                     ? "opacity-50 cursor-not-allowed"
                     : " "
-                } font-orbitron lg:text-3xl text-base font-black`}
+                  } font-orbitron lg:text-3xl text-base font-black`}
               >
                 <div className="group-hover:opacity-100 w-full absolute md:top-4 top-2 md:-left-5 -left-3 z-[-1] bg-transparent border-2 border-[#FF9900] md:rounded-[10px] rounded-md md:h-[68px] h-11"></div>
                 <span>{getButtonText()}</span>
@@ -1404,7 +1416,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             amountOut={parseFloat(amountOut).toFixed(6)}
             tokenA={selectedTokenA}
             tokenB={selectedTokenB}
-            refresh={() => {}}
+            refresh={() => { }}
             confirm={confirmSwap}
             handleApprove={handleApprove}
             needsApproval={needsApproval}
@@ -1429,7 +1441,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           />
         )}
       </div>
-      
+
       <div className="w-full flex justify-center py-4 mt-4">
         <a
           href="https://empx.io"
@@ -1437,7 +1449,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           rel="noopener noreferrer"
           className="text-xs font-orbitron text-gray-500 hover:text-[#FF9900] transition-colors opacity-70 hover:opacity-100"
         >
-          Powered by 
+          Powered by
           <img
             src={empLogo}
             alt="Empx Logo"
