@@ -97,6 +97,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const [localBestRoute, setLocalBestRoute] = useState(null);
 
   const [isQuoting, setIsQuoting] = useState(false);
+  const [isFindingBetterRoute, setIsFindingBetterRoute] = useState(false);
   const [protocolFee, setProtocolFee] = useState(28); // Default 0.28%
   const publicClient = usePublicClient();
   const [needsApproval, setNeedsApproval] = useState(false);
@@ -156,17 +157,23 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   }, [publicClient, routerAddress, adapters]);
 
   // Handle Widget Config Configuration
-  // Handle Token Selection
+  // Handle Token Selection - supports URL params for default tokens
   useEffect(() => {
     if (tokenList && tokenList.length > 0) {
       if (!selectedTokenA) {
-        setSelectedTokenA(tokenList[0]);
+        const fromConfig = config.defaultTokenIn
+          ? tokenList.find(t => t.address.toLowerCase() === config.defaultTokenIn.toLowerCase())
+          : null;
+        setSelectedTokenA(fromConfig || tokenList[0]);
       }
       if (!selectedTokenB) {
-        setSelectedTokenB(tokenList[1]);
+        const toConfig = config.defaultTokenOut
+          ? tokenList.find(t => t.address.toLowerCase() === config.defaultTokenOut.toLowerCase())
+          : null;
+        setSelectedTokenB(toConfig || tokenList[1]);
       }
     }
-  }, [tokenList]);
+  }, [tokenList, config.defaultTokenIn, config.defaultTokenOut]);
 
   // Dynamic Fee Update
   useEffect(() => {
@@ -217,58 +224,80 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         setAmountOut("0");
         updateRoute(null);
         setRoute([]);
+        setIsFindingBetterRoute(false);
         return;
       }
       setIsQuoting(true);
       setAmountOut("0");
+      setIsFindingBetterRoute(true);
 
       try {
-        const quoteResult = await smartRouter.getBestQuoteFromUser(
+        // Progressive quote callback - updates UI immediately with fast quote
+        const onQuoteUpdate = (quoteResult, isFinal) => {
+          // Check if this request is still the latest
+          if (currentRequestId !== quoteRequestIdRef.current) return;
+
+          if (!quoteResult) {
+            if (isFinal) {
+              setIsQuoting(false);
+              setIsFindingBetterRoute(false);
+            }
+            return;
+          }
+
+          const route = quoteResult.route;
+          lastCompletedIdRef.current = currentRequestId;
+          updateRoute(route);
+
+          // Handle route response
+          if (route) {
+            let path = [];
+            if (route.type === "CONVERGE") {
+              path = [
+                route.payload.tokenIn,
+                route.payload.intermediate,
+                route.payload.tokenOut,
+              ];
+            } else if (
+              (route.type === "SPLIT" || route.type === "NOSPLIT") &&
+              route.payload.length > 0
+            ) {
+              path = route.payload[0].path;
+            } else if (route.type === "WRAP" || route.type === "UNWRAP") {
+              path = [route.payload.tokenIn, route.payload.tokenOut];
+            }
+            setRoute(path);
+            setAmountOut(quoteResult.amountOutFormatted);
+          } else {
+            setAmountOut("0");
+            setRoute([]);
+          }
+
+          // Update loading states
+          if (isFinal) {
+            setIsQuoting(false);
+            setIsFindingBetterRoute(false);
+          } else {
+            // Fast quote received, but still searching for better routes
+            setIsQuoting(false);
+          }
+        };
+
+        await smartRouter.getBestQuoteFromUserProgressive(
           debouncedAmountIn,
           selectedTokenA.address,
           selectedTokenB.address,
           protocolFee,
+          onQuoteUpdate,
         );
-
-        const route = quoteResult.route;
-
-        // If this request is outdated, ignore the result
-        // Mark this request as the latest completed
-        lastCompletedIdRef.current = currentRequestId;
-
-        updateRoute(route); // Use updateRoute instead of setBestRoute
-
-        // Handle route response
-        if (route) {
-          let path = [];
-          if (route.type === "CONVERGE") {
-            path = [
-              route.payload.tokenIn,
-              route.payload.intermediate,
-              route.payload.tokenOut,
-            ];
-          } else if (
-            (route.type === "SPLIT" || route.type === "NOSPLIT") &&
-            route.payload.length > 0
-          ) {
-            // NOSPLIT is returned by Multi-hop, Chained Intermediate, Converge Multi-hop strategies
-            path = route.payload[0].path;
-          } else if (route.type === "WRAP" || route.type === "UNWRAP") {
-            path = [route.payload.tokenIn, route.payload.tokenOut];
-          }
-          setRoute(path);
-          setAmountOut(quoteResult.amountOutFormatted);
-        } else {
-          setAmountOut("0");
-          setRoute([]);
-        }
       } catch (error) {
         console.error("[Emp] Quote error:", error);
         setAmountOut("0");
         setRoute([]);
         updateRoute(null);
+        setIsQuoting(false);
+        setIsFindingBetterRoute(false);
       }
-      setIsQuoting(false);
     };
 
     getQuote();
@@ -1263,26 +1292,33 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                     );
 
                     return (
-                      <>
-                        {isQuoting ? (
-                          <span className="text-white animate-pulse text-right w-full flex justify-end">
-                            Calculating...
-                          </span>
-                        ) : (
-                          <input
-                            type="text"
-                            placeholder="0.00"
-                            value={formattedValue}
-                            onChange={handleOutputChange}
-                            readOnly
-                            className="text-[#fff] text-sh py-2 text-end w-full leading-7 outline-none border-none bg-transparent token_input rigamesh placeholder-white transition-all duration-200 ease-in-out"
-                            style={{
-                              fontSize: `${dynamicFontSize}px`,
-                            }}
-                          />
-                        )}
-                      </>
-                    );
+                        <>
+                          {isQuoting ? (
+                            <span className="text-white animate-pulse text-right w-full flex justify-end">
+                              Calculating...
+                            </span>
+                          ) : (
+                            <div className="flex flex-col items-end w-full">
+                              <input
+                                type="text"
+                                placeholder="0.00"
+                                value={formattedValue}
+                                onChange={handleOutputChange}
+                                readOnly
+                                className="text-[#fff] text-sh py-2 text-end w-full leading-7 outline-none border-none bg-transparent token_input rigamesh placeholder-white transition-all duration-200 ease-in-out"
+                                style={{
+                                  fontSize: `${dynamicFontSize}px`,
+                                }}
+                              />
+                              {isFindingBetterRoute && (
+                                <span className="text-yellow-400 text-xs animate-pulse mt-[-4px]">
+                                  Finding better routes...
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </>
+                      );
                   })()}
                 </div>
               </div>
@@ -1374,8 +1410,8 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                 }}
                 disabled={isInsufficientBalance()}
                 className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[#FF9900] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${isInsufficientBalance()
-                    ? "opacity-50 cursor-not-allowed"
-                    : " "
+                  ? "opacity-50 cursor-not-allowed"
+                  : " "
                   } font-orbitron lg:text-3xl text-base font-black`}
               >
                 <div className="group-hover:opacity-100 w-full absolute md:top-4 top-2 md:-left-5 -left-3 z-[-1] bg-transparent border-2 border-[#FF9900] md:rounded-[10px] rounded-md md:h-[68px] h-11"></div>

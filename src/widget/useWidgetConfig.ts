@@ -12,11 +12,9 @@ export const parseWidgetConfig = (params: URLSearchParams) => ({
   background: params.get('background') || DEFAULT_WIDGET_CONFIG.background,
   primaryColor: params.get('primaryColor') || DEFAULT_WIDGET_CONFIG.primaryColor,
 
-  // Token selection (disabled)
-  // defaultTokenIn: params.get('from'),
-  // defaultTokenOut: params.get('to'),
-  // lockTokenIn: params.get('lockFrom') === 'true',
-  // lockTokenOut: params.get('lockTo') === 'true',
+  // Token selection
+  defaultTokenIn: params.get('from'),
+  defaultTokenOut: params.get('to'),
 
   // Fee (disabled - using internal protocol fees)
   // feePercent: Number(params.get('feePercent') || '0'),
