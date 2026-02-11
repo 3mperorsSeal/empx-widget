@@ -202,26 +202,22 @@ const Amount = ({
             <div className="bridge-button">
               <button
                 onClick={needsApproval ? handleApprove : handleClick}
-                disabled={disabled || isLoading || showPriceAlert}
+                disabled={disabled || isLoading || showPriceAlert || swapStatus === "APPROVING"}
                 usdValueTokenA={usdValueTokenA}
                 usdValueTokenB={usdValueTokenB}
                 className="gtw relative w-full rounded-xl py-4 bg-[var(--primary)] flex gap-4 items-center mt-6 justify-center border border-[var(--primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 <div className="w-full absolute md:top-2 top-2 md:-left-3 -left-3 z-[1] bg-transparent border-2 border-[var(--primary)] rounded-xl h-[58px]"></div>
-                {isLoading ? (
+                {isLoading || swapStatus === "APPROVING" ? (
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     <span className="md:text-xl text-base font-black font-orbitron">
-                      Processing...
+                      {swapStatus === "APPROVING" ? "Approving..." : "Processing..."}
                     </span>
                   </div>
                 ) : (
                   <div className="md:text-xl text-base font-black text-center leading-normal uppercase font-orbitron">
-                    {needsApproval
-                      ? swapStatus === "APPROVING"
-                        ? "Approving..."
-                        : "Approve"
-                      : "Swap"}
+                    {needsApproval ? "Approve" : "Swap"}
                   </div>
                 )}
               </button>
