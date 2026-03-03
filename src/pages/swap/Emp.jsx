@@ -1,10 +1,8 @@
 import { useEffect, useState, useMemo, useRef } from "react";
-import Logo from "../../assets/images/swap-emp.png";
+// import Logo from "../../assets/images/swap-emp.png";
 import Sett from "../../assets/images/setting.svg";
-import Sellbox from "../../assets/images/sell-box.png";
-import Buybox from "../../assets/images/buy-bg.png";
-import Swapbutton from "../../assets/images/swap-button.svg";
 import empLogo from "../../assets/images/emp-main-logo.png";
+import Logo from "../../assets/images/empx-new.svg";
 
 import Usdc from "../../assets/images/usdc.svg";
 import Info from "../../assets/images/info.svg";
@@ -24,7 +22,7 @@ import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
 import { useStore } from "../../redux/store/routeStore";
 import Transaction from "./Transaction";
-import { Copy, Check, InfoIcon } from "lucide-react";
+import { Copy, Check, InfoIcon, ArrowDownUp } from "lucide-react";
 import { useChainConfig } from "../../hooks/useChainConfig";
 import { SmartRouter } from "../../utils/services/SmartRouter";
 import {
@@ -162,13 +160,20 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
     if (tokenList && tokenList.length > 0) {
       if (!selectedTokenA) {
         const fromConfig = config.defaultTokenIn
-          ? tokenList.find(t => t.address.toLowerCase() === config.defaultTokenIn.toLowerCase())
+          ? tokenList.find(
+              (t) =>
+                t.address.toLowerCase() === config.defaultTokenIn.toLowerCase(),
+            )
           : null;
         setSelectedTokenA(fromConfig || tokenList[0]);
       }
       if (!selectedTokenB) {
         const toConfig = config.defaultTokenOut
-          ? tokenList.find(t => t.address.toLowerCase() === config.defaultTokenOut.toLowerCase())
+          ? tokenList.find(
+              (t) =>
+                t.address.toLowerCase() ===
+                config.defaultTokenOut.toLowerCase(),
+            )
           : null;
         setSelectedTokenB(toConfig || tokenList[1]);
       }
@@ -883,10 +888,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const priceImpact =
     usdValueTokenA > 0
       ? (
-        ((parseFloat(usdValueTokenB) - parseFloat(usdValueTokenA)) /
-          parseFloat(usdValueTokenA)) *
-        100
-      ).toFixed(2)
+          ((parseFloat(usdValueTokenB) - parseFloat(usdValueTokenA)) /
+            parseFloat(usdValueTokenA)) *
+          100
+        ).toFixed(2)
       : 0;
   // Determine color based on value
   const getPriceImpactColor = (impact) => {
@@ -900,154 +905,240 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const [dollarinfo, setDollarInfo] = useState(false);
   const [dollarinfo1, setDollarInfo1] = useState(false);
 
+  const [selectedPercentageBuy, setSelectedPercentageBuy] = useState("");
+  const handlePercentageChangeBuy = (percentage) => {
+    const parsedPercentage = percentage === "" ? "" : parseInt(percentage);
+    setSelectedPercentageBuy(parsedPercentage);
+
+    // Calculate based on tokenB balance
+    let balance;
+    if (selectedTokenB.address === EMPTY_ADDRESS) {
+      balance = parseFloat(formattedBalance || 0);
+    } else {
+      balance = parseFloat(tokenBBalance?.formatted || 0);
+    }
+
+    const calculatedAmount = balance * (parsedPercentage / 100);
+    setAmountOut(calculatedAmount.toFixed(6));
+  };
+  useEffect(() => {
+    setSelectedPercentageBuy("");
+    setAmountIn("");
+    setAmountOut("0");
+  }, [selectedTokenB]);
+  // In your Emp component, add loading state
+  const [isRoutingLoading, setIsRoutingLoading] = useState(false);
+
+  // Update this when you're fetching quotes
+  useEffect(() => {
+    if (isQuoting) {
+      setIsRoutingLoading(true);
+    } else {
+      // Add a small delay to show loading state smoothly
+      const timer = setTimeout(() => {
+        setIsRoutingLoading(false);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isQuoting]);
+
+  const getFontSizeClass = (text = "") => {
+    const length = text.toString().length;
+
+    if (length >= 6) return "text-xs md:text-xs";
+    return "text-xs md:text-xs";
+  };
+
   return (
     <>
       <div
-        className={`w-full rounded-xl xl:pb-10 lg:pt-1 pt-5 2xl:px-8 lg:px-8 md:px-6 px-1 md:mt-0 mt-4 relative 2xl:pb-20 xl:pb-10 lg:pb-0 pb-20`}
+        className={`w-full rounded-xl xl:pb-10 lg:pt-1 pt-5 2xl:px-8 lg:px-8 md:px-6 px-1 md:mt-0 mt-4 relative 2xl:pb-20 lg:pb-0 pb-20`}
       >
         {/* scales8 top70 */}
-        <div className={`scales8`}>
+        <div className={`w-full`}>
           {/* Header: Chain Switcher & Wallet */}
-          <div className="md:max-w-[700px] w-full mx-auto flex justify-between items-center mb-4 px-1">
+          <div className="container w-full mx-auto flex justify-between items-center mb-4 px-1">
             {/* Left side: could be a logo or chain selector if WalletConnect doesn't handle it fully */}
-            <div className="flex items-center gap-2">
-              {/* Chain Switcher is handled inside WalletConnect usually, but we might want to expose it better if needed. 
-                      For now, WalletConnect component handles both Chain and Connect/Disconnect. 
-                      We will rely on WalletConnect to render the buttons. 
-                  */}
-            </div>
+            <a href="https://www.empx.io/dapp">
+              <img
+                src={Logo}
+                alt="Logo"
+                className="mx-aut 2xl:w-[145px] md:w-[130px] w-[110px] md:ml-0 ml-2"
+              />
+            </a>
 
             {/* Right side: Wallet Connect/Disconnect */}
-            <div className="flex gap-2">
+            <div className="flex gap-2 wallet-bg-bridge">
               <WalletConnect />
             </div>
           </div>
-
-          <div className="md:max-w-[1100px] mx-auto w-full flex flex-col justify-center items-center md:flex-nowrap flex-wrap mobile-hidden lg:mt-1 mt-6 px-3 pb-4">
-            {/* Title removed or kept small? User didn't ask to remove it but "exact type of widget" usually implies minimal title. 
-                   Keeping it for now but maybe making it smaller or removing if it looks cluttered. 
-               */}
-            {/* <h1 className="md:text-5xl text-2xl text-center text-[#FF9900] font-orbitron font-bold md:mb-2">
-              <>
-                Optimized <span className="text-white">Aggregation</span>
-              </>
-            </h1> */}
-          </div>
-          <div className="lg:max-w-[700px] md:max-w-[600px] mx-auto w-full flex gap-3 items-center md:justify-start justify-start md:flex-nowrap flex- my-6 lg:px-1 px-0">
-            <div className="border-[#FF9900] text-black bg-[#FF9900] cursor-pointer hoverswap transition-all leading-none md:w-[100px] w-[52px] md:h-[47px] h-7 flex justify-center items-center md:rounded-lg rounded-md border md:text-sm text-[7px] font-bold font-orbitron">
-              SWAP
-            </div>
-            <div
-              onClick={() => setSlippageVisible(true)}
-              className="shrink-0 md:w-[47px] md:h-[47px] w-7 h-7 border border-white rounded-lg flex justify-center items-center hoverswap transition-all cursor-pointer group"
-            >
-              <img
-                src={Sett}
-                alt="Sett"
-                className="md:w-[26px] w-[14px] group-hover:animate-[spin_3s_linear_infinite]"
-              />
-            </div>
-          </div>
-          {/* Swap */}
-          <div className="lg:max-w-[700px] md:max-w-[600px] mx-auto w-full">
-            <div className="relative bg_swap_box">
-              {/* <img className="bg-sell w-full" src={Sellbox} alt="sellbox" /> */}
-              <div className="flex justify-between gap-3 items-center">
-                <div className="font-orbitron text-dark-400 md:text-2xl text-xs font-semibold leading-normal text-black">
-                  You Sell
-                </div>
-                <div className="text-center absolute -top-8 md:right-0 right-5 gap-3 2xl:px-6 lg:px-4 lg:py-3 rounded-lg mt-2 text-black border border-white bg-[#FFE6C0] md:text-sm text-[10px] px-2 py-2">
-                  <span className="font-extrabold font-orbitron leading-normal">
-                    BAL
-                  </span>
-                  <span className="font-bold font-orbitron leading-normal">
-                    {" "}
-                    :{" "}
-                  </span>
-                  <span className="rigamesh leading-normal">
-                    {!selectedTokenA
-                      ? "0.00"
-                      : isLoading
-                        ? "Loading.."
-                        : selectedTokenA.address === EMPTY_ADDRESS
-                          ? `${formatNumber(formattedBalance)}`
-                          : `${tokenBalance
-                            ? formatNumber(
-                              parseFloat(tokenBalance.formatted).toFixed(
-                                6,
-                              ),
-                            )
-                            : "0.00"
-                          }`}
-                  </span>
-                </div>
+          <div className="scales8">
+            <div className="lg:max-w-[600px] md:max-w-[600px] mx-auto w-full flex gap-3 items-center md:justify-start justify-start md:flex-nowrap flex- mt-2 mb-3 lg:px-1 px-0">
+              <div
+                onClick={() => setSlippageVisible(true)}
+                className="ml-auto shrink-0 bg-[var(--bg-color)] md:px-6 px-3 md:py-2 py-2 border-2 border-[var(--primary)] rounded-lg flex justify-center items-center hoverswap transition-all cursor-pointer group"
+              >
+                <p className="text-[var(--primary-color)] md:text-[10px] text-[10px] font-extrabold font-orbitron">
+                  SETTINGS
+                </p>
               </div>
-              <div className="flex w-full mt-2">
-                <div className="md:w-[25%] w-[40%]">
-                  <div className="flex justify-between gap-4 items-center cursor-pointer">
-                    <div className="flex gap-2 items-center md:mt-5 mt-6">
-                      {/* md:w-[220px] w-[160px] */}
-                      <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] md:border-2 border border-white md:rounded-xl rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 margin_left lg:w-[280px] md:w-[220px] w-[125px] justify-center">
-                        <div
-                          onClick={() => {
-                            setIsSelectingTokenA(true);
-                            setTokenVisible(true);
-                            setSelectedPercentage("");
-                            setAmountIn("");
-                          }}
-                          className="flex items-center md:gap-4 gap-1"
-                        >
-                          {selectedTokenA ? (
-                            <>
-                              <img
-                                className="md:w-9 md:h-9 w-4 h-4"
-                                src={
-                                  selectedTokenA.image || selectedTokenA.logoURI
-                                }
-                                alt={selectedTokenA.name}
-                              />
-                              <div className="text-[#FF9900] lg:text-3xl text-sm font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
-                                {selectedTokenA.ticker || selectedTokenA.symbol}
-                              </div>
-                            </>
-                          ) : (
-                            <span className="text-[#FF9900] font-bold font-orbitron md:text-3xl text-sm">
-                              Select token
-                            </span>
+            </div>
+            {/* Swap */}
+            <div className="lg:max-w-[600px] md:max-w-[600px] mx-auto w-full">
+              <div className="relative bg_swap_box bg-[var(--bg-color)]">
+                <div className="flex justify-between gap-3 items-center">
+                  <div className="font-orbitron md:text-[15px] text-xs font-extrabold leading-normal text-[var(--primary-color)]">
+                    You Sell
+                  </div>
+                  <div className="md:text-xs text-[10px] font-orbitron">
+                    <span className="font-normal leading-normal text-[var(--primary-color)]">
+                      BAL
+                    </span>
+                    <span className="font-normal leading-normal text-[var(--primary-color)]">
+                      {" "}
+                      :{" "}
+                    </span>
+                    <span className="text-white leading-normal">
+                      {!selectedTokenA
+                        ? "0.00"
+                        : isLoading
+                          ? "Loading.."
+                          : selectedTokenA.address === EMPTY_ADDRESS
+                            ? `${formatNumber(formattedBalance)}`
+                            : `${
+                                tokenBalance
+                                  ? formatNumber(
+                                      parseFloat(
+                                        tokenBalance.formatted,
+                                      ).toFixed(6),
+                                    )
+                                  : "0.00"
+                              }`}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex w-full mt-3 mt6 md:gap-5 gap-2 items-center">
+                  <div className="lg:md:max-w-[200px] w-full">
+                    <div className="flex justify-between items-center cursor-pointer gap-4 w-full">
+                      <div className="flex gap-2 items-center w-full">
+                        <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] border border-[var(--primary)] md:rounded-[7px] rounded-lg md:px-3 px-3 md:py-[8px] py-2 justify-center w-full">
+                          <div
+                            onClick={() => {
+                              setIsSelectingTokenA(true);
+                              setTokenVisible(true);
+                              setSelectedPercentage("");
+                              setAmountIn("");
+                            }}
+                            className="flex items-center md:gap-4 gap-1 w-full justify-center"
+                          >
+                            {selectedTokenA ? (
+                              <>
+                                <img
+                                  className="md:w-5 md:h-5 w-4 h-4"
+                                  src={
+                                    selectedTokenA.image ||
+                                    selectedTokenA.logoURI
+                                  }
+                                  alt={selectedTokenA.name}
+                                />
+                                <div className="text-white font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
+                                  {selectedTokenA.ticker ||
+                                    selectedTokenA.symbol}
+                                </div>
+                              </>
+                            ) : (
+                              <span className="text-white font-extrabold font-orbitron md:text-xs text-xs capitalize">
+                                Select token
+                              </span>
+                            )}
+                          </div>
+                          {selectedTokenA && (
+                            <button
+                              onClick={() =>
+                                handleCopyAddress(selectedTokenA.address)
+                              }
+                              className="rounded-md transition-colorss"
+                            >
+                              {copySuccess &&
+                              activeTokenAddress === selectedTokenA.address ? (
+                                <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
+                              ) : (
+                                <Copy className="md:w-4 md:h-4 w-3 h-3 text-white hover:text-white" />
+                              )}
+                            </button>
                           )}
                         </div>
-                        {selectedTokenA && (
-                          <button
-                            onClick={() =>
-                              handleCopyAddress(selectedTokenA.address)
-                            }
-                            className="rounded-md transition-colorss"
-                          >
-                            {copySuccess &&
-                              activeTokenAddress === selectedTokenA.address ? (
-                              <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
-                            ) : (
-                              <Copy className="md:w-4 md:h-4 w-3 h-3 text-white hover:text-white" />
-                            )}
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>
-                </div>
+                  <div className="w-full md:h-[53px] h-9">
+                    {(() => {
+                      const inputLength =
+                        formatNumber(amountIn)?.replace(/\D/g, "").length || 0;
+                      const defaultFontSize =
+                        window.innerWidth >= 1024
+                          ? 28
+                          : window.innerWidth >= 768
+                            ? 24
+                            : 20;
+                      const FREE_DIGITS = window.innerWidth >= 768 ? 12 : 5;
+                      const SHRINK_RATE = 3;
 
-                <div className="md:w-[75%] w-[60%]">
-                  <div className="text-zinc-200 text-[10px] font-normal roboto leading-normal flex md:gap-2 gap-1 md:ml-0 ml-[-40px] justify-end">
+                      const excessDigits = Math.max(
+                        0,
+                        inputLength - FREE_DIGITS,
+                      );
+
+                      const dynamicFontSize = Math.max(
+                        10,
+                        defaultFontSize - excessDigits * SHRINK_RATE,
+                      );
+                      return (
+                        <input
+                          type="text"
+                          placeholder={
+                            formattedChainBalance === "0.000"
+                              ? "0"
+                              : calculateAmount(selectedPercentage)
+                          }
+                          value={formatNumber(amountIn)}
+                          onChange={(e) => handleInputChange(e.target.value)}
+                          className="font-orbitron font-extrabold text-white rounded-[10px] px-1 py-3 text-end w-full h-full outline-none border-none transition-all duration-200 ease-in-out bg-[var(--bg-color)] space"
+                          style={{
+                            fontSize: `${dynamicFontSize}px`,
+                          }}
+                        />
+                      );
+                    })()}
+                  </div>
+                </div>
+                <div className="flex justify-between gap-2 items-center 2xl:mt-3 mt-3 md:flex-nowrap flex-wrap mt6">
+                  <div className="text-[var(--primary-color)] font-orbitron md:text-[15px] text-xs flex flex-col relative top-2">
+                    <span>
+                      {selectedTokenA ? (
+                        conversionRate ? (
+                          `$${parseFloat(conversionRate).toFixed(6)}`
+                        ) : (
+                          <span className="animate-pulse">Loading...</span>
+                        )
+                      ) : (
+                        "--"
+                      )}
+                    </span>
+                    <span className="font-bold mt-1">Market Price</span>
+                  </div>
+                  <div className="text-zinc-200 text-[10px] font-normal font-orbitron leading-normal flex md:gap-2 gap-1 justify-end">
                     <span></span>
                     {[25, 50, 75, 100].map((value) => (
                       <button
                         key={value}
                         type="button"
-                        className={`py-1 border bg-[var(--bg-color)] text-white flex justify-center items-center rounded-[10px] md:text-[12px] text-[7px] font-extrabold font-orbitron md:w-[70px] w-11 px-2
-            ${selectedPercentage === value
-                            ? "!text-black !bg-[#FFE6C0] border-[#FFE6C0]"
-                            : "bg-[#FFE7C3] text-[#040404] border-black hover:border-black hover:bg-[#FF9900] hover:text-black"
-                          }`}
+                        className={`py-1 border bg-[#EEC485] hover:text-white flex justify-center items-center rounded-full md:text-[10px] text-[8px] font-medium font-orbitron md:w-12 w-11 px-2
+            ${
+              selectedPercentage === value
+                ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--primary)]"
+                : "bg-[#EEC485] text-[#040404] border border-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
+            }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
                       >
@@ -1055,371 +1146,328 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       </button>
                     ))}
                   </div>
-                  {(() => {
-                    const inputLength =
-                      formatNumber(amountIn)?.replace(/\D/g, "").length || 0;
-                    const defaultFontSize =
-                      window.innerWidth >= 1024
-                        ? 48
-                        : window.innerWidth >= 768
-                          ? 40
-                          : 32;
-
-                    const FREE_DIGITS = window.innerWidth >= 768 ? 10 : 4;
-                    const SHRINK_RATE = 3;
-
-                    const excessDigits = Math.max(0, inputLength - FREE_DIGITS);
-
-                    const dynamicFontSize = Math.max(
-                      10,
-                      defaultFontSize - excessDigits * SHRINK_RATE,
-                    );
-                    return (
-                      <input
-                        type="text"
-                        placeholder={
-                          formattedChainBalance === "0.000"
-                            ? "0"
-                            : calculateAmount(selectedPercentage)
-                        }
-                        value={formatNumber(amountIn)}
-                        onChange={(e) => handleInputChange(e.target.value)}
-                        className="text-[#000000] text-sh py-2 text-end w-full outline-none border-none bg-transparent token_input rigamesh placeholder-black transition-all duration-200 ease-in-out"
-                        style={{
-                          fontSize: `${dynamicFontSize}px`,
-                        }}
-                      />
-                    );
-                  })()}
                 </div>
-              </div>
-              <div className="text-right relative text-black md:text-base text-[10px] usd-spacing truncate rigamesh text-sh1 flex justify-end gap-1">
-                <div className="relative inline-block">
-                  <InfoIcon
-                    size={18}
-                    className="md:mt-[1.5px] mt-[-1px] cursor-pointer"
-                    onMouseEnter={() => setDollarInfo(true)}
-                    onMouseLeave={() => setDollarInfo(false)}
-                    onClick={() => setDollarInfo((prev) => !prev)}
-                  />
-
-                  {dollarinfo && (
-                    <div
-                      className="roboto fixed rt0 z-50 mt-2 md:w-[500px] w-[300px] whitespace-pre-wrap rounded-lg bg-[var(--bg-color)] px-4 py-3 text-center md:text-sm text-[10px] font-bold text-white shadow-lg
-          "
+                <div className="text-right relative text-white md:text-xs text-[10px] usd-spacing truncate font-orbitron mt-2 text-sh1 flex justify-end gap-1">
+                  <div className="relative inline-block">
+                    <InfoIcon
+                      size={18}
+                      className="md:mt-[1.5px] mt-[-1px] cursor-pointer"
                       onMouseEnter={() => setDollarInfo(true)}
                       onMouseLeave={() => setDollarInfo(false)}
-                    >
-                      Dollar value display <br />
-                      The dollar value displayed are fetched from 3rd party API.
-                      They may not be 100% accurate in some cases. For accuracy
-                      please check the Output units.
-                    </div>
-                  )}
+                      onClick={() => setDollarInfo((prev) => !prev)}
+                    />
+
+                    {dollarinfo && (
+                      <div
+                        className="font-orbitron fixed rt0 z-50 mt-2 md:w-[450px] w-[300px] whitespace-pre-wrap rounded-lg bg-[var(--bg-color)] px-4 py-3 text-center md:text-xs text-[9px] font-bold text-white shadow-lg"
+                        onMouseEnter={() => setDollarInfo(true)}
+                        onMouseLeave={() => setDollarInfo(false)}
+                      >
+                        Dollar value display <br />
+                        The dollar value displayed are fetched from 3rd party
+                        API. They may not be 100% accurate in some cases. For
+                        accuracy please check the Output units.
+                      </div>
+                    )}
+                  </div>
+                  {selectedTokenA
+                    ? conversionRate
+                      ? `$${formatNumber(usdValue)}`
+                      : "Fetching Rate..."
+                    : "$0.00"}
                 </div>
-                {conversionRate
-                  ? `$${formatNumber(usdValue)}`
-                  : "Fetching Rate..."}
               </div>
-            </div>
-            <div
-              className="cursor-pointer mx-auto my-4 md:pt-7 relative md:top-[-16px] top-[-10px] pt-[20px] md:w-[50px] w-[50px]"
-              onClick={() => {
-                const _tokenA = selectedTokenA;
-                const _tokenB = selectedTokenB;
-                setSelectedTokenA(_tokenB);
-                setSelectedTokenB(_tokenA);
-                setAmountOut("0");
-                setAmountIn("0");
-                setDebouncedAmountIn("0");
-              }}
-            >
-              <svg
-                width="50"
-                height="50"
-                viewBox="0 0 70 70"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="hoverswap transition-all rounded-xl"
-                aria-label="Swap tokens"
+              <div
+                className="cursor-pointer mx-auto my-4 relative md:w-11 w-10 h-10 bg-[var(--primary-color)] rounded-lg flex justify-center items-center hoverswap transition-all"
+                onClick={() => {
+                  const _tokenA = selectedTokenA;
+                  const _tokenB = selectedTokenB;
+                  setSelectedTokenA(_tokenB);
+                  setSelectedTokenB(_tokenA);
+                  setAmountOut("0");
+                  setAmountIn("0");
+                  setDebouncedAmountIn("0");
+                }}
               >
-                <rect width="70" height="70" rx="12" fill="var(--primary)" />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M48.737 36.0911C49.3094 36.5901 49.3689 37.4588 48.8699 38.0311L39.5366 48.7371C39.1599 49.1692 38.5544 49.3221 38.0177 49.121C37.4808 48.9198 37.1252 48.4067 37.1252 47.8334L37.1252 22.1667C37.1252 21.4074 37.7408 20.7917 38.5002 20.7917C39.2595 20.7917 39.8751 21.4074 39.8751 22.1667L39.8751 44.1638L46.797 36.224C47.2961 35.6516 48.1646 35.5921 48.737 36.0911Z"
-                  fill="#000000"
-                />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M21.2632 33.9089C20.6907 33.4099 20.6313 32.5412 21.1303 31.9689L30.4636 21.263C30.8404 20.8309 31.4457 20.6778 31.9825 20.879C32.5193 21.0802 32.875 21.5933 32.875 22.1666L32.875 47.8332C32.875 48.5926 32.2594 49.2082 31.5 49.2082C30.7406 49.2082 30.125 48.5926 30.125 47.8332L30.125 25.8362L23.2031 33.776C22.704 34.3483 21.8356 34.4079 21.2632 33.9089Z"
-                  fill="#000000"
-                />
-              </svg>
-            </div>
-            <div className="relative bg_swap_box_black">
-              {/* <img className="bg-sell w-full" src={Buybox} alt="Buybox" /> */}
-              <div className="flex justify-between gap-3 items-center">
-                <div className="font-orbitron text-white md:text-2xl text-xs font-semibold leading-normal">
-                  You Buy
-                </div>
-                <div className="text-center absolute -top-8 md:right-0 right-5 gap-3 2xl:px-6 lg:px-4 lg:py-3 rounded-lg mt-2 border !text-black border-white bg-[#FFE6C0] md:text-sm text-[10px] px-2 py-2">
-                  <span className="font-extrabold leading-normal">BAL</span>
-                  <span className="font-bold font-orbitron leading-normal">
-                    {" "}
-                    :{" "}
-                  </span>
-                  <span className="rigamesh leading-normal">
-                    {!selectedTokenB
-                      ? "0.00"
-                      : isLoading
-                        ? "Loading.."
-                        : selectedTokenB.address === EMPTY_ADDRESS
-                          ? `${formatNumber(formattedChainBalanceTokenB)}`
-                          : `${tokenBBalance
-                            ? formatNumber(
-                              parseFloat(tokenBBalance.formatted).toFixed(
-                                6,
-                              ),
-                            )
-                            : "0.00"
-                          }`}
-                  </span>
-                </div>
+                <ArrowDownUp className="md:w-4 md:h-4 w-3 h-3 text-black" />
               </div>
 
-              <div className="flex w-full mt-2">
-                <div className="md:w-[25%] w-[40%]">
-                  <div className="flex justify-between gap-4 items-center cursor-pointer">
-                    <div className="flex gap-2 items-center md:mt-5 mt-6">
-                      {/* md:w-[220px] w-[160px] */}
-                      <div className="flex md:gap-4 gap-1 items-center justify-center bg-[#FFE6C0] md:border-2 border !text-black border-white rounded-lg md:px-6 px-3 md:py-[18px] py-2.5 lg:w-[280px] md:w-[220px] w-[125px] margin_left">
-                        <div
-                          onClick={() => {
-                            setIsSelectingTokenA(false);
-                            setTokenVisible(true);
-                          }}
-                          className="flex items-center justify-center md:gap-4 gap-1"
-                        >
-                          {selectedTokenB ? (
-                            <>
-                              <img
-                                className="md:w-9 md:h-9 w-4 h-4"
-                                src={
-                                  selectedTokenB.image || selectedTokenB.logoURI
-                                }
-                                alt={selectedTokenB.name}
-                              />
-                              <div className="text-dark lg:text-3xl text-sm font-bold font-orbitron leading-normal appearance-none outline-none">
-                                {selectedTokenB.ticker || selectedTokenB.symbol}
-                              </div>
-                            </>
-                          ) : (
-                            <span className="text-black font-bold font-orbitron md:text-3xl text-sm">
-                              Select token
-                            </span>
+              <div className="relative bg_swap_box_black bg-[var(--bg-color)]">
+                <div className="flex justify-between gap-3 items-center">
+                  <div className="font-orbitron md:text-[15px] text-xs font-extrabold leading-normal text-[var(--primary-color)]">
+                    You Buy
+                  </div>
+                  <div className="md:text-xs text-[10px] font-orbitron">
+                    <span className="font-normal leading-normal text-[var(--primary-color)]">
+                      BAL
+                    </span>{" "}
+                    <span className="font-normal leading-normal text-[var(--primary-color)]">
+                      {" "}
+                      :{" "}
+                    </span>
+                    <span className="text-white leading-normal">
+                      {!selectedTokenB
+                        ? "0.00"
+                        : isLoading
+                          ? "Loading.."
+                          : selectedTokenB.address === EMPTY_ADDRESS
+                            ? `${formatNumber(formattedChainBalanceTokenB)}`
+                            : `${
+                                tokenBBalance
+                                  ? formatNumber(
+                                      parseFloat(
+                                        tokenBBalance.formatted,
+                                      ).toFixed(6),
+                                    )
+                                  : "0.00"
+                              }`}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex w-full mt-3 mt6 md:gap-5 gap-2 items-center">
+                  <div className="lg:md:max-w-[200px] w-full">
+                    <div className="flex justify-between items-center cursor-pointer gap-4 w-full">
+                      <div className="flex gap-2 items-center w-full">
+                        <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] border border-[var(--primary)] md:rounded-[7px] rounded-lg md:px-3 px-3 md:py-[8px] py-2 justify-center w-full">
+                          <div
+                            onClick={() => {
+                              setIsSelectingTokenA(false);
+                              setTokenVisible(true);
+                            }}
+                            className="flex items-center justify-center md:gap-4 gap-1 w-full"
+                          >
+                            {selectedTokenB ? (
+                              <>
+                                <img
+                                  className="md:w-5 md:h-5 w-4 h-4"
+                                  src={
+                                    selectedTokenB.image ||
+                                    selectedTokenB.logoURI
+                                  }
+                                  alt={selectedTokenB.name}
+                                />
+                                <div className="text-white font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
+                                  {selectedTokenB.ticker ||
+                                    selectedTokenB.symbol}
+                                </div>
+                              </>
+                            ) : (
+                              <span className="text-white font-extrabold font-orbitron md:text-xs text-xs capitalize">
+                                Select token
+                              </span>
+                            )}
+                          </div>
+                          {selectedTokenB && (
+                            <button
+                              onClick={() =>
+                                handleCopyAddress(selectedTokenB.address)
+                              }
+                              className="rounded-md transition-colors"
+                            >
+                              {copySuccess &&
+                              activeTokenAddress === selectedTokenB.address ? (
+                                <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
+                              ) : (
+                                <Copy className="md:w-4 md:h-4 w-3 h-3 text-white hover:text-white" />
+                              )}
+                            </button>
                           )}
                         </div>
-                        {selectedTokenB && (
-                          <button
-                            onClick={() =>
-                              handleCopyAddress(selectedTokenB.address)
-                            }
-                            className="rounded-md transition-colors"
-                          >
-                            {copySuccess &&
-                              activeTokenAddress === selectedTokenB.address ? (
-                              <Check className="md:w-4 md:h-4 w-3 h-3 text-green-500" />
-                            ) : (
-                              <Copy className="md:w-4 md:h-4 w-3 h-3 text-black hover:text-black" />
-                            )}
-                          </button>
-                        )}
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="md:w-[75%] w-[60%]">
-                  {/*  */}
-                  <div className="text-zinc-200 text-[10px] font-normal roboto leading-normal flex md:gap-2 gap-1 mb-2 md:ml-0 ml-[-40px] justify-end">
-                    <span></span>
-                    {[25, 50, 75, 100].map((value) => (
-                      <button
-                        key={value}
-                        type="button"
-                        className={`py-1 border border-[#FF9900] flex justify-center items-center rounded-xl md:text-[12px] text-[7px] md:w-[70px] w-11 font-extrabold font-orbitron px-2
-            ${selectedPercentage === value
-                            ? " text-white bg-[var(--bg-color)]"
-                            : "bg-[#FF9900] text-[#040404] hover:border-[#FF9900] hover:bg-transparent hover:text-[#FF9900]"
-                          }`}
-                        onClick={() => handlePercentageChange(value)}
-                        disabled={isLoading}
-                      >
-                        {value}%
-                      </button>
-                    ))}
-                  </div>
-                  {/*  */}
-                  {(() => {
-                    const numericValue = Number(amountOut);
+                  <div className="w-full md:h-[53px] h-9">
+                    {(() => {
+                      const numericValue = Number(amountOut);
 
-                    const formattedValue = isNaN(numericValue)
-                      ? ""
-                      : formatNumber(numericValue.toFixed(2));
+                      const formattedValue = isNaN(numericValue)
+                        ? ""
+                        : formatNumber(numericValue.toFixed(4));
 
-                    const outputLength =
-                      formattedValue.replace(/,/g, "").length || 0;
+                      const outputLength =
+                        formattedValue.replace(/,/g, "").length || 0;
 
-                    const defaultFontSize =
-                      window.innerWidth >= 1024
-                        ? 48
-                        : window.innerWidth >= 768
-                          ? 40
-                          : 32;
+                      const defaultFontSize =
+                        window.innerWidth >= 1024
+                          ? 28
+                          : window.innerWidth >= 768
+                            ? 24
+                            : 20;
+                      const FREE_DIGITS = window.innerWidth >= 768 ? 12 : 6;
+                      const SHRINK_RATE = 3;
 
-                    const FREE_DIGITS = window.innerWidth >= 768 ? 10 : 6;
-                    const SHRINK_RATE = 3;
+                      const excessDigits = Math.max(
+                        0,
+                        outputLength - FREE_DIGITS,
+                      );
 
-                    const excessDigits = Math.max(
-                      0,
-                      outputLength - FREE_DIGITS,
-                    );
+                      const dynamicFontSize = Math.max(
+                        10,
+                        defaultFontSize - excessDigits * SHRINK_RATE,
+                      );
 
-                    const dynamicFontSize = Math.max(
-                      10,
-                      defaultFontSize - excessDigits * SHRINK_RATE,
-                    );
-
-                    return (
+                      return (
                         <>
                           {isQuoting ? (
-                            <span className="text-white animate-pulse text-right w-full flex justify-end">
+                            <span className="font-orbitron text-white animate-pulse text-right w-full flex justify-end">
                               Calculating...
                             </span>
                           ) : (
-                            <div className="flex flex-col items-end w-full">
-                              <input
-                                type="text"
-                                placeholder="0.00"
-                                value={formattedValue}
-                                onChange={handleOutputChange}
-                                readOnly
-                                className="text-[#fff] text-sh py-2 text-end w-full leading-7 outline-none border-none bg-transparent token_input rigamesh placeholder-white transition-all duration-200 ease-in-out"
-                                style={{
-                                  fontSize: `${dynamicFontSize}px`,
-                                }}
-                              />
-                              {isFindingBetterRoute && (
-                                <span className="text-yellow-400 text-xs animate-pulse mt-[-4px]">
-                                  Finding better routes...
-                                </span>
-                              )}
-                            </div>
+                            <input
+                              type="text"
+                              placeholder="0.00"
+                              value={formattedValue}
+                              onChange={handleOutputChange}
+                              readOnly
+                              className="font-orbitron font-extrabold text-white rounded-[10px] px-1 py-3 text-end w-full h-full outline-none border-none transition-all duration-200 ease-in-out bg-[var(--bg-color)] space"
+                              style={{
+                                fontSize: `${dynamicFontSize}px`,
+                              }}
+                            />
                           )}
                         </>
                       );
-                  })()}
+                    })()}
+                  </div>
                 </div>
-              </div>
+                <div className="flex justify-between gap-2 items-center 2xl:mt-3 mt-3 md:flex-nowrap flex-wrap mt6">
+                  <div className="text-[var(--primary-color)] font-orbitron md:text-[15px] text-xs flex flex-col relative top-2">
+                    <span>
+                      {selectedTokenB ? (
+                        conversionRateTokenB ? (
+                          `$${parseFloat(conversionRateTokenB).toFixed(6)}`
+                        ) : (
+                          <span className="animate-pulse">Loading...</span>
+                        )
+                      ) : (
+                        "--"
+                      )}
+                    </span>
+                    <span className="font-bold mt-1">Market Price</span>
+                  </div>
+                  <div className="text-zinc-200 text-[10px] font-normal font-orbitron leading-normal flex md:gap-2 gap-1 justify-end">
+                    <span></span>
+                    {[25, 50, 75, 100].map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        className={`py-1 border bg-[#EEC485] hover:text-white flex justify-center items-center rounded-full md:text-[10px] text-[8px] font-medium font-orbitron md:w-12 w-11 px-2
+            ${
+              selectedPercentageBuy === value
+                ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--primary)]"
+                : "bg-[#EEC485] text-[#040404] border border-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
+            }`}
+                        onClick={() => setSelectedPercentageBuy(value)}
+                        disabled={isLoading}
+                      >
+                        {value}%
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-              <div className="text-right text-white usd-spacing md:text-base text-[10px] rigamesh truncate text-sh1 flex justify-end gap-1 relative">
-                <div className="relative inline-block">
-                  <InfoIcon
-                    size={18}
-                    className="md:mt-[1.5px] mt-[-1px] cursor-pointer"
-                    onMouseEnter={() => setDollarInfo1(true)}
-                    onMouseLeave={() => setDollarInfo1(false)}
-                    onClick={() => setDollarInfo1((prev) => !prev)}
-                  />
-                  {dollarinfo1 && (
-                    <div
-                      className="roboto fixed rt0 z-50 mt-2 md:w-[500px] w-[300px] whitespace-pre-wrap rounded-lg bg-[var(--bg-color)] px-4 py-3 text-center md:text-sm text-[10px] font-bold text-white shadow-lg
-          "
+                <div className="text-right relative text-white md:text-xs text-[10px] usd-spacing truncate font-orbitron mt-2 text-sh1 flex justify-end gap-1">
+                  <div className="relative inline-block">
+                    <InfoIcon
+                      size={18}
+                      className="md:mt-[1.5px] mt-[-1px] cursor-pointer"
                       onMouseEnter={() => setDollarInfo1(true)}
                       onMouseLeave={() => setDollarInfo1(false)}
-                    >
-                      Dollar value display <br />
-                      The dollar value displayed are fetched from 3rd party API.
-                      They may not be 100% accurate in some cases. For accuracy
-                      please check the Output units.
-                    </div>
+                      onClick={() => setDollarInfo1((prev) => !prev)}
+                    />
+                    {dollarinfo1 && (
+                      <div
+                        className="font-orbitron fixed rt0 z-50 mt-2 md:w-[450px] w-[300px] whitespace-pre-wrap rounded-lg bg-[var(--bg-color)] px-4 py-3 text-center md:text-xs text-[9px] font-bold text-white shadow-lg"
+                        onMouseEnter={() => setDollarInfo1(true)}
+                        onMouseLeave={() => setDollarInfo1(false)}
+                      >
+                        Dollar value display <br />
+                        The dollar value displayed are fetched from 3rd party
+                        API. They may not be 100% accurate in some cases. For
+                        accuracy please check the Output units.
+                      </div>
+                    )}
+                  </div>
+                  {selectedTokenB ? (
+                    conversionRateTokenB ? (
+                      <span className="font-orbitron">
+                        ${formatNumber(usdValueTokenB)}
+                      </span>
+                    ) : (
+                      "Fetching Rate..."
+                    )
+                  ) : (
+                    "$0.00"
                   )}
                 </div>
-                {conversionRateTokenB ? (
-                  <span className="usd-spacing">
-                    ${formatNumber(usdValueTokenB)}
-                  </span>
-                ) : (
-                  "Fetching Rate..."
-                )}
               </div>
-            </div>
 
-            {/* Route Info - Integrated into widget flow */}
-            {selectedTokenA &&
-              selectedTokenB &&
-              amountOut &&
-              parseFloat(amountOut) > 0 && (
-                <div className="w-full mt-8 px-2">
-                  <div className="bg-[#FFE6C0] border-2 border-[#FF9900] p-3 rounded-xl shadow-sm md:w-[450px] mx-auto">
-                    <div className="font-orbitron text-[10px] md:text-sm text-black">
-                      <div className="flex justify-between gap-4 mb-1">
-                        <span className="font-bold">Rate:</span>
-                        <span className="rigamesh">
-                          1{" "}
-                          {isRateReversed
-                            ? selectedTokenB.ticker
-                            : selectedTokenA.ticker}{" "}
-                          = {getRateDisplay()}{" "}
-                          {isRateReversed
-                            ? selectedTokenA.ticker
-                            : selectedTokenB.ticker}
-                        </span>
-                      </div>
-                      <div className="flex justify-between gap-4 mb-1">
-                        <span className="font-bold">Min Received:</span>
-                        <span className="rigamesh">
-                          {formatNumber(
-                            parseFloat(minToReceiveAfterFee).toFixed(6),
-                          )}{" "}
-                          {selectedTokenB.ticker}
-                        </span>
-                      </div>
-                      <div className="flex justify-between gap-4">
-                        <span className="font-bold">Price Impact:</span>
-                        <span
-                          className={`rigamesh ${getPriceImpactColor(priceImpact)}`}
-                        >
-                          {priceImpact}%
-                        </span>
+              {/* Route Info - Integrated into widget flow */}
+              {selectedTokenA &&
+                selectedTokenB &&
+                amountOut &&
+                parseFloat(amountOut) > 0 && (
+                  <div className="bg_swap_box bg-[var(--bg-color)] border-2 border-[var(--primary)] mt-6 md:px-5 px-4 !py-6 font-orbitron">
+                    <div className="w-full mx-auto">
+                      <div className="font-orbitron text-[10px] md:text-sm text-[var(--primary-color)]">
+                        <div className="flex justify-between gap-4 mb-1">
+                          <span className="font-bold">Rate:</span>
+                          <span>
+                            1{" "}
+                            {isRateReversed
+                              ? selectedTokenB.ticker
+                              : selectedTokenA.ticker}{" "}
+                            = {getRateDisplay()}{" "}
+                            {isRateReversed
+                              ? selectedTokenA.ticker
+                              : selectedTokenB.ticker}
+                          </span>
+                        </div>
+                        <div className="flex justify-between gap-4 mb-1">
+                          <span className="font-bold">Min Received:</span>
+                          <span>
+                            {formatNumber(
+                              parseFloat(minToReceiveAfterFee).toFixed(6),
+                            )}{" "}
+                            {selectedTokenB.ticker}
+                          </span>
+                        </div>
+                        <div className="flex justify-between gap-4">
+                          <span className="font-bold">Price Impact:</span>
+                          <span
+                            className={`${getPriceImpactColor(priceImpact)}`}
+                          >
+                            {priceImpact}%
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
-            <div
-              className={`relative flex justify-center flex-row md:mt-16 mt-11 xl:pt-0 pt-0 top-0`}
-            >
-              <button
-                onClick={() => {
-                  if (amountOut && parseFloat(amountOut) > 0) {
-                    setInitialQuote(amountOut);
-                    setAmountVisible(true);
-                  }
-                }}
-                disabled={isInsufficientBalance()}
-                className={`gtw relative z-50 md:w-[360px] w-[200px] md:h-[68px] h-11 bg-[#FF9900] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${isInsufficientBalance()
-                  ? "opacity-50 cursor-not-allowed"
-                  : " "
-                  } font-orbitron lg:text-3xl text-base font-black`}
+                )}
+              <div
+                className={`relative flex justify-center flex-row md:mt-5 mt-4 xl:pt-0`}
               >
-                <div className="group-hover:opacity-100 w-full absolute md:top-4 top-2 md:-left-5 -left-3 z-[-1] bg-transparent border-2 border-[#FF9900] md:rounded-[10px] rounded-md md:h-[68px] h-11"></div>
-                <span>{getButtonText()}</span>
-              </button>
+                <button
+                  onClick={() => {
+                    if (amountOut && parseFloat(amountOut) > 0) {
+                      setInitialQuote(amountOut);
+                      setAmountVisible(true);
+                    }
+                  }}
+                  disabled={isInsufficientBalance()}
+                  className={`gtw relative z-50 w-full uppercase md:h-12 h-11 bg-[#F59216] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${
+                    isInsufficientBalance()
+                      ? "opacity-50 cursor-not-allowed"
+                      : " "
+                  } font-orbitron lg:text-base text-base font-extrabold`}
+                >
+                  <span>{getButtonText()}</span>
+                </button>
+              </div>
             </div>
+            {/* Ends */}
           </div>
-          {/* Ends */}
         </div>
       </div>
 
@@ -1452,7 +1500,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             amountOut={parseFloat(amountOut).toFixed(6)}
             tokenA={selectedTokenA}
             tokenB={selectedTokenB}
-            refresh={() => { }}
+            refresh={() => {}}
             confirm={confirmSwap}
             handleApprove={handleApprove}
             needsApproval={needsApproval}
@@ -1483,7 +1531,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           href="https://empx.io"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-orbitron text-gray-500 hover:text-[#FF9900] transition-colors opacity-70 hover:opacity-100"
+          className="text-xs font-orbitron text-gray-500 hover:text-[var(--primary-color)] transition-colors opacity-70 hover:opacity-100"
         >
           Powered by
           <img

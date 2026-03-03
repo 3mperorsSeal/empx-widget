@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import BG1 from "../../assets/images/bg.png";
+import EL from "../../assets/images/emp-logo.png";
 
 // Helper function to calculate slippage
 const calculateSlippage = (amountOut, slippagePercent) => {
@@ -52,7 +53,7 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
         // Always calculate based on original amount
         const adjustedAmount = calculateSlippage(
           originalAmountRef.current,
-          slippage
+          slippage,
         );
         onSlippageCalculated(adjustedAmount);
         setSlippageApplied(true);
@@ -100,7 +101,7 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
         const defaultSlippage = 0;
         const adjustedAmount = calculateSlippage(
           originalAmountRef.current,
-          defaultSlippage
+          defaultSlippage,
         );
         onSlippageCalculated(adjustedAmount);
         setSlippage(defaultSlippage);
@@ -164,11 +165,10 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             />
           </svg>
         </button>
-
-        <h2 className="text-white text-xl font-bold mb-4 roboto text-center">
+        <h2 className="md:text-lg capitalize text-base font-medium text-white font-orbitron text-center tracking-widest flex gap-1 items-center justify-center">
+          <img src={EL} alt="EL" className="w-10 object-contain" />
           Slippage Settings
         </h2>
-
         {error && (
           <div className="mb-4 p-3 bg-red-900/50 border border-red-500 rounded-lg">
             <p className="text-red-200 text-sm">{error}</p>
@@ -183,10 +183,11 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             <button
               key={index}
               onClick={() => handleSlippageSelect(option)}
-              className={`px-4 py-1.5 justify-center md:w-[100px] w-20 relative md:text-base text-sm border border-[var(--primary)] rounded-xl ${slippage === option
+              className={`px-4 py-1.5 justify-center md:w-[100px] w-20 relative md:text-base text-sm border border-[var(--primary)] rounded-xl ${
+                slippage === option
                   ? "bg- text-white"
                   : "bg-transparent text-white"
-                } ${error ? "opacity-50 cursor-not-allowed" : ""}`}
+              } ${error ? "opacity-50 cursor-not-allowed" : ""}`}
               disabled={!!error}
             >
               {/* <img src={BG1} alt="BG1" className="absolute top-0 left-0" /> */}
@@ -224,7 +225,6 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             }}
             disabled={!!error}
           >
-            <div className="w-full absolute md:top-4 top-1 md:-left-4 -left-3 z-[1] bg-transparent border-2 border-[var(--primary)] rounded-xl md:h-[58px] h-[50px]"></div>
             Reset Slippage
           </button>
 

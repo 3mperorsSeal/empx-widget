@@ -27,7 +27,7 @@ html {
 
 :root {
   --table-bg: #222222;
-  --primary: #FF9900;
+  --primary: #ff9900;
   --primary-rgb: 255, 153, 0;
   --grey-text: #ffffff99;
   --white: #ffff;
@@ -259,8 +259,12 @@ body {
   border-radius: 10px; /* Same as the main element’s border-radius */
   padding: 0.5px; /* Adjust this to control border thickness */
   background: linear-gradient(to right, #ff9900, #ffffff);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
   mask-composite: exclude;
   -webkit-mask-composite: destination-out;
   z-index: 1;
@@ -432,21 +436,48 @@ body.bg-pattern {
 }
 .clip-bg {
   background-color: black;
-  border: 1px solid var(--primary);
-  box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
+  border: 3.5px solid #ffa600;
+  // box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
 }
 .clip-bg_r {
   background-color: black;
-  border: 1px solid var(--primary);
-  box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
+  border: 1px solid #ffa600;
+  // box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
 }
 .hoverclip {
   border: 1px solid transparent;
 }
 .hoverclip:hover {
   background-color: black;
-  border: 1px solid var(--primary);
-  box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
+  border: 1px solid #ffa600;
+  // box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
+}
+.hoverclip_2 {
+  border: 1.4px solid #ffa600;
+  background: #000000;
+  // box-shadow:
+  //   2px 2px 20px 0px #f79100cc inset,
+  //   0px -2px 20px 0px #f79100cc inset;
+}
+.hoverclip_2:hover {
+  border: 1.4px solid #ffa600;
+  background: #000000;
+  // box-shadow:
+  //   4px 4px 20px 0px #f79100cc inset,
+  //   0px -4px 20px 0px #f79100cc inset;
+}
+.hoverclip_1 {
+  border: 1px solid transparent;
+}
+.hoverclip_1:hover {
+  border: 1.4px solid #ffa600;
+  background: #000000;
+  // box-shadow:
+  //   2px 2px 20px 0px #f79100cc inset,
+  //   0px -2px 20px 0px #f79100cc inset;
+  // background-color: black;
+  // border: 1px solid #ff9900;
+  // box-shadow: 0px 4px 30px 0px #855610;
 }
 .bg-rec {
   background-image: url("../assets/images/bg-rec.svg");
@@ -714,11 +745,11 @@ body.bg-pattern {
     top: -130px !important;
   }
 }
-@media (min-width: 1024px) and (max-width: 1536px) {
+@media (min-width: 1024px) and (max-width: 1920px) {
   .scales8 {
     scale: 0.8;
     position: relative;
-    top: -90px;
+    top: -55px;
   }
   .scales-b {
     scale: 0.8;
@@ -814,7 +845,7 @@ body.bg-pattern {
     right: 0px;
     margin: auto;
   }
-   .mw300 {
+  .mw300 {
     max-width: 300px;
     width: 100%;
     margin: auto;
@@ -1000,7 +1031,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   letter-spacing: 0.1em;
 }
 .bg_swap_box {
-  background: var(--primary);
+  // background: var(--primary);
   border-radius: 50px;
   border-width: 2.5px;
   border: 2.5px solid #fdfdfd;
@@ -1010,7 +1041,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   padding-bottom: 32px;
 }
 .bg_swap_box_black {
-  background: black;
+  // background: black;
   border-radius: 50px;
   border-width: 2.5px;
   border: 2.5px solid var(--primary);
@@ -1049,7 +1080,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     margin-bottom: 20px;
   }
   .bg_swap_box {
-    background: var(--primary);
+    // background: var(--primary);
     border-radius: 28px;
     border-width: 2.5px;
     border: 2.5px solid #fdfdfd;
@@ -1059,7 +1090,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
     padding-bottom: 20px;
   }
   .bg_swap_box_black {
-    background: black;
+    // background: black;
     border-radius: 28px;
     border-width: 2.5px;
     border: 2.5px solid var(--primary);
@@ -1098,13 +1129,103 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .gtw:hover {
   color: white !important;
 }
-@media (min-width:1300px) and (max-width:1536px) {
-  .mt30{
+@media (min-width: 1300px) and (max-width: 1536px) {
+  .mt30 {
     margin-top: 10vh;
   }
 }
-@media (min-width:768px) and (max-width:1300px) {
-  .mt30{
+@media (min-width: 768px) and (max-width: 1300px) {
+  .mt30 {
     margin-top: 30vh;
   }
+}
+
+.model_box {
+  border: 3.5px solid #ffa600;
+  background: #000000;
+}
+.small_box {
+  border: 2px solid #ffa600;
+  background: #000000;
+  border-radius: 6px;
+}
+
+.bg_swap_box_chain {
+  padding-top: 14px;
+  padding-left: 14px;
+  padding-right: 14px;
+  padding-bottom: 14px;
+  border: 4px solid #ffa600;
+  background: #000000;
+  border-radius: 16px;
+}
+.bg_swap_box {
+  padding-top: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 24px;
+  border: 4px solid #ffa600;
+  background: #000000;
+  border-radius: 16px;
+}
+.bg_swap_box_black {
+  padding-top: 24px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 24px;
+  border: 4px solid #ffa600;
+  background: #000000;
+  border-radius: 16px;
+}
+@media (min-width: 1200px) and (max-width: 1536px) {
+  .bg_swap_box_chain {
+    padding-top: 14px;
+    padding-left: 14px;
+    padding-right: 14px;
+    padding-bottom: 14px;
+  }
+  .bg_swap_box {
+    padding-top: 20px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 20px !important;
+  }
+  .bg_swap_box_black {
+    padding-top: 20px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-bottom: 20px !important;
+  }
+}
+@media (max-width: 768px) {
+  .mtb {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  .bg_swap_box {
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    border: 4px solid #ffa600;
+    background: #000000;
+    border-radius: 16px;
+  }
+  .bg_swap_box_black {
+    padding-top: 16px;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 16px;
+    border: 4px solid #ffa600;
+    background: #000000;
+    border-radius: 16px;
+  }
+}
+.new_shad {
+  box-shadow: 0px 0px 0px 4px rgba(255, 255, 255, 0.1);
+  outline: 1px #ff9900 solid;
+  outline-offset: -1px;
+}
+.space {
+  letter-spacing: 2px;
 }
