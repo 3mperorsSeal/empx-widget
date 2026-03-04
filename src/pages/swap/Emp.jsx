@@ -956,7 +956,6 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       >
         {/* scales8 top70 */}
         <div className={`w-full`}>
-          {/* Header: Chain Switcher & Wallet */}
           <div className="container w-full mx-auto flex justify-between items-center mb-4 px-1">
             {/* Left side: could be a logo or chain selector if WalletConnect doesn't handle it fully */}
             <a href="https://www.empx.io/dapp">
@@ -1366,7 +1365,6 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                     ))}
                   </div>
                 </div>
-
                 <div className="text-right relative text-white md:text-xs text-[10px] usd-spacing truncate font-orbitron mt-2 text-sh1 flex justify-end gap-1">
                   <div className="relative inline-block">
                     <InfoIcon
