@@ -975,7 +975,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             <div className="lg:max-w-[600px] md:max-w-[600px] mx-auto w-full flex gap-3 items-center md:justify-start justify-start md:flex-nowrap flex- mt-2 mb-3 lg:px-1 px-0">
               <div
                 onClick={() => setSlippageVisible(true)}
-                className="ml-auto shrink-0 bg-[var(--bg-color)] md:px-6 px-3 md:py-2 py-2 border-2 border-[var(--primary)] rounded-lg flex justify-center items-center hoverswap transition-all cursor-pointer group"
+                className="ml-auto shrink-0 bg-[var(--bg-color)] md:px-6 px-3 md:py-2 py-2 border-2 border-[var(--border-color)] rounded-lg flex justify-center items-center hoverswap transition-all cursor-pointer group"
               >
                 <p className="text-[var(--primary-color)] md:text-[10px] text-[10px] font-extrabold font-orbitron">
                   SETTINGS
@@ -984,7 +984,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
             </div>
             {/* Swap */}
             <div className="lg:max-w-[600px] md:max-w-[600px] mx-auto w-full">
-              <div className="relative bg_swap_box bg-[var(--bg-color)]">
+              <div className="relative bg_swap_box border-2 !border-[var(--border-color)] bg-[var(--bg-color)]">
                 <div className="flex justify-between gap-3 items-center">
                   <div className="font-orbitron md:text-[15px] text-xs font-extrabold leading-normal text-[var(--primary-color)]">
                     You Sell
@@ -1020,7 +1020,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   <div className="lg:md:max-w-[200px] w-full">
                     <div className="flex justify-between items-center cursor-pointer gap-4 w-full">
                       <div className="flex gap-2 items-center w-full">
-                        <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] border border-[var(--primary)] md:rounded-[7px] rounded-lg md:px-3 px-3 md:py-[8px] py-2 justify-center w-full">
+                        <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] border border-[var(--border-color)] md:rounded-[7px] rounded-lg md:px-3 px-3 md:py-[8px] py-2 justify-center w-full">
                           <div
                             onClick={() => {
                               setIsSelectingTokenA(true);
@@ -1102,7 +1102,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                           }
                           value={formatNumber(amountIn)}
                           onChange={(e) => handleInputChange(e.target.value)}
-                          className="font-orbitron font-extrabold text-white rounded-[10px] px-1 py-3 text-end w-full h-full outline-none border-none transition-all duration-200 ease-in-out bg-[var(--bg-color)] space"
+                          className="font-orbitron font-extrabold text-white rounded-[10px] px-1 py-3 text-end w-full h-full outline-none border-none transition-all duration-200 ease-in-out bg-black space"
                           style={{
                             fontSize: `${dynamicFontSize}px`,
                           }}
@@ -1135,8 +1135,8 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         className={`py-1 border bg-[#EEC485] hover:text-white flex justify-center items-center rounded-full md:text-[10px] text-[8px] font-medium font-orbitron md:w-12 w-11 px-2
             ${
               selectedPercentage === value
-                ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--primary)]"
-                : "bg-[#EEC485] text-[#040404] border border-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
+                ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--border-color)]"
+                : "bg-[#EEC485] text-[#040404] border border-[var(--border-color)] hover:border-[var(--border-color)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
             }`}
                         onClick={() => handlePercentageChange(value)}
                         disabled={isLoading}
@@ -1191,7 +1191,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                 <ArrowDownUp className="md:w-4 md:h-4 w-3 h-3 text-black" />
               </div>
 
-              <div className="relative bg_swap_box_black bg-[var(--bg-color)]">
+              <div className="relative bg_swap_box_black !border-[var(--border-color)] bg-[var(--bg-color)]">
                 <div className="flex justify-between gap-3 items-center">
                   <div className="font-orbitron md:text-[15px] text-xs font-extrabold leading-normal text-[var(--primary-color)]">
                     You Buy
@@ -1228,7 +1228,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                   <div className="lg:md:max-w-[200px] w-full">
                     <div className="flex justify-between items-center cursor-pointer gap-4 w-full">
                       <div className="flex gap-2 items-center w-full">
-                        <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] border border-[var(--primary)] md:rounded-[7px] rounded-lg md:px-3 px-3 md:py-[8px] py-2 justify-center w-full">
+                        <div className="flex md:gap-4 gap-1 items-center bg-[var(--bg-color)] border border-[var(--border-color)] md:rounded-[7px] rounded-lg md:px-3 px-3 md:py-[8px] py-2 justify-center w-full">
                           <div
                             onClick={() => {
                               setIsSelectingTokenA(false);
@@ -1319,7 +1319,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                               value={formattedValue}
                               onChange={handleOutputChange}
                               readOnly
-                              className="font-orbitron font-extrabold text-white rounded-[10px] px-1 py-3 text-end w-full h-full outline-none border-none transition-all duration-200 ease-in-out bg-[var(--bg-color)] space"
+                              className="font-orbitron font-extrabold text-white rounded-[10px] px-1 py-3 text-end w-full h-full outline-none border-none transition-all duration-200 ease-in-out bg-black space"
                               style={{
                                 fontSize: `${dynamicFontSize}px`,
                               }}
@@ -1354,8 +1354,8 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         className={`py-1 border bg-[#EEC485] hover:text-white flex justify-center items-center rounded-full md:text-[10px] text-[8px] font-medium font-orbitron md:w-12 w-11 px-2
             ${
               selectedPercentageBuy === value
-                ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--primary)]"
-                : "bg-[#EEC485] text-[#040404] border border-[var(--primary)] hover:border-[var(--primary)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
+                ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--border-color)]"
+                : "bg-[#EEC485] text-[#040404] border border-[var(--border-color)] hover:border-[var(--border-color)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
             }`}
                         onClick={() => setSelectedPercentageBuy(value)}
                         disabled={isLoading}
@@ -1406,7 +1406,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                 selectedTokenB &&
                 amountOut &&
                 parseFloat(amountOut) > 0 && (
-                  <div className="bg_swap_box bg-[var(--bg-color)] border-2 border-[var(--primary)] mt-6 md:px-5 px-4 !py-6 font-orbitron">
+                  <div className="bg_swap_box bg-[var(--bg-color)] border-2 !border-[var(--border-color)] mt-6 md:px-5 px-4 !py-6 font-orbitron">
                     <div className="w-full mx-auto">
                       <div className="font-orbitron text-[10px] md:text-sm text-[var(--primary-color)]">
                         <div className="flex justify-between gap-4 mb-1">
@@ -1529,7 +1529,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           href="https://empx.io"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-orbitron text-gray-500 hover:text-[var(--primary-color)] transition-colors opacity-70 hover:opacity-100"
+          className="text-xs font-orbitron text-[var(--primary)] hover:text-[var(--primary-color)] transition-colors opacity-70 hover:opacity-100"
         >
           Powered by
           <img

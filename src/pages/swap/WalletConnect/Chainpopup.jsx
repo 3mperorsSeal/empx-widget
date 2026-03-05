@@ -123,7 +123,7 @@ const ChainPopup = ({
 
           {/* Search bar */}
           {/* bg-search */}
-          <div className="mt-8 relative px-[10px] h-[54px] w-full flex gap-2 items-center border border-[#FF9900] rounded-xl">
+          <div className="mt-8 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">
             <input
               type="text"
               placeholder="Search Chain"

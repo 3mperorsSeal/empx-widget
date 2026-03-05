@@ -3,6 +3,7 @@ export const DEFAULT_WIDGET_CONFIG = {
   theme: 'dark',
   background: '#000000',
   primaryColor: '#e49c01ff',
+  borderColor: '#e49c01ff',
   integratorId: null,
 };
 
@@ -11,6 +12,7 @@ export const parseWidgetConfig = (params: URLSearchParams) => ({
   theme: DEFAULT_WIDGET_CONFIG.theme,
   background: params.get('background') || DEFAULT_WIDGET_CONFIG.background,
   primaryColor: params.get('primaryColor') || DEFAULT_WIDGET_CONFIG.primaryColor,
+  borderColor: params.get('borderColor') || DEFAULT_WIDGET_CONFIG.borderColor,
 
   // Token selection
   defaultTokenIn: params.get('from'),

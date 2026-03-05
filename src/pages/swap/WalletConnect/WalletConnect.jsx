@@ -172,7 +172,7 @@ export default function WalletConnect({
             <>
               <button
                 // FF9900
-                className="new_shad !bg-black !text-[#FF9900] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
+                className="new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
                 onClick={() => setShowConnectPopup(true)}
                 type="button"
               >
@@ -356,7 +356,7 @@ export default function WalletConnect({
 
             <div className="flex items-center gap-2">
               <button
-                className="flex items-center gap-2 new_shad !bg-black !text-[#FF9900] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
+                className="flex items-center gap-2 new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
                 onClick={() => setShowChainPopup(true)}
                 type="button"
               >
@@ -382,7 +382,7 @@ export default function WalletConnect({
               </button>
 
               <button
-                className="new_shad !bg-black !text-[#FF9900] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
+                className="new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
                 onClick={() => setShowPopup(true)}
                 type="button"
               >

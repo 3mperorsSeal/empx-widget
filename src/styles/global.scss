@@ -436,12 +436,12 @@ body.bg-pattern {
 }
 .clip-bg {
   background-color: black;
-  border: 3.5px solid #ffa600;
+  border: 3.5px solid var(--border-color);
   // box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
 }
 .clip-bg_r {
   background-color: black;
-  border: 1px solid #ffa600;
+  border: 1px solid var(--border-color);
   // box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
 }
 .hoverclip {
@@ -449,18 +449,18 @@ body.bg-pattern {
 }
 .hoverclip:hover {
   background-color: black;
-  border: 1px solid #ffa600;
+  border: 1px solid var(--border-color);
   // box-shadow: 0px 4px 30px 0px rgba(var(--primary-rgb), 0.6);
 }
 .hoverclip_2 {
-  border: 1.4px solid #ffa600;
+  border: 1.4px solid var(--border-color);
   background: #000000;
   // box-shadow:
   //   2px 2px 20px 0px #f79100cc inset,
   //   0px -2px 20px 0px #f79100cc inset;
 }
 .hoverclip_2:hover {
-  border: 1.4px solid #ffa600;
+  border: 1.4px solid var(--border-color);
   background: #000000;
   // box-shadow:
   //   4px 4px 20px 0px #f79100cc inset,
@@ -470,14 +470,8 @@ body.bg-pattern {
   border: 1px solid transparent;
 }
 .hoverclip_1:hover {
-  border: 1.4px solid #ffa600;
+  border: 1.4px solid var(--border-color);
   background: #000000;
-  // box-shadow:
-  //   2px 2px 20px 0px #f79100cc inset,
-  //   0px -2px 20px 0px #f79100cc inset;
-  // background-color: black;
-  // border: 1px solid #ff9900;
-  // box-shadow: 0px 4px 30px 0px #855610;
 }
 .bg-rec {
   background-image: url("../assets/images/bg-rec.svg");
@@ -1034,7 +1028,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   // background: var(--primary);
   border-radius: 50px;
   border-width: 2.5px;
-  border: 2.5px solid #fdfdfd;
+  // border: 2.5px solid #fdfdfd;
   padding-top: 18px;
   padding-left: 32px;
   padding-right: 32px;
@@ -1044,7 +1038,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   // background: black;
   border-radius: 50px;
   border-width: 2.5px;
-  border: 2.5px solid var(--primary);
+  // border: 2.5px solid var(--primary);
   padding-top: 18px;
   padding-left: 32px;
   padding-right: 32px;
@@ -1223,7 +1217,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 .new_shad {
   box-shadow: 0px 0px 0px 4px rgba(255, 255, 255, 0.1);
-  outline: 1px #ff9900 solid;
+  outline: 2px var(--border-color) solid;
   outline-offset: -1px;
 }
 .space {

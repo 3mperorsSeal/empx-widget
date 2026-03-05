@@ -88,6 +88,7 @@ const WidgetLayout = () => {
     "--primary": config.primaryColor,
     "--primary-rgb": primaryRgb,
     "--bg-color": config.background,
+    "--border-color": config.borderColor,
     // backgroundColor: "var(--bg-color)",
     color: "#ffffff",
   };
@@ -95,13 +96,13 @@ const WidgetLayout = () => {
   return (
     <div
       style={widgetStyle}
-      className="min-h-screen flex flex-col items-center justify-center p-4 relative"
+      className="min-h-screen flex flex-col items-center justify-center p-4 relative bg-[var(--bg-color)]"
     >
-      <img
+      {/* <img
         src={BG}
         alt="Background"
         className="w-full h-full fixed top-0 left-0 -z-10"
-      />
+      /> */}
       <div className="w-full">
         <Emp
           setPadding={setPadding}

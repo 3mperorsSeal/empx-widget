@@ -183,7 +183,7 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             <button
               key={index}
               onClick={() => handleSlippageSelect(option)}
-              className={`px-4 py-1.5 justify-center md:w-[100px] w-20 relative md:text-base text-sm border border-[var(--primary)] rounded-xl ${
+              className={`px-4 py-1.5 justify-center md:w-[100px] w-20 relative md:text-base text-sm border !border-[var(--border-color)] rounded-xl ${
                 slippage === option
                   ? "bg- text-white"
                   : "bg-transparent text-white"
@@ -200,7 +200,7 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
             inputMode="decimal"
             value={customSlippage}
             onChange={handleCustomSlippageChange}
-            className={`md:w-[120px] w-20 md:h-9 h-9 text-center font-bold text-sm text-white focus:outline-none bg-[#382B19] border border-[var(--primary)] rounded-xl
+            className={`md:w-[120px] w-20 md:h-9 h-9 text-center font-bold text-sm text-white focus:outline-none bg-[#382B19] border !border-[var(--border-color)] rounded-xl
       ${error ? "opacity-50 cursor-not-allowed" : ""}`}
             // style={{
             //   background: "#382B19",

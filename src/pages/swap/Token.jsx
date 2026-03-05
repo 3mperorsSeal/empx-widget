@@ -273,7 +273,7 @@ const Token = ({ onClose, onSelect }) => {
   }
 
   return (
-    <div className="bg-[var(--bg-color)] !bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
+    <div className="bg-black !bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
       <div className="w-full flex justify-center my-auto items-center">
         <div
           ref={modalRef}
@@ -308,7 +308,7 @@ const Token = ({ onClose, onSelect }) => {
             {featureTokens.map((token, index) => (
               <div
                 key={index}
-                className="flex flex-row items-center cursor-pointer font-orbitron md:rounded-xl rounded-lg border border-[var(--primary)] md:p-[12px] px-1 py-1.5"
+                className="flex flex-row items-center cursor-pointer font-orbitron md:rounded-xl rounded-lg border !border-[var(--border-color)] md:p-[12px] px-1 py-1.5"
                 onClick={() => handleFeaturedTokenClick(token)}
               >
                 {/* bg-rec */}
@@ -337,7 +337,7 @@ const Token = ({ onClose, onSelect }) => {
             </h2>
           </div>
           {/* bg-search */}
-          <div className="mt-3 relative px-[10px] h-[54px] w-full flex gap-2 items-center border border-[var(--primary)] rounded-xl">
+          <div className="mt-3 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">
             <input
               type="text"
               placeholder="Search token name or paste address"
