@@ -157,7 +157,7 @@ const WidgetBuilder = () => {
                   value={chain}
                   onChange={(event) => setChain(event.target.value)}
                   placeholder={DEFAULT_WIDGET_CONFIG.chain}
-                  className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full"
+                  className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full capitalize"
                 />
               </label>
 
