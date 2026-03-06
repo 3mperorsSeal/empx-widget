@@ -1454,7 +1454,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                     }
                   }}
                   disabled={isInsufficientBalance()}
-                  className={`gtw relative z-50 w-full uppercase md:h-12 h-11 bg-[#F59216] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${
+                  className={`gtw relative z-50 w-full uppercase md:h-12 h-11 border-2 !border-[var(--primary-color)] bg-[var(--primary-color)] md:rounded-[10px] rounded-md mx-auto button-trans h- flex justify-center items-center transition-all ${
                     isInsufficientBalance()
                       ? "opacity-50 cursor-not-allowed"
                       : " "
@@ -1486,7 +1486,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         )}
       </div>
       <div aria-label="Modal">
-        {isAmountVisible && (
+        {isAmountVisible && ( 
           <Amount
             onClose={() => {
               setAmountVisible(false);

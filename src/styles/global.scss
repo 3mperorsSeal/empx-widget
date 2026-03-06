@@ -532,7 +532,7 @@ body.bg-pattern {
   letter-spacing: 0.5px;
   // clip-path: polygon(0% 0%, 97% 0%, 100% 22%, 100% 100%, 27% 217%, 0% 72%);
   transition: background 0.25s ease;
-  border: 1px solid #ff9900;
+  border: 1px solid var(--border-color);
   border-radius: 16px !important;
   width: 100%;
 }
@@ -549,7 +549,7 @@ body.bg-pattern {
 .bridge-button button {
   // clip-path: polygon(5% 0%, 95% 0%, 100% 22%, 100% 100%, 18% 120%, 5% 74%);
   position: relative;
-  background: #ff9900;
+  background: var(--primary);
   color: #000;
   font-family: "Orbitron", sans-serif;
   font-size: 16px;
