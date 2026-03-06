@@ -230,7 +230,7 @@ const SlippageCalculator = ({ inputAmount, onSlippageCalculated, onClose }) => {
 
           <button
             onClick={handleModalClose}
-            className="px-4 py-1 mt-5 bg-[var(--bg-color)] font-semibold md:text-2xl text-xl text-[var(--primary)] rounded font-orbitron"
+            className="px-4 py-1 mt-5 font-semibold md:text-2xl text-xl text-[var(--primary)] rounded font-orbitron"
           >
             Close
           </button>
