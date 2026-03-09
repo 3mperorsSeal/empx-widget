@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import './styles/global.scss';
+import { useState, useEffect } from "react";
+import "./styles/global.scss";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { pulsechain, sonic } from "wagmi/chains";
 import { Provider } from "react-redux";
@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import WagmiProviderWrapper from "./Wagmi/WagmiProvider";
 import Emp from "./pages/swap/Emp";
 import "react-toastify/dist/ReactToastify.css";
+import BG from "./assets/images/empx-bg1.webp";
 
 import { useWidgetConfig } from "./widget/useWidgetConfig";
 import WidgetBuilder from "./pages/WidgetBuilder";
@@ -23,15 +24,19 @@ const ChainSwitcher = ({ children }) => {
     if (isConnected && chainId) {
       // Define supported chains mapping
       const chainMap = {
-        'pulsechain': pulsechain.id,
+        pulsechain: pulsechain.id,
         // 'sonic': sonic.id,
         // 'ethw': 10001
       };
 
-      const targetChainId = chainMap[config.chain?.toLowerCase()] || pulsechain.id;
+      const targetChainId =
+        chainMap[config.chain?.toLowerCase()] || pulsechain.id;
       const supportedChainIds = Object.values(chainMap);
 
-      if (chainId !== targetChainId && supportedChainIds.includes(targetChainId)) {
+      if (
+        chainId !== targetChainId &&
+        supportedChainIds.includes(targetChainId)
+      ) {
         switchChain({ chainId: targetChainId });
       } else if (!supportedChainIds.includes(chainId)) {
         // Fallback if connected to unsupported chain
@@ -62,7 +67,7 @@ const WidgetLayout = () => {
     if (!value) {
       return null;
     }
-    const normalized = value.trim().replace('#', '');
+    const normalized = value.trim().replace("#", "");
     if (normalized.length < 6) {
       return null;
     }
@@ -76,33 +81,46 @@ const WidgetLayout = () => {
     return `${r}, ${g}, ${b}`;
   };
 
-  const primaryRgb = parseHexToRgb(config.primaryColor) || '255, 153, 0';
+  const primaryRgb = parseHexToRgb(config.primaryColor) || "255, 153, 0";
 
   const widgetStyle = {
-    '--primary-color': config.primaryColor,
-    '--primary': config.primaryColor,
-    '--primary-rgb': primaryRgb,
-    '--bg-color': config.background,
-    backgroundColor: 'var(--bg-color)',
-    color: '#ffffff',
+    "--primary-color": config.primaryColor,
+    "--primary": config.primaryColor,
+    "--primary-rgb": primaryRgb,
+    "--bg-color": config.background,
+    "--border-color": config.borderColor,
+    // backgroundColor: "var(--bg-color)",
+    color: "#ffffff",
   };
 
   return (
-    <div style={widgetStyle} className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-[880px]">
+    <div
+      style={widgetStyle}
+      className="min-h-screen flex flex-col items-center justify-center p-4 relative bg-[var(--bg-color)]"
+    >
+      {/* <img
+        src={BG}
+        alt="Background"
+        className="w-full h-full fixed top-0 left-0 -z-10"
+      /> */}
+      <div className="w-full">
         <Emp
           setPadding={setPadding}
           setBestRoute={setBestRoute}
           onTokensChange={handleTokensChange}
         />
       </div>
-      <ToastContainer position="top-right" theme={config.theme} autoClose={5000} />
+      <ToastContainer
+        position="top-right"
+        theme={config.theme}
+        autoClose={5000}
+      />
     </div>
   );
 };
 
 function App() {
-  const isBuilderRoute = window.location.pathname.startsWith('/builder');
+  const isBuilderRoute = window.location.pathname.startsWith("/builder");
 
   if (isBuilderRoute) {
     return <WidgetBuilder />;
@@ -116,7 +134,7 @@ function App() {
         </ChainSwitcher>
       </Provider>
     </WagmiProviderWrapper>
-  )
+  );
 }
 
-export default App
+export default App;

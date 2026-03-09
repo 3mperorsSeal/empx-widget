@@ -6,12 +6,9 @@ import { ERC20_ABI } from "./tokenFetch";
 import { useBalance } from "wagmi";
 import { useChainConfig } from "../../hooks/useChainConfig";
 import Web3 from "web3";
+import EL from "../../assets/images/emp-logo.png";
 
-const TokenListItem = ({
-  token,
-  walletAddress,
-  onClick,
-}) => {
+const TokenListItem = ({ token, walletAddress, onClick }) => {
   const { data: tokenBalance, isLoading: balanceLoading } = useBalance({
     address: walletAddress,
     token:
@@ -42,16 +39,16 @@ const TokenListItem = ({
           />
         </div>
         <div>
-          <div className="text-white font-orbitron font-black md:text-lg text-sm roboto leading-relaxed tracking-wide">
+          <div className="text-[#FFD484] font-orbitron font-bold md:text-base text-xs font-orbitron leading-relaxed tracking-wide">
             {token.name}
           </div>
-          <div className="text-white text-xs roboto">
+          <div className="text-white text-xs font-orbitron">
             {token.symbol || token.ticker}
           </div>
         </div>
       </div>
       <div className="text-right">
-        <div className="text-[var(--primary)] md:text-lg text-sm font-bold roboto tracking-wide">
+        <div className="text-[var(--primary)] md:text-lg text-sm font-bold font-orbitron tracking-wide">
           {balanceLoading ? "Loading..." : formattedBalance}
         </div>
       </div>
@@ -109,7 +106,7 @@ const Token = ({ onClose, onSelect }) => {
         (token.ticker &&
           token.ticker.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (token.address &&
-          token.address.toLowerCase().includes(searchQuery.toLowerCase()))
+          token.address.toLowerCase().includes(searchQuery.toLowerCase())),
     )
     .sort((a, b) => a.name.localeCompare(b.name));
 
@@ -196,7 +193,7 @@ const Token = ({ onClose, onSelect }) => {
     try {
       // First check if token exists in tokenList
       const existingToken = tokenList.find(
-        (token) => token.address.toLowerCase() === address.toLowerCase()
+        (token) => token.address.toLowerCase() === address.toLowerCase(),
       );
 
       if (existingToken) {
@@ -225,7 +222,7 @@ const Token = ({ onClose, onSelect }) => {
     if (web3.utils.isAddress(searchQuery)) {
       // First check if token exists in tokenList
       const existingToken = tokenList.find(
-        (token) => token.address.toLowerCase() === searchQuery.toLowerCase()
+        (token) => token.address.toLowerCase() === searchQuery.toLowerCase(),
       );
 
       if (existingToken) {
@@ -276,7 +273,7 @@ const Token = ({ onClose, onSelect }) => {
   }
 
   return (
-    <div className="bg-[var(--bg-color)] bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
+    <div className="bg-black !bg-opacity-40 py-10 flex justify-center items-center overflow-y-auto h-full my-auto fixed top-0 px-4 left-0 right-0 bottom-0 z-[9999] fade-in-out fade-out">
       <div className="w-full flex justify-center my-auto items-center">
         <div
           ref={modalRef}
@@ -301,16 +298,17 @@ const Token = ({ onClose, onSelect }) => {
             />
           </svg>
 
-          <div className="flex gap-4 items-center justify-center cursor-pointer mt-2 py-3">
-            <p className="md:text-2xl capitalize text-lg font-bold text-white roboto text-center tracking-widest">
+          <div className="flex gap-4 items-center justify-center cursor-pointer mt-2 md:py-3">
+            <h2 className="md:text-lg capitalize text-base font-medium text-white font-orbitron text-center tracking-widest flex gap-1 items-center justify-center">
+              <img src={EL} alt="EL" className="w-10 object-contain" />
               Select a token
-            </p>
+            </h2>
           </div>
           <div className="grid md:grid-cols-5 grid-cols-3 gap-2 mt-4 md:px-[24px] px-1">
             {featureTokens.map((token, index) => (
               <div
                 key={index}
-                className="flex flex-row items-center cursor-pointer roboto md:rounded-2xl rounded-lg border border-[var(--primary)] md:p-[14px] p-2"
+                className="flex flex-row items-center cursor-pointer font-orbitron md:rounded-xl rounded-lg border !border-[var(--border-color)] md:p-[12px] px-1 py-1.5"
                 onClick={() => handleFeaturedTokenClick(token)}
               >
                 {/* bg-rec */}
@@ -333,12 +331,13 @@ const Token = ({ onClose, onSelect }) => {
             ))}
           </div>
           <div className="flex gap-4 items-center justify-center cursor-pointer mt-1 py-3">
-            <p className="md:text-2xl capitalize text-lg font-bold text-white roboto text-center tracking-widest">
+            <h2 className="md:text-lg capitalize text-base font-medium text-white font-orbitron text-center tracking-widest flex gap-1 items-center justify-center">
+              <img src={EL} alt="EL" className="w-10 object-contain" />
               Search token
-            </p>
+            </h2>
           </div>
           {/* bg-search */}
-          <div className="mt-3 relative px-[10px] h-[54px] w-full flex gap-2 items-center border border-[var(--primary)] rounded-xl">
+          <div className="mt-3 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">
             <input
               type="text"
               placeholder="Search token name or paste address"

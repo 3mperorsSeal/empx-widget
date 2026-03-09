@@ -10,6 +10,7 @@ import Avalanche from "../../../assets/icons/avalanche.svg";
 import Polygon from "../../../assets/icons/polygon.svg";
 import OP from "../../../assets/icons/op.svg";
 import Base from "../../../assets/icons/base.svg";
+import EL from "../../../assets/images/emp-logo.png";
 
 const ChainPopup = ({
   setShowChainPopup,
@@ -20,7 +21,7 @@ const ChainPopup = ({
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredChains = availableChains.filter((c) =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase())
+    c.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const chainIcons = {
@@ -115,13 +116,14 @@ const ChainPopup = ({
           </svg>
 
           {/* Title */}
-          <h2 className="md:text-2xl capitalize text-lg font-medium text-white roboto text-center tracking-widest md:mt-10 mt-5">
+          <h2 className="mt-4 md:text-lg capitalize text-base font-medium text-white font-orbitron text-center tracking-widest flex gap-1 items-center justify-center">
+            <img src={EL} alt="EL" className="w-10 object-contain" />
             Select Chain
           </h2>
 
           {/* Search bar */}
           {/* bg-search */}
-          <div className="mt-8 relative px-[10px] h-[54px] w-full flex gap-2 items-center border border-[#FF9900] rounded-xl">
+          <div className="mt-8 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">
             <input
               type="text"
               placeholder="Search Chain"
@@ -166,11 +168,12 @@ const ChainPopup = ({
                     switchChain({ chainId: c.id });
                     setShowChainPopup(false);
                   }}
-                  className={`group relative mt-4 flex items-center px-1 gap-2 cursor-pointer rounded-lg py-3 w-full transition-all roboto hoverclip ${isActive ? "" : ""
+                  className={`group relative mt-2 flex items-center px-2 gap-2 cursor-pointer rounded-lg text-[#FFD484] hover:text-white py-3 w-full transition-all font-orbitron hoverclip ${
+                    isActive ? "" : ""
                     // sc1
-                    }`}
+                  }`}
                 >
-                  <div className="w-[33px] h-[33px] flex justify-center items-center shrink-0">
+                  <div className="w-[23px] h-[23px] flex justify-center items-center shrink-0">
                     <img
                       src={chainIcon}
                       alt={c.name}
@@ -187,8 +190,9 @@ const ChainPopup = ({
                     />
                   </div> */}
                   <span
-                    className={`font-orbitron text-2xl text-center px-3 ${isActive ? "text-[#fff]" : "text-[#fff]"
-                      }`}
+                    className={`font-orbitron text-base font-semibold text-center px-2 ${
+                      isActive ? "" : ""
+                    }`}
                   >
                     {c.name}
                   </span>

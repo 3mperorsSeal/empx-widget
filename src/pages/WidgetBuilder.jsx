@@ -9,6 +9,9 @@ const WidgetBuilder = () => {
   const [primaryColor, setPrimaryColor] = useState(
     DEFAULT_WIDGET_CONFIG.primaryColor,
   );
+  const [borderColor, setBorderColor] = useState(
+    DEFAULT_WIDGET_CONFIG.borderColor,
+  );
   const [integratorId, setIntegratorId] = useState("");
   const [tokenIn, setTokenIn] = useState("");
   const [tokenOut, setTokenOut] = useState("");
@@ -29,6 +32,8 @@ const WidgetBuilder = () => {
     }
     params.set("background", background);
     params.set("primaryColor", primaryColor);
+    params.set("borderColor", borderColor);
+
     if (integratorId.trim()) {
       params.set("integratorId", integratorId.trim());
     }
@@ -41,7 +46,15 @@ const WidgetBuilder = () => {
 
     const baseUrl = window.location.origin;
     return `${baseUrl}/?${params.toString()}`;
-  }, [chain, background, primaryColor, integratorId, tokenIn, tokenOut]);
+  }, [
+    chain,
+    background,
+    primaryColor,
+    borderColor,
+    integratorId,
+    tokenIn,
+    tokenOut,
+  ]);
 
   const iframeCode = useMemo(() => {
     return `<iframe
@@ -68,6 +81,7 @@ const WidgetBuilder = () => {
     setChain(DEFAULT_WIDGET_CONFIG.chain);
     setBackground(DEFAULT_WIDGET_CONFIG.background);
     setPrimaryColor(DEFAULT_WIDGET_CONFIG.primaryColor);
+    setBorderColor(DEFAULT_WIDGET_CONFIG.borderColor);
     setIntegratorId("");
     setTokenIn("");
     setTokenOut("");
@@ -81,6 +95,9 @@ const WidgetBuilder = () => {
     primaryColor.trim().length >= 7
       ? primaryColor.trim().slice(0, 7)
       : "#e49c01";
+
+  const borderPickerValue =
+    borderColor.trim().length >= 7 ? borderColor.trim().slice(0, 7) : "#ffffff";
 
   return (
     <div
@@ -140,7 +157,7 @@ const WidgetBuilder = () => {
                   value={chain}
                   onChange={(event) => setChain(event.target.value)}
                   placeholder={DEFAULT_WIDGET_CONFIG.chain}
-                  className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full"
+                  className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full capitalize"
                 />
               </label>
 
@@ -183,7 +200,24 @@ const WidgetBuilder = () => {
                   />
                 </div>
               </label>
-
+              <label className="flex flex-col gap-2 text-sm text-white/80">
+                Border Color
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={borderPickerValue}
+                    onChange={(event) => setBorderColor(event.target.value)}
+                    className="h-10 w-12 rounded-lg border border-white/10 bg-black/70 shrink-0"
+                  />
+                  <input
+                    type="text"
+                    value={borderColor}
+                    onChange={(event) => setBorderColor(event.target.value)}
+                    placeholder={DEFAULT_WIDGET_CONFIG.borderColor}
+                    className="flex-1 bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full min-w-0"
+                  />
+                </div>
+              </label>
               <label className="flex flex-col gap-2 text-sm text-white/80 md:col-span-2">
                 Integrator ID (optional)
                 <input
