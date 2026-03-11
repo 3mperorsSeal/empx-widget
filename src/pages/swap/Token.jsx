@@ -80,21 +80,21 @@ const Token = ({ onClose, onSelect }) => {
 
   const web3 = new Web3(getRpcUrl());
 
-  useEffect(() => {
-    const getAddress = async () => {
-      if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          });
-          setWalletAddress(accounts[0]);
-        } catch (error) {
-          console.error("Error getting wallet address:", error);
-        }
-      }
-    };
-    getAddress();
-  }, []);
+  // useEffect(() => {
+  //   const getAddress = async () => {
+  //     if (window.ethereum) {
+  //       try {
+  //         const accounts = await window.ethereum.request({
+  //           method: "eth_requestAccounts",
+  //         });
+  //         setWalletAddress(accounts[0]);
+  //       } catch (error) {
+  //         console.error("Error getting wallet address:", error);
+  //       }
+  //     }
+  //   };
+  //   getAddress();
+  // }, []);
 
   const filteredTokens = tokenList
     .filter(
@@ -305,7 +305,7 @@ const Token = ({ onClose, onSelect }) => {
             </h2>
           </div>
           <div className="grid md:grid-cols-5 grid-cols-3 gap-2 mt-4 md:px-[24px] px-1">
-            {featureTokens.map((token, index) => (
+            {featureTokens.slice(0, 10).map((token, index) => (
               <div
                 key={index}
                 className="flex flex-row items-center cursor-pointer font-orbitron md:rounded-xl rounded-lg border !border-[var(--border-color)] md:p-[12px] px-1 py-1.5"
@@ -331,10 +331,10 @@ const Token = ({ onClose, onSelect }) => {
             ))}
           </div>
           <div className="flex gap-4 items-center justify-center cursor-pointer mt-1 py-3">
-            <h2 className="md:text-lg capitalize text-base font-medium text-white font-orbitron text-center tracking-widest flex gap-1 items-center justify-center">
+            {/* <h2 className="md:text-lg capitalize text-base font-medium text-white font-orbitron text-center tracking-widest flex gap-1 items-center justify-center">
               <img src={EL} alt="EL" className="w-10 object-contain" />
               Search token
-            </h2>
+            </h2> */}
           </div>
           {/* bg-search */}
           <div className="mt-3 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">

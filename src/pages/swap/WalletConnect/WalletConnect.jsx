@@ -30,6 +30,9 @@ import TermsModal from "../TermsModal";
 // import Copy from "../../../assets/images/copy.png";
 // import Sbg from "../../../assets/images/sbg.png";
 
+import { useConnectPopup } from "../../../hooks/ConnectPopupContext";
+import { useSelectedChainId } from "../../../hooks/ChainContext";
+
 const ChainChangeHandler = ({
   chain,
   onChainChange,
@@ -62,9 +65,10 @@ export default function WalletConnect({
   const availableChains = useChains();
   const { connect, connectors } = useConnect();
 
+  const { showConnectPopup, setShowConnectPopup } = useConnectPopup();
+
   const [showPopup, setShowPopup] = useState(false);
   const [showChainPopup, setShowChainPopup] = useState(false);
-  const [showConnectPopup, setShowConnectPopup] = useState(false);
 
   const [showTermsPopup, setShowTermsPopup] = useState(false);
 
@@ -168,28 +172,48 @@ export default function WalletConnect({
 
         if (!ready) return null;
         if (!connected) {
+          const selectedChainId = useSelectedChainId();
+          const disconnectedChain = availableChains.find((c) => c.id === selectedChainId) || availableChains[0];
+
           return (
             <>
-              <button
-                // FF9900
-                className="new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
-                onClick={() => setShowConnectPopup(true)}
-                type="button"
-              >
-                Connect Wallet
-              </button>
-              {/* <button
-                className="wallet-bg-bridge1 gtw transition-all text-center font-extrabold"
-                onClick={() => setShowChainPopup(true)}
-                type="button"
-              >
-                Select Chain
-              </button> */}
+              <div className="flex items-center gap-2">
+                <button
+                  className="flex items-center gap-2 new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
+                  onClick={() => setShowChainPopup(true)}
+                  type="button"
+                >
+                  {disconnectedChain ? (
+                    <>
+                      <img
+                        src={
+                          chainIcons[disconnectedChain.name.toLowerCase()] ||
+                          disconnectedChain.iconUrl ||
+                          dummyImage
+                        }
+                        alt={disconnectedChain.name}
+                        className="md:w-6 md:h-6 w-4 h-4 object-contain rounded-full"
+                        onError={(e) => (e.currentTarget.src = dummyImage)}
+                      />
+                    </>
+                  ) : (
+                    "Select Chain"
+                  )}
+                </button>
+                <button
+                  // FF9900
+                  className="new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
+                  onClick={() => setShowConnectPopup(true)}
+                  type="button"
+                >
+                  Connect Wallet
+                </button>
+              </div>
               {showChainPopup && (
                 <ChainPopup
                   setShowChainPopup={setShowChainPopup}
                   availableChains={availableChains}
-                  chain={chain}
+                  chain={disconnectedChain}
                   switchChain={switchChain}
                 />
               )}
@@ -278,7 +302,7 @@ export default function WalletConnect({
                                 connector.name.includes("MetaMask")
                                   ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ymr3UNKopfI0NmUY95Dr-0589vG-91KuAA&s"
                                   : // "https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg"
-                                    connector.name.includes("WalletConnect")
+                                  connector.name.includes("WalletConnect")
                                     ? "https://avatars.githubusercontent.com/u/37784886?s=200&v=4"
                                     : connector.name.includes("Coinbase")
                                       ? "https://avatars.githubusercontent.com/u/18060234?s=200&v=4"

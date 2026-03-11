@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./styles/global.scss";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { pulsechain, sonic } from "wagmi/chains";
@@ -12,6 +12,8 @@ import BG from "./assets/images/empx-bg1.webp";
 
 import { useWidgetConfig } from "./widget/useWidgetConfig";
 import WidgetBuilder from "./pages/WidgetBuilder";
+import { ChainProvider, useSelectedChainId, useSetSelectedChainId } from "./hooks/ChainContext";
+import { ConnectPopupProvider } from "./hooks/ConnectPopupContext";
 
 // ChainSwitcher logic
 const ChainSwitcher = ({ children }) => {
@@ -19,31 +21,51 @@ const ChainSwitcher = ({ children }) => {
   const { switchChain } = useSwitchChain();
   const { isConnected } = useAccount();
   const config = useWidgetConfig();
+  const selectedChainId = useSelectedChainId();
+  const setSelectedChainId = useSetSelectedChainId();
+
+  const [hasInitialized, setHasInitialized] = useState(false);
+  const prevConfigChainRef = useRef(config.chain);
 
   useEffect(() => {
-    if (isConnected && chainId) {
-      // Define supported chains mapping
-      const chainMap = {
-        pulsechain: pulsechain.id,
-        // 'sonic': sonic.id,
-        // 'ethw': 10001
-      };
+    const chainMap = {
+      pulsechain: pulsechain.id,
+      sonic: sonic.id,
+      ethw: 10001
+    };
+    const targetChainId = chainMap[config.chain?.toLowerCase()] || pulsechain.id;
+    const supportedChainIds = Object.values(chainMap);
 
-      const targetChainId =
-        chainMap[config.chain?.toLowerCase()] || pulsechain.id;
-      const supportedChainIds = Object.values(chainMap);
+    const configChainChanged = prevConfigChainRef.current !== config.chain;
 
-      if (
-        chainId !== targetChainId &&
-        supportedChainIds.includes(targetChainId)
-      ) {
-        switchChain({ chainId: targetChainId });
-      } else if (!supportedChainIds.includes(chainId)) {
-        // Fallback if connected to unsupported chain
-        switchChain({ chainId: pulsechain.id });
+    if (!hasInitialized) {
+      if (isConnected) {
+        if (chainId !== targetChainId && supportedChainIds.includes(targetChainId)) {
+          switchChain?.({ chainId: targetChainId });
+        } else if (!supportedChainIds.includes(chainId)) {
+          switchChain?.({ chainId: pulsechain.id });
+        }
+      } else {
+        setSelectedChainId(targetChainId);
+      }
+      setHasInitialized(true);
+    } else {
+      // Re-run if config.chain changes (Builder mode)
+      if (isConnected) {
+        if (chainId && !supportedChainIds.includes(chainId)) {
+          switchChain?.({ chainId: pulsechain.id });
+        } else if (configChainChanged && chainId !== targetChainId && config.chain) {
+          switchChain?.({ chainId: targetChainId });
+        }
+      } else {
+        if (configChainChanged && selectedChainId !== targetChainId) {
+          setSelectedChainId(targetChainId);
+        }
       }
     }
-  }, [chainId, isConnected, switchChain, config.chain]);
+
+    prevConfigChainRef.current = config.chain;
+  }, [chainId, isConnected, switchChain, config.chain, hasInitialized, selectedChainId, setSelectedChainId]);
 
   return children;
 };
@@ -128,11 +150,15 @@ function App() {
 
   return (
     <WagmiProviderWrapper appType="swap">
-      <Provider store={store}>
-        <ChainSwitcher>
-          <WidgetLayout />
-        </ChainSwitcher>
-      </Provider>
+      <ChainProvider>
+        <ConnectPopupProvider>
+          <Provider store={store}>
+            <ChainSwitcher>
+              <WidgetLayout />
+            </ChainSwitcher>
+          </Provider>
+        </ConnectPopupProvider>
+      </ChainProvider>
     </WagmiProviderWrapper>
   );
 }

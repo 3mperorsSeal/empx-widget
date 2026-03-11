@@ -38,6 +38,7 @@ import WalletConnect from "./WalletConnect/WalletConnect";
 import { WPLS } from "../../utils/abis/wplsABI";
 import { WETHW } from "../../utils/abis/wethwABI";
 import { WSONIC } from "../../utils/abis/wsonicABI";
+import { fetchTokenPrice } from "../../utils/priceFetcher";
 
 import { set } from "zod";
 
@@ -159,7 +160,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
               t.address.toLowerCase() === config.defaultTokenIn.toLowerCase(),
           )
           : null;
-        setSelectedTokenA(fromConfig || tokenList[0]);
+        setSelectedTokenA(null);
       }
       if (!selectedTokenB) {
         const toConfig = config.defaultTokenOut
@@ -169,7 +170,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
               config.defaultTokenOut.toLowerCase(),
           )
           : null;
-        setSelectedTokenB(toConfig || tokenList[1]);
+        setSelectedTokenB(null);
       }
     }
   }, [tokenList, config.defaultTokenIn, config.defaultTokenOut]);
@@ -504,7 +505,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
     setTokenVisible(false);
   };
 
-  
+
 
   const handleSlippageCalculated = (adjustedAmount) => {
     const tokenDecimals = selectedTokenB.decimal;
@@ -519,94 +520,30 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   };
 
   useEffect(() => {
-    const fetchConversionRateTokenA = async () => {
-      try {
-        // Check if required values are available
-        if (!currentChain?.name || !selectedTokenA?.address) {
-          return;
-        }
-
-        // Determine which address to use for the API call
-        const addressToFetch =
-          selectedTokenA?.address === EMPTY_ADDRESS && wethAddress
-            ? wethAddress?.toLowerCase()
-            : selectedTokenA?.address?.toLowerCase();
-
-        const response = await fetch(
-          `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`,
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // Validate and extract token prices
-        const tokenPrices = data?.data?.attributes?.token_prices;
-        if (!tokenPrices) {
-          throw new Error("Token prices not found");
-        }
-
-        // Use the correct address to look up the price
-        const tokenPrice =
-          selectedTokenA?.address === EMPTY_ADDRESS
-            ? tokenPrices[wethAddress?.toLowerCase()]
-            : tokenPrices[addressToFetch];
-
-        setConversionRate(tokenPrice);
-      } catch (error) {
-        console.error("Error fetching token price:", error.message);
+    const getPriceTokenA = async () => {
+      if (!currentChain?.name || !selectedTokenA?.address) return;
+      
+      const price = await fetchTokenPrice(selectedTokenA.address, wethAddress, symbol);
+      if (price) {
+        setConversionRate(price);
       }
     };
 
-    fetchConversionRateTokenA();
-  }, [chainId, selectedTokenA?.address, wethAddress]);
+    getPriceTokenA();
+  }, [chainId, selectedTokenA?.address, wethAddress, symbol]);
 
   useEffect(() => {
-    const fetchConversionRateTokenB = async () => {
-      try {
-        // Check if required values are available
-        if (!currentChain?.name || !selectedTokenB?.address) {
-          return;
-        }
+    const getPriceTokenB = async () => {
+      if (!currentChain?.name || !selectedTokenB?.address) return;
 
-        // Determine which address to use for the API call
-        const addressToFetch =
-          selectedTokenB?.address === EMPTY_ADDRESS && wethAddress
-            ? wethAddress?.toLowerCase()
-            : selectedTokenB?.address?.toLowerCase();
-
-        const response = await fetch(
-          `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`,
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // Validate and extract token prices
-        const tokenPrices = data?.data?.attributes?.token_prices;
-        if (!tokenPrices) {
-          throw new Error("Token prices not found");
-        }
-
-        // Use the correct address to look up the price
-        const tokenPrice =
-          selectedTokenB?.address === EMPTY_ADDRESS
-            ? tokenPrices[wethAddress?.toLowerCase()]
-            : tokenPrices[addressToFetch];
-
-        setConversionRateTokenB(tokenPrice);
-      } catch (error) {
-        console.error("Error fetching token price:", error.message);
+      const price = await fetchTokenPrice(selectedTokenB.address, wethAddress, symbol);
+      if (price) {
+        setConversionRateTokenB(price);
       }
     };
 
-    fetchConversionRateTokenB();
-  }, [chainId, selectedTokenB?.address, wethAddress]);
+    getPriceTokenB();
+  }, [chainId, selectedTokenB?.address, wethAddress, symbol]);
 
 
   useEffect(() => {
@@ -1456,7 +1393,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
 
       {isSlippageVisible && (
         <SlippageCalculator
-          inputAmount={localBestRoute?.amountOut}
+          inputAmount={tradeInfo?.amountOut}
           onSlippageCalculated={handleSlippageCalculated}
           onClose={() => setSlippageVisible(false)}
         />

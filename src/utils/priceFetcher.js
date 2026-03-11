@@ -1,0 +1,47 @@
+export const fetchTokenPrice = async (tokenAddress, wethAddress, symbol) => {
+  if (!tokenAddress || !symbol) return null;
+
+  const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const addressToFetch =
+    tokenAddress === EMPTY_ADDRESS && wethAddress
+      ? wethAddress.toLowerCase()
+      : tokenAddress.toLowerCase();
+
+  try {
+    // Primary: GeckoTerminal
+    const geckoResponse = await fetch(
+      `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`
+    );
+
+    if (geckoResponse.ok) {
+      const data = await geckoResponse.json();
+      const tokenPrices = data?.data?.attributes?.token_prices;
+      if (tokenPrices && tokenPrices[addressToFetch]) {
+        return tokenPrices[addressToFetch];
+      }
+    }
+
+    throw new Error("GeckoTerminal fetch failed or price not found");
+  } catch (error) {
+    console.warn("GeckoTerminal error, falling back to DexScreener:", error.message);
+
+    // Fallback: DexScreener
+    try {
+      const dsResponse = await fetch(
+        `https://api.dexscreener.com/latest/dex/tokens/${addressToFetch}`
+      );
+
+      if (dsResponse.ok) {
+        const dsData = await dsResponse.json();
+        if (dsData && dsData.pairs && dsData.pairs.length > 0) {
+          // Return the price of the most liquid pair
+          return dsData.pairs[0].priceUsd;
+        }
+      }
+    } catch (dsError) {
+      console.error("DexScreener fetch also failed:", dsError.message);
+    }
+
+    return null;
+  }
+};
