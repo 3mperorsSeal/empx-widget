@@ -18,6 +18,15 @@ import {
 } from "wagmi";
 import SlippageCalculator from "./SlippageCalculator";
 import { EmpsealRouterLiteV3 } from "../../utils/lite/EmpsealRouterLiteV3";
+import {
+  PLS_ROUTER_ABI,
+  ETHW_ROUTER_ABI,
+  SONIC_ROUTER_ABI,
+  BASECHAIN_ROUTER_ABI,
+  SEI_ROUTER_ABI,
+  BERA_ROUTER_ABI,
+  ROOTSTOCK_ROUTER_ABI,
+} from "../../utils/abis/empSealRouterAbi";
 import { EmpsealRouterV7 } from "../../utils/lite/EmpsealRouterV7";
 import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
@@ -38,9 +47,12 @@ import WalletConnect from "./WalletConnect/WalletConnect";
 import { WPLS } from "../../utils/abis/wplsABI";
 import { WETHW } from "../../utils/abis/wethwABI";
 import { WSONIC } from "../../utils/abis/wsonicABI";
-import { fetchTokenPrice } from "../../utils/priceFetcher";
+import { WETH } from "../../utils/abis/wethBaseABI";
+import { WSEI } from "../../utils/abis/wseiABI";
+import { WBERA } from "../../utils/abis/wberaABI";
+import { WRBTC } from "../../utils/abis/wrbtcABI";
 
-import { set } from "zod";
+import { fetchTokenPrice } from "../../utils/priceFetcher";
 
 const getWrappedTokenABI = (chainId) => {
   switch (chainId) {
@@ -48,9 +60,37 @@ const getWrappedTokenABI = (chainId) => {
       return WETHW;
     case 146:
       return WSONIC;
+    case 8453:
+      return WETH;
+    case 1329:
+      return WSEI;
+    case 80094:
+      return WBERA;
+    case 30:
+      return WRBTC;
     case 369:
     default:
       return WPLS;
+  }
+};
+
+const getRouterABI = (chainId) => {
+  switch (chainId) {
+    case 10001:
+      return ETHW_ROUTER_ABI;
+    case 146:
+      return SONIC_ROUTER_ABI;
+    case 8453:
+      return BASECHAIN_ROUTER_ABI;
+    case 1329:
+      return SEI_ROUTER_ABI;
+    case 80094:
+      return BERA_ROUTER_ABI;
+    case 30:
+      return ROOTSTOCK_ROUTER_ABI;
+    case 369:
+    default:
+      return PLS_ROUTER_ABI;
   }
 };
 
@@ -78,6 +118,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const [swapHash, setSwapHash] = useState("");
   const [swapSuccess, setSwapSuccess] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState("");
+  const [selectedPercentageBuy, setSelectedPercentageBuy] = useState("");
   const { address, chain } = useAccount();
   const [balanceAddress, setBalanceAddress] = useState(null);
   const { data: datas } = useBalance({ address });
@@ -124,9 +165,38 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
     maxHops,
     stableTokens,
   } = useChainConfig();
+  const prevChainIdRef = useRef(chainId);
 
   const DEADLINE_MINUTES = 10;
   const deadline = Math.floor(Date.now() / 1000) + DEADLINE_MINUTES * 60;
+
+  useEffect(() => {
+    if (prevChainIdRef.current === chainId) return;
+
+    setSelectedTokenA(null);
+    setSelectedTokenB(null);
+    setTokenVisible(false);
+    setAmountIn("0");
+    setDebouncedAmountIn("0");
+    setAmountOut("0");
+    setTradeInfo(undefined);
+    setNeedsApproval(false);
+    setSelectedPercentage("");
+    setSelectedPercentageBuy("");
+    setConversionRate(null);
+    setConversionRateTokenB(null);
+    setUsdValue("0.00");
+    setUsdValueTokenA("0.00");
+    setUsdValueTokenB("0.00");
+    setInitialQuote("");
+    setNewQuote("");
+    setShowPriceAlert(false);
+    setIsSlippageApplied(false);
+    setRoute([]);
+    setAdapter([]);
+
+    prevChainIdRef.current = chainId;
+  }, [chainId]);
 
   const convertToBigInt = (amount, decimals) => {
     // Add input validation
@@ -152,27 +222,38 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   // Handle Widget Config Configuration
   // Handle Token Selection - supports URL params for default tokens
   useEffect(() => {
-    if (tokenList && tokenList.length > 0) {
-      if (!selectedTokenA) {
-        const fromConfig = config.defaultTokenIn
-          ? tokenList.find(
-            (t) =>
-              t.address.toLowerCase() === config.defaultTokenIn.toLowerCase(),
-          )
-          : null;
-        setSelectedTokenA(null);
-      }
-      if (!selectedTokenB) {
-        const toConfig = config.defaultTokenOut
-          ? tokenList.find(
-            (t) =>
-              t.address.toLowerCase() ===
-              config.defaultTokenOut.toLowerCase(),
-          )
-          : null;
-        setSelectedTokenB(null);
-      }
-    }
+    if (!tokenList || tokenList.length === 0) return;
+
+    const getTokenByAddress = (address) => {
+      if (!address) return null;
+      return (
+        tokenList.find(
+          (token) => token.address.toLowerCase() === address.toLowerCase(),
+        ) || null
+      );
+    };
+
+    const fromConfig = getTokenByAddress(config.defaultTokenIn);
+    const toConfig = getTokenByAddress(config.defaultTokenOut);
+
+    // Apply query param defaults when provided; otherwise clear invalid carry-over token.
+    setSelectedTokenA((prev) => {
+      if (fromConfig) return fromConfig;
+      if (!prev) return null;
+      const stillExists = tokenList.some(
+        (token) => token.address.toLowerCase() === prev.address.toLowerCase(),
+      );
+      return stillExists ? prev : null;
+    });
+
+    setSelectedTokenB((prev) => {
+      if (toConfig) return toConfig;
+      if (!prev) return null;
+      const stillExists = tokenList.some(
+        (token) => token.address.toLowerCase() === prev.address.toLowerCase(),
+      );
+      return stillExists ? prev : null;
+    });
   }, [tokenList, config.defaultTokenIn, config.defaultTokenOut]);
 
   // Dynamic Fee Update
@@ -216,17 +297,25 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       );
   }, [selectedTokenA?.address, selectedTokenB?.address, wethAddress]);
 
+  const routerABI = useMemo(() => getRouterABI(chainId), [chainId]);
+
+  const hasValidAmountIn =
+    !!debouncedAmountIn &&
+    !isNaN(parseFloat(debouncedAmountIn)) &&
+    parseFloat(debouncedAmountIn) > 0;
+
   const {
     data,
     isLoading: quoteLoading,
     refetch: quoteRefresh,
     error,
   } = useReadContract({
-    abi: EmpsealRouterV7,
+    chainId,
+    abi: EmpsealRouterV7, // change to routerABI when deployed on all chains
     address: routerAddress,
     functionName: "findBestPath",
     args: [
-      debouncedAmountIn && selectedTokenA && !isNaN(parseFloat(debouncedAmountIn))
+      hasValidAmountIn && selectedTokenA
         ? convertToBigInt(
           parseFloat(debouncedAmountIn),
           parseInt(selectedTokenA.decimal) || 18
@@ -240,7 +329,13 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         : selectedTokenB?.address || EMPTY_ADDRESS,
       BigInt(maxHops?.toString() || "3"),
     ],
-    enabled: !isDirectRoute && !!selectedTokenA && !!selectedTokenB,
+    enabled:
+      !isDirectRoute &&
+      !!chainId &&
+      !!routerAddress &&
+      !!selectedTokenA &&
+      !!selectedTokenB &&
+      hasValidAmountIn,
   });
 
   const isQuoting = quoteLoading;
@@ -826,13 +921,12 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
     // Green for positive (profit), Red for negative (loss)
     if (value > 0) return "text-green-500";
     if (value < 0) return "text-red-500";
-    return "text-black";
+    return "text-white";
   };
 
   const [dollarinfo, setDollarInfo] = useState(false);
   const [dollarinfo1, setDollarInfo1] = useState(false);
 
-  const [selectedPercentageBuy, setSelectedPercentageBuy] = useState("");
   const handlePercentageChangeBuy = (percentage) => {
     const parsedPercentage = percentage === "" ? "" : parseInt(percentage);
     setSelectedPercentageBuy(parsedPercentage);
@@ -1058,7 +1152,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                       <button
                         key={value}
                         type="button"
-                        className={`py-1 border bg-[#EEC485] hover:text-white flex justify-center items-center rounded-full md:text-[10px] text-[8px] font-medium font-orbitron md:w-12 w-11 px-2
+                        className={`py-1 border bg-[#EEC485] hover:text-white flex justify-center items-center rounded-full md:text-[10px] text-[8px] font-bold font-orbitron md:w-12 w-11 px-2
             ${selectedPercentage === value
                             ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--border-color)]"
                             : "bg-[#EEC485] text-[#040404] border border-[var(--border-color)] hover:border-[var(--border-color)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
@@ -1269,14 +1363,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                     </span>
                     <span className="font-bold mt-1">Market Price</span>
                   </div>
-                  <div className="text-zinc-200 text-[10px] font-normal font-orbitron leading-normal flex md:gap-2 gap-1 justify-end">
+                  {/* <div className="text-zinc-200 text-[10px] font-normal font-orbitron leading-normal flex md:gap-2 gap-1 justify-end">
                     <span></span>
                     {[25, 50, 75, 100].map((value) => (
                       <button
                         key={value}
                         type="button"
                         className={`py-1 border bg-[#EEC485] hover:text-white flex justify-center items-center rounded-full md:text-[10px] text-[8px] font-medium font-orbitron md:w-12 w-11 px-2
-            ${selectedPercentageBuy === value
+                          ${selectedPercentageBuy === value
                             ? "!text-[var(--primary-color)] hover:!text-[var(--primary-color)] !bg-[var(--bg-color)] border-[var(--border-color)]"
                             : "bg-[#EEC485] text-[#040404] border border-[var(--border-color)] hover:border-[var(--border-color)] hover:bg-[var(--bg-color)] hover:!text-[var(--primary-color]"
                           }`}
@@ -1286,7 +1380,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                         {value}%
                       </button>
                     ))}
-                  </div>
+                  </div> */}
                 </div>
                 <div className="text-right relative text-white md:text-xs text-[10px] usd-spacing truncate font-orbitron mt-2 text-sh1 flex justify-end gap-1">
                   <div className="relative inline-block">

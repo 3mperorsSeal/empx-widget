@@ -2,22 +2,34 @@ export const fetchTokenPrice = async (tokenAddress, wethAddress, symbol) => {
   if (!tokenAddress || !symbol) return null;
 
   const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
+  const networkSlugMap = {
+    pulse: "pulsechain",
+    pulsechain: "pulsechain",
+    ethw: "ethw",
+    sonic: "sonic",
+  };
+
   const addressToFetch =
     tokenAddress === EMPTY_ADDRESS && wethAddress
       ? wethAddress.toLowerCase()
       : tokenAddress.toLowerCase();
+  const networkSlug =
+    networkSlugMap[symbol.toLowerCase()] || symbol.toLowerCase();
 
   try {
     // Primary: GeckoTerminal
     const geckoResponse = await fetch(
-      `https://api.geckoterminal.com/api/v2/simple/networks/${symbol}/token_price/${addressToFetch}`
+      `https://api.geckoterminal.com/api/v2/simple/networks/${networkSlug}/token_price/${addressToFetch}`
     );
 
     if (geckoResponse.ok) {
       const data = await geckoResponse.json();
       const tokenPrices = data?.data?.attributes?.token_prices;
-      if (tokenPrices && tokenPrices[addressToFetch]) {
-        return tokenPrices[addressToFetch];
+      if (tokenPrices) {
+        const geckoPrice = tokenPrices[addressToFetch];
+        if (geckoPrice && !Number.isNaN(Number(geckoPrice))) {
+          return geckoPrice;
+        }
       }
     }
 
@@ -34,8 +46,14 @@ export const fetchTokenPrice = async (tokenAddress, wethAddress, symbol) => {
       if (dsResponse.ok) {
         const dsData = await dsResponse.json();
         if (dsData && dsData.pairs && dsData.pairs.length > 0) {
-          // Return the price of the most liquid pair
-          return dsData.pairs[0].priceUsd;
+          const bestPair = dsData.pairs
+            .filter((pair) => pair?.priceUsd)
+            .sort(
+              (a, b) =>
+                Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0),
+            )[0];
+
+          return bestPair?.priceUsd || null;
         }
       }
     } catch (dsError) {

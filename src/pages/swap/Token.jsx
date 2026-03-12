@@ -1,25 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Arrow from "../../assets/icons/downarrow.svg";
-import Sbg from "../../assets/images/sbg.png";
-import Clip from "../../assets/images/bg-clip.png";
 import { ERC20_ABI } from "./tokenFetch";
-import { useBalance } from "wagmi";
 import { useChainConfig } from "../../hooks/useChainConfig";
+import { useMulticallBalances } from "../../hooks/useMulticallBalances";
 import Web3 from "web3";
 import EL from "../../assets/images/emp-logo.png";
 
-const TokenListItem = ({ token, walletAddress, onClick }) => {
-  const { data: tokenBalance, isLoading: balanceLoading } = useBalance({
-    address: walletAddress,
-    token:
-      token.address === "0x0000000000000000000000000000000000000000"
-        ? undefined
-        : token.address,
-    watch: true,
-  });
-
-  const formattedBalance = tokenBalance
-    ? parseFloat(tokenBalance.formatted).toFixed(4)
+const TokenListItem = ({ token, balance, isLoading, onClick }) => {
+  const formattedBalance = balance
+    ? parseFloat(balance.formatted).toFixed(4)
     : "0.0000";
 
   return (
@@ -30,16 +19,16 @@ const TokenListItem = ({ token, walletAddress, onClick }) => {
       <div className="flex items-center gap-2">
         <div className="flex justify-center items-center rounded-full p-1">
           <img
-            src={token.logoURI || token.image}
-            className="w-6 h-6 object-contain"
+            src={token.logoURI || token.image || EL}
             alt={token.name}
-            onError={(e) => {
-              e.target.src = "path/to/fallback/image.png";
+            className="w-6 h-6 object-contain rounded-full"
+            onError={(event) => {
+              event.currentTarget.src = EL;
             }}
           />
         </div>
         <div>
-          <div className="text-[#FFD484] font-orbitron font-bold md:text-base text-xs font-orbitron leading-relaxed tracking-wide">
+          <div className="text-[#FFD484] font-orbitron font-bold md:text-base text-xs leading-relaxed tracking-wide">
             {token.name}
           </div>
           <div className="text-white text-xs font-orbitron">
@@ -49,7 +38,7 @@ const TokenListItem = ({ token, walletAddress, onClick }) => {
       </div>
       <div className="text-right">
         <div className="text-[var(--primary)] md:text-lg text-sm font-bold font-orbitron tracking-wide">
-          {balanceLoading ? "Loading..." : formattedBalance}
+          {isLoading ? "Loading..." : formattedBalance}
         </div>
       </div>
     </div>
@@ -62,8 +51,10 @@ const Token = ({ onClose, onSelect }) => {
   const [tokenDetails, setTokenDetails] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [walletAddress, setWalletAddress] = useState(null);
   const modalRef = useRef(null);
+
+  const { balances, isLoading: balancesLoading } =
+    useMulticallBalances(tokenList);
 
   const getRpcUrl = () => {
     switch (chainId) {
@@ -78,82 +69,49 @@ const Token = ({ onClose, onSelect }) => {
     }
   };
 
-  const web3 = new Web3(getRpcUrl());
+  const web3 = useMemo(() => new Web3(getRpcUrl()), [chainId]);
 
-  // useEffect(() => {
-  //   const getAddress = async () => {
-  //     if (window.ethereum) {
-  //       try {
-  //         const accounts = await window.ethereum.request({
-  //           method: "eth_requestAccounts",
-  //         });
-  //         setWalletAddress(accounts[0]);
-  //       } catch (error) {
-  //         console.error("Error getting wallet address:", error);
-  //       }
-  //     }
-  //   };
-  //   getAddress();
-  // }, []);
+  const filteredTokens = useMemo(() => {
+    const seen = new Set();
 
-  const filteredTokens = tokenList
-    .filter(
-      (token) =>
-        (token.name &&
-          token.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (token.symbol &&
-          token.symbol.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (token.ticker &&
-          token.ticker.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (token.address &&
-          token.address.toLowerCase().includes(searchQuery.toLowerCase())),
-    )
-    .sort((a, b) => a.name.localeCompare(b.name));
+    return tokenList
+      .filter((token) => {
+        const address = token.address?.toLowerCase();
+        if (!address || seen.has(address)) return false;
+        seen.add(address);
+        return true;
+      })
+      .filter(
+        (token) =>
+          (token.name &&
+            token.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (token.symbol &&
+            token.symbol.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (token.ticker &&
+            token.ticker.toLowerCase().includes(searchQuery.toLowerCase())) ||
+          (token.address &&
+            token.address.toLowerCase().includes(searchQuery.toLowerCase())),
+      );
+  }, [tokenList, searchQuery]);
 
-  const SortedTokenList = () => {
-    // const { symbol, wethAddress } = useChainConfig();
+  const sortedTokens = useMemo(() => {
+    return [...filteredTokens].sort((a, b) => {
+      const balanceA = parseFloat(
+        balances.get(a.address.toLowerCase())?.formatted || "0",
+      );
+      const balanceB = parseFloat(
+        balances.get(b.address.toLowerCase())?.formatted || "0",
+      );
 
-    const tokenPromises = filteredTokens.map((token) => ({
-      token,
-      balancePromise: useBalance({
-        address: walletAddress,
-        token:
-          token.address === "0x0000000000000000000000000000000000000000"
-            ? undefined
-            : token.address,
-        watch: true,
-      }),
-    }));
-
-    // Sort based on balance
-    const sortedTokens = [...tokenPromises].sort((a, b) => {
-      const balanceA = parseFloat(a.balancePromise.data?.formatted || "0");
-      const balanceB = parseFloat(b.balancePromise.data?.formatted || "0");
-
-      if (balanceA > 0 && balanceB > 0) {
-        if (balanceA !== balanceB) {
-          return balanceB - balanceA; // Sort descending
-        }
+      if (balanceA > 0 && balanceB > 0 && balanceA !== balanceB) {
+        return balanceB - balanceA;
       }
       if (balanceA > 0 && balanceB === 0) return -1;
       if (balanceB > 0 && balanceA === 0) return 1;
 
-      return a.token.name.localeCompare(b.token.name);
+      return (a.name || "").localeCompare(b.name || "");
     });
-
-    return (
-      <div className="max-h-[400px] overflow-y-auto px-3">
-        {sortedTokens.map(({ token }, index) => (
-          <TokenListItem
-            key={index}
-            token={token}
-            walletAddress={walletAddress}
-            onClick={handleTokenSelect}
-          />
-        ))}
-      </div>
-    );
-  };
+  }, [filteredTokens, balances]);
 
   const lookupTokenByAddress = async (address) => {
     if (!web3.utils.isAddress(address)) {
@@ -169,7 +127,7 @@ const Token = ({ onClose, onSelect }) => {
         tokenContract.methods.decimals().call(),
       ]);
 
-      const decimal = Number(decimalsRaw); // Convert BigInt to Number
+      const decimal = Number(decimalsRaw);
       return {
         address,
         name,
@@ -179,8 +137,8 @@ const Token = ({ onClose, onSelect }) => {
         image: `https://raw.githubusercontent.com/piteasio/app-tokens/main/token-logo/${address}.png`,
         ticker: symbol,
       };
-    } catch (error) {
-      console.error("Error fetching token details:", error);
+    } catch (lookupError) {
+      console.error("Error fetching token details:", lookupError);
       return null;
     }
   };
@@ -188,31 +146,33 @@ const Token = ({ onClose, onSelect }) => {
   const handleTokenLookup = async (address) => {
     setError(null);
     setTokenDetails(null);
+
+    if (!web3.utils.isAddress(address)) {
+      setError("Token not found or invalid address.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // First check if token exists in tokenList
       const existingToken = tokenList.find(
         (token) => token.address.toLowerCase() === address.toLowerCase(),
       );
 
       if (existingToken) {
         setTokenDetails(existingToken);
-        setError(null);
         return;
       }
 
-      // Only proceed with ABI calls if token is not in tokenList
       const details = await lookupTokenByAddress(address);
       if (details) {
         setTokenDetails(details);
-        setError(null);
       } else {
         setError("Token not found or invalid address.");
       }
-    } catch (err) {
+    } catch (lookupError) {
       setError("Failed to fetch token details.");
-      console.error(err);
+      console.error(lookupError);
     } finally {
       setIsLoading(false);
     }
@@ -220,7 +180,6 @@ const Token = ({ onClose, onSelect }) => {
 
   useEffect(() => {
     if (web3.utils.isAddress(searchQuery)) {
-      // First check if token exists in tokenList
       const existingToken = tokenList.find(
         (token) => token.address.toLowerCase() === searchQuery.toLowerCase(),
       );
@@ -235,7 +194,7 @@ const Token = ({ onClose, onSelect }) => {
       setTokenDetails(null);
       setError(null);
     }
-  }, [searchQuery]);
+  }, [searchQuery, tokenList, web3]);
 
   const handleTokenSelect = (token) => {
     if (tokenDetails && token.address === tokenDetails.address) {
@@ -279,7 +238,6 @@ const Token = ({ onClose, onSelect }) => {
           ref={modalRef}
           className="md:max-w-[618px] w-full rounded-3xl relative py-4 md:px-10 px-4 mx-auto clip-bg"
         >
-          {/* <img src={Clip} /> */}
           <svg
             onClick={onClose}
             className="absolute cursor-pointer md:right-14 right-7 top-12 tilt"
@@ -304,23 +262,22 @@ const Token = ({ onClose, onSelect }) => {
               Select a token
             </h2>
           </div>
-          <div className="grid md:grid-cols-5 grid-cols-3 gap-2 mt-4 md:px-[24px] px-1">
-            {featureTokens.slice(0, 10).map((token, index) => (
+          <div className="grid md:grid-cols-5 grid-cols-4 gap-2 mt-4 md:px-2 px-1">
+            {featureTokens.slice(0, 10).map((token) => (
               <div
-                key={index}
+                key={token.address}
                 className="flex flex-row items-center cursor-pointer font-orbitron md:rounded-xl rounded-lg border !border-[var(--border-color)] md:p-[12px] px-1 py-1.5"
                 onClick={() => handleFeaturedTokenClick(token)}
               >
-                {/* bg-rec */}
                 <span className="flex items-center">
                   <div className="relative flex justify-center items-center">
                     <img
-                      src={token.logoURI || token.image}
+                      src={token.logoURI || token.image || EL}
                       alt={token.name}
                       className="w-4 h-4 rounded-full relative z-10 p-[1px] object-contain"
-                      onError={(e) =>
-                        (e.target.src = "path/to/fallback/image.png")
-                      }
+                      onError={(event) => {
+                        event.currentTarget.src = EL;
+                      }}
                     />
                   </div>
                   <p className="text-white font-black text-xs mt-0 ms-2 font-orbitron">
@@ -330,13 +287,7 @@ const Token = ({ onClose, onSelect }) => {
               </div>
             ))}
           </div>
-          <div className="flex gap-4 items-center justify-center cursor-pointer mt-1 py-3">
-            {/* <h2 className="md:text-lg capitalize text-base font-medium text-white font-orbitron text-center tracking-widest flex gap-1 items-center justify-center">
-              <img src={EL} alt="EL" className="w-10 object-contain" />
-              Search token
-            </h2> */}
-          </div>
-          {/* bg-search */}
+
           <div className="mt-3 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">
             <input
               type="text"
@@ -365,15 +316,18 @@ const Token = ({ onClose, onSelect }) => {
             </button>
           </div>
 
-          {/* <hr className="h-px my-8 bg-gray-200 border-[#3b3c4e] h-hr" /> */}
           <div className="mt-4 px-[2px]">
-            {/* <div className="flex justify-between gap-4 items-center">
-              <p className="text-white text-sm font-medium roboto leading-relaxed tracking-wide">
-                Token Name
-              </p>
-            </div> */}
-
-            <SortedTokenList />
+            <div className="max-h-[400px] overflow-y-auto px-3">
+              {sortedTokens.map((token) => (
+                <TokenListItem
+                  key={token.address}
+                  token={token}
+                  balance={balances.get(token.address.toLowerCase())}
+                  isLoading={balancesLoading}
+                  onClick={handleTokenSelect}
+                />
+              ))}
+            </div>
 
             {isLoading && (
               <div className="text-white text-center mt-4">Loading...</div>
@@ -386,7 +340,8 @@ const Token = ({ onClose, onSelect }) => {
             {tokenDetails && (
               <TokenListItem
                 token={tokenDetails}
-                walletAddress={walletAddress}
+                balance={balances.get(tokenDetails.address.toLowerCase())}
+                isLoading={balancesLoading}
                 onClick={handleTokenSelect}
               />
             )}

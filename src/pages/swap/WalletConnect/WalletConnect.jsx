@@ -31,7 +31,10 @@ import TermsModal from "../TermsModal";
 // import Sbg from "../../../assets/images/sbg.png";
 
 import { useConnectPopup } from "../../../hooks/ConnectPopupContext";
-import { useSelectedChainId } from "../../../hooks/ChainContext";
+import {
+  useSelectedChainId,
+  useSetSelectedChainId,
+} from "../../../hooks/ChainContext";
 
 const ChainChangeHandler = ({
   chain,
@@ -64,6 +67,8 @@ export default function WalletConnect({
   const { chains, switchChain } = useSwitchChain();
   const availableChains = useChains();
   const { connect, connectors } = useConnect();
+  const selectedChainId = useSelectedChainId();
+  const setSelectedChainId = useSetSelectedChainId();
 
   const { showConnectPopup, setShowConnectPopup } = useConnectPopup();
 
@@ -79,6 +84,8 @@ export default function WalletConnect({
     .filter((connector) =>
       connector.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
+  const disconnectedChain =
+    availableChains.find((c) => c.id === selectedChainId) || availableChains[0];
 
   useEffect(() => {
     if (address && !sessionStorage.getItem("walletReloaded")) {
@@ -172,9 +179,6 @@ export default function WalletConnect({
 
         if (!ready) return null;
         if (!connected) {
-          const selectedChainId = useSelectedChainId();
-          const disconnectedChain = availableChains.find((c) => c.id === selectedChainId) || availableChains[0];
-
           return (
             <>
               <div className="flex items-center gap-2">
@@ -192,7 +196,7 @@ export default function WalletConnect({
                           dummyImage
                         }
                         alt={disconnectedChain.name}
-                        className="md:w-6 md:h-6 w-4 h-4 object-contain rounded-full"
+                        className="md:w-4 md:h-4 w-4 h-4 object-contain rounded-full"
                         onError={(e) => (e.currentTarget.src = dummyImage)}
                       />
                     </>
@@ -214,7 +218,7 @@ export default function WalletConnect({
                   setShowChainPopup={setShowChainPopup}
                   availableChains={availableChains}
                   chain={disconnectedChain}
-                  switchChain={switchChain}
+                  switchChain={({ chainId }) => setSelectedChainId(chainId)}
                 />
               )}
               {showConnectPopup && (

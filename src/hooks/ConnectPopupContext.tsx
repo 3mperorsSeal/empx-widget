@@ -5,10 +5,7 @@ interface ConnectPopupContextType {
   setShowConnectPopup: (show: boolean) => void;
 }
 
-const ConnectPopupContext = createContext<ConnectPopupContextType>({
-  showConnectPopup: false,
-  setShowConnectPopup: () => {},
-});
+const ConnectPopupContext = createContext<ConnectPopupContextType | undefined>(undefined);
 
 export function ConnectPopupProvider({ children }: { children: ReactNode }) {
   const [showConnectPopup, setShowConnectPopup] = useState(false);
@@ -22,7 +19,7 @@ export function ConnectPopupProvider({ children }: { children: ReactNode }) {
 
 export function useConnectPopup() {
   const context = useContext(ConnectPopupContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useConnectPopup must be used within a ConnectPopupProvider');
   }
   return context;
