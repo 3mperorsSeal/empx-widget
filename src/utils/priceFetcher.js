@@ -1,20 +1,22 @@
-export const fetchTokenPrice = async (tokenAddress, wethAddress, symbol) => {
-  if (!tokenAddress || !symbol) return null;
+export const fetchTokenPrice = async (tokenAddress, wethAddress, chainId) => {
+  if (!tokenAddress || !chainId) return null;
 
   const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
-  const networkSlugMap = {
-    pulse: "pulsechain",
-    pulsechain: "pulsechain",
-    ethw: "ethw",
-    sonic: "sonic",
+  const chainNetworkMap = {
+    369: "pulsechain",
+    10001: "ethw",
+    146: "sonic",
+    8453: "base",
+    1329: "sei-network",
+    80094: "berachain",
+    30: "rootstock",
   };
-
+  const networkSlug = chainNetworkMap[Number(chainId)];
+  if (!networkSlug) return null;
   const addressToFetch =
     tokenAddress === EMPTY_ADDRESS && wethAddress
       ? wethAddress.toLowerCase()
       : tokenAddress.toLowerCase();
-  const networkSlug =
-    networkSlugMap[symbol.toLowerCase()] || symbol.toLowerCase();
 
   try {
     // Primary: GeckoTerminal
@@ -26,7 +28,9 @@ export const fetchTokenPrice = async (tokenAddress, wethAddress, symbol) => {
       const data = await geckoResponse.json();
       const tokenPrices = data?.data?.attributes?.token_prices;
       if (tokenPrices) {
-        const geckoPrice = tokenPrices[addressToFetch];
+        const geckoPrice = Object.entries(tokenPrices).find(
+          ([address]) => address.toLowerCase() === addressToFetch,
+        )?.[1];
         if (geckoPrice && !Number.isNaN(Number(geckoPrice))) {
           return geckoPrice;
         }
@@ -47,7 +51,16 @@ export const fetchTokenPrice = async (tokenAddress, wethAddress, symbol) => {
         const dsData = await dsResponse.json();
         if (dsData && dsData.pairs && dsData.pairs.length > 0) {
           const bestPair = dsData.pairs
-            .filter((pair) => pair?.priceUsd)
+            .filter((pair) => {
+              const pairChainId = pair?.chainId?.toLowerCase();
+              const baseAddress = pair?.baseToken?.address?.toLowerCase();
+              const quoteAddress = pair?.quoteToken?.address?.toLowerCase();
+              return (
+                pair?.priceUsd &&
+                pairChainId === networkSlug &&
+                (baseAddress === addressToFetch || quoteAddress === addressToFetch)
+              );
+            })
             .sort(
               (a, b) =>
                 Number(b?.liquidity?.usd || 0) - Number(a?.liquidity?.usd || 0),

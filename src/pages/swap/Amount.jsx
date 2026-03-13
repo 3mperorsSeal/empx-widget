@@ -49,11 +49,12 @@ const Amount = ({
 
     setIsLoading(true);
     try {
+      let approved = true;
       if (needsApproval) {
-        await handleApprove();
-      } else {
-        await confirm();
+        approved = await handleApprove();
       }
+      if (!approved) return;
+      await confirm();
     } catch (error) {
       console.error("Confirmation failed:", error);
     } finally {
@@ -218,7 +219,7 @@ const Amount = ({
 
             <div className="bridge-button">
               <button
-                onClick={needsApproval ? handleApprove : handleClick}
+                onClick={handleClick}
                 disabled={
                   disabled ||
                   isLoading ||

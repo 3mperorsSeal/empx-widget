@@ -24,7 +24,7 @@ export const getChainConfig = (chainId: number) => {
       };
     case 8453:
       return {
-        routerAddress: "0xB12b7C117434B58B7623f994F4D0b4af7BC0Ac37" as `0x${string}`,
+        routerAddress: "0x5A86AB81254e3D0Fc3b417a3409aF2180029cDfb" as `0x${string}`,
         wethAddress:
           "0x4200000000000000000000000000000000000006" as `0x${string}`,
       };

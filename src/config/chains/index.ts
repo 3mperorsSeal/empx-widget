@@ -71,7 +71,8 @@ export const SUPPORTED_CHAINS: Record<number, ChainConfig> = {
     chainId: 8453,
     name: 'Base',
     symbol: "base",
-    routerAddress: '0xB12b7C117434B58B7623f994F4D0b4af7BC0Ac37',
+    // routerAddress: '0xB12b7C117434B58B7623f994F4D0b4af7BC0Ac37',
+    routerAddress: '0x5A86AB81254e3D0Fc3b417a3409aF2180029cDfb',
     wethAddress: '0x4200000000000000000000000000000000000006',
     priceApi: {
       baseUrl: 'https://api.geckoterminal.com/api/v2',

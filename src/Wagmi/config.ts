@@ -131,7 +131,7 @@ export const config = getDefaultConfig({
   projectId: 'YOUR_PROJECT_ID',
   // Note: ethw and sonic are temporarily disabled (not up to date)
   // To re-enable, change to: chains: [pulsechain, ethw, sonic],
-  chains: [pulsechain],
+  chains: [pulsechain, base],
   ssr: true,
   connectors: swapConnectors,
 });

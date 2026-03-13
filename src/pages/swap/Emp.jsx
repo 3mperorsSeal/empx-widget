@@ -154,7 +154,6 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   const {
     chain: currentChain,
     chainId,
-    symbol,
     tokenList,
     adapters,
     routerAddress,
@@ -489,11 +488,16 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         setNeedsApproval(false);
         setSwapStatus("APPROVED");
         toast.success("Token approved!");
+        return true;
       }
+      setSwapStatus("ERROR");
+      toast.error("Approval verification failed");
+      return false;
     } catch (error) {
       setSwapStatus("ERROR");
       console.error("Approval failed:", error);
       toast.error("Token approval failed");
+      return false;
     }
   };
 
@@ -616,29 +620,39 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
 
   useEffect(() => {
     const getPriceTokenA = async () => {
-      if (!currentChain?.name || !selectedTokenA?.address) return;
-      
-      const price = await fetchTokenPrice(selectedTokenA.address, wethAddress, symbol);
-      if (price) {
-        setConversionRate(price);
+      if (!currentChain?.name || !selectedTokenA?.address || !chainId) {
+        setConversionRate(null);
+        return;
       }
+      
+      const price = await fetchTokenPrice(
+        selectedTokenA.address,
+        wethAddress,
+        chainId,
+      );
+      setConversionRate(price || null);
     };
 
     getPriceTokenA();
-  }, [chainId, selectedTokenA?.address, wethAddress, symbol]);
+  }, [chainId, selectedTokenA?.address, wethAddress, currentChain?.name]);
 
   useEffect(() => {
     const getPriceTokenB = async () => {
-      if (!currentChain?.name || !selectedTokenB?.address) return;
-
-      const price = await fetchTokenPrice(selectedTokenB.address, wethAddress, symbol);
-      if (price) {
-        setConversionRateTokenB(price);
+      if (!currentChain?.name || !selectedTokenB?.address || !chainId) {
+        setConversionRateTokenB(null);
+        return;
       }
+
+      const price = await fetchTokenPrice(
+        selectedTokenB.address,
+        wethAddress,
+        chainId,
+      );
+      setConversionRateTokenB(price || null);
     };
 
     getPriceTokenB();
-  }, [chainId, selectedTokenB?.address, wethAddress, symbol]);
+  }, [chainId, selectedTokenB?.address, wethAddress, currentChain?.name]);
 
 
   useEffect(() => {
@@ -648,6 +662,9 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       ).toFixed(2);
       setUsdValue(valueInUSD);
       setUsdValueTokenA(valueInUSD);
+    } else {
+      setUsdValue("0.00");
+      setUsdValueTokenA("0.00");
     }
   }, [amountIn, conversionRate]);
 
@@ -657,6 +674,8 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         parseFloat(amountOut || 0) * parseFloat(conversionRateTokenB)
       ).toFixed(2);
       setUsdValueTokenB(valueInUSD);
+    } else {
+      setUsdValueTokenB("0.00");
     }
   }, [amountOut, conversionRateTokenB]);
 
@@ -691,7 +710,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       }
 
       setSwapStatus("SWAPPING");
-      const slippageMultiplier = config.integratorId ? 990n : 995n;
+      const slippageMultiplier = 995n;
 
       let tx;
       if (tradeInfo.type === "WRAP") {
@@ -760,7 +779,8 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           selectedTokenB.address,
           address,
           executeTradeInfo,
-          chainId
+          chainId,
+          config.integratorId,
         );
 
         setAmountVisible(false);
@@ -771,16 +791,28 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
       setAmountVisible(false);
       setSwapStatus("ERROR");
 
-      let message = error.message || "Transaction failed";
+      const rawMessage =
+        error?.shortMessage ||
+        error?.details ||
+        error?.message ||
+        error?.cause?.shortMessage ||
+        error?.cause?.message ||
+        "Transaction failed";
+      let message = String(rawMessage);
 
       console.error("Swap failed", error);
 
       if (
-        message.includes("User rejected") ||
-        message.includes("User denied")
+        rawMessage.includes("User rejected") ||
+        rawMessage.includes("User denied")
       ) {
         toast.error("Transaction rejected by user");
         return;
+      }
+
+      // viem often appends full "Contract Call" payload; strip that noise first.
+      if (message.includes("Contract Call:")) {
+        message = message.split("Contract Call:")[0].trim();
       }
 
       // Check for explicit revert reasons
@@ -794,9 +826,24 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
         if (parts[1]) {
           message = parts[1].replace(/'/g, "").trim().split("\\n")[0];
         }
-      } else if (message.length > 60) {
-        // Fallback for other long messages
-        message = message.substring(0, 60) + "...";
+      }
+
+      if (message.toLowerCase().includes("insufficient amount-out")) {
+        message = "Insufficient output amount. Increase slippage or reduce amount.";
+      }
+
+      // Remove trailing tool-specific metadata if still present.
+      message = message
+        .replace(/\s*Docs:\s*https?:\/\/\S+/gi, "")
+        .replace(/\s*Version:\s*[^\n]+/gi, "")
+        .trim();
+
+      if (!message) {
+        message = "Transaction failed";
+      }
+
+      if (message.length > 120) {
+        message = `${message.substring(0, 120)}...`;
       }
 
       toast.error(message);
