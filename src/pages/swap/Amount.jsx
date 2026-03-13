@@ -49,11 +49,12 @@ const Amount = ({
 
     setIsLoading(true);
     try {
+      let approved = true;
       if (needsApproval) {
-        await handleApprove();
-      } else {
-        await confirm();
+        approved = await handleApprove();
       }
+      if (!approved) return;
+      await confirm();
     } catch (error) {
       console.error("Confirmation failed:", error);
     } finally {
@@ -218,15 +219,13 @@ const Amount = ({
 
             <div className="bridge-button">
               <button
-                onClick={needsApproval ? handleApprove : handleClick}
+                onClick={handleClick}
                 disabled={
                   disabled ||
                   isLoading ||
                   showPriceAlert ||
                   swapStatus === "APPROVING"
                 }
-                usdValueTokenA={usdValueTokenA}
-                usdValueTokenB={usdValueTokenB}
                 className="gtw relative w-full rounded-xl py-4 bg-[var(--primary)] hover:text-white flex gap-4 items-center mt-6 justify-center border border-[var(--primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {/* <div className="w-full absolute md:top-2 top-2 md:-left-3 -left-3 z-[1] bg-transparent border-2 !border-[var(--border-color)] rounded-xl h-[58px]"></div> */}

@@ -22,7 +22,7 @@ export const parseWidgetConfig = (params: URLSearchParams) => ({
   // feePercent: Number(params.get('feePercent') || '0'),
 
   // Integrator support
-  integratorId: params.get('integratorId') || DEFAULT_WIDGET_CONFIG.integratorId,
+  integratorId: params.get('integratorId')?.trim() || DEFAULT_WIDGET_CONFIG.integratorId,
 });
 
 export const useWidgetConfig = () => {
