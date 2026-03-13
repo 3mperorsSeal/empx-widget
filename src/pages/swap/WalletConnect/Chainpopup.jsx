@@ -11,6 +11,7 @@ import Polygon from "../../../assets/icons/polygon.svg";
 import OP from "../../../assets/icons/op.svg";
 import Base from "../../../assets/icons/base.svg";
 import EL from "../../../assets/images/emp-logo.png";
+import Berachain from "../../../assets/icons/berachain.svg";
 
 const ChainPopup = ({
   setShowChainPopup,
@@ -35,6 +36,7 @@ const ChainPopup = ({
     avalanche: Avalanche, // local import
     polygon: Polygon, // local import
     "op mainnet": OP, // local import
+    berachain: Berachain, // local import
     "cronos mainnet":
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK7JCGpwklwB4QMz4g7NoNTd1Epuyi48zgS91loU1-b2RHCK5W",
     base: Base, // local import

@@ -2,21 +2,16 @@
 
 import "@rainbow-me/rainbowkit/styles.css";
 
-import {
-  getDefaultConfig,
-  RainbowKitProvider,
-  darkTheme,
-} from "@rainbow-me/rainbowkit";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
-import { mode, hardhat } from "wagmi/chains";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { config } from "./config";
 import { bridgeConfig } from "./bridgeConfig";
 import { viaBridgeConfig } from "./viaBridgeConfig";
 import React from "react";
+import { ConnectPopupProvider } from "../hooks/ConnectPopupContext";
 
 const queryClient = new QueryClient();
-const localHardhat = { ...hardhat, id: 1337 };
 
 type AppType = 'swap' | 'bridge' | 'via-bridge';
 
@@ -39,9 +34,11 @@ export default function WagmiProviderWrapper({
   return (
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider key={appType} theme={darkTheme()} modalSize="compact">
-          {children}
-        </RainbowKitProvider>
+        <ConnectPopupProvider>
+          <RainbowKitProvider key={appType} theme={darkTheme()} modalSize="compact">
+            {children}
+          </RainbowKitProvider>
+        </ConnectPopupProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

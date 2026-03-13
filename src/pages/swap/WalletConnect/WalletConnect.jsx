@@ -16,6 +16,7 @@ import Avalanche from "../../../assets/icons/avalanche.svg";
 import Polygon from "../../../assets/icons/polygon.svg";
 import OP from "../../../assets/icons/op.svg";
 import EL from "../../../assets/images/emp-logo.png";
+import Berachain from "../../../assets/icons/berachain.svg";
 
 import {
   useAccount,
@@ -29,6 +30,12 @@ import TermsModal from "../TermsModal";
 // import Dis from "../../../assets/images/dis.png";
 // import Copy from "../../../assets/images/copy.png";
 // import Sbg from "../../../assets/images/sbg.png";
+
+import { useConnectPopup } from "../../../hooks/ConnectPopupContext";
+import {
+  useSelectedChainId,
+  useSetSelectedChainId,
+} from "../../../hooks/ChainContext";
 
 const ChainChangeHandler = ({
   chain,
@@ -61,10 +68,13 @@ export default function WalletConnect({
   const { chains, switchChain } = useSwitchChain();
   const availableChains = useChains();
   const { connect, connectors } = useConnect();
+  const selectedChainId = useSelectedChainId();
+  const setSelectedChainId = useSetSelectedChainId();
+
+  const { showConnectPopup, setShowConnectPopup } = useConnectPopup();
 
   const [showPopup, setShowPopup] = useState(false);
   const [showChainPopup, setShowChainPopup] = useState(false);
-  const [showConnectPopup, setShowConnectPopup] = useState(false);
 
   const [showTermsPopup, setShowTermsPopup] = useState(false);
 
@@ -75,6 +85,8 @@ export default function WalletConnect({
     .filter((connector) =>
       connector.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
+  const disconnectedChain =
+    availableChains.find((c) => c.id === selectedChainId) || availableChains[0];
 
   useEffect(() => {
     if (address && !sessionStorage.getItem("walletReloaded")) {
@@ -97,6 +109,7 @@ export default function WalletConnect({
     "cronos mainnet":
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK7JCGpwklwB4QMz4g7NoNTd1Epuyi48zgS91loU1-b2RHCK5W",
     base: Base, // local import
+    berachain: Berachain, // local import
     blast:
       "https://cdn.prod.website-files.com/65a6baa1a3f8ed336f415cb4/65a6c461965bf28af43b80bc_Logo%20Yellow%20on%20Transparent%20Background.png",
     "manta pacific mainnet":
@@ -162,6 +175,8 @@ export default function WalletConnect({
       }) => {
         const ready = mounted && authenticationStatus !== "loading";
         const connected = ready && account && chain;
+        const activeChain =
+          availableChains.find((c) => c.id === selectedChainId) || chain;
 
         // Effects moved inside render prop to correctly access `chain`
         // and avoid infinite loops.
@@ -170,27 +185,44 @@ export default function WalletConnect({
         if (!connected) {
           return (
             <>
-              <button
-                // FF9900
-                className="new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
-                onClick={() => setShowConnectPopup(true)}
-                type="button"
-              >
-                Connect Wallet
-              </button>
-              {/* <button
-                className="wallet-bg-bridge1 gtw transition-all text-center font-extrabold"
-                onClick={() => setShowChainPopup(true)}
-                type="button"
-              >
-                Select Chain
-              </button> */}
+              <div className="flex items-center gap-2">
+                <button
+                  className="flex items-center gap-2 new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
+                  onClick={() => setShowChainPopup(true)}
+                  type="button"
+                >
+                  {disconnectedChain ? (
+                    <>
+                      <img
+                        src={
+                          chainIcons[disconnectedChain.name.toLowerCase()] ||
+                          disconnectedChain.iconUrl ||
+                          dummyImage
+                        }
+                        alt={disconnectedChain.name}
+                        className="md:w-4 md:h-4 w-4 h-4 object-contain rounded-full"
+                        onError={(e) => (e.currentTarget.src = dummyImage)}
+                      />
+                    </>
+                  ) : (
+                    "Select Chain"
+                  )}
+                </button>
+                <button
+                  // FF9900
+                  className="new_shad !bg-[var(--bg-color)] !text-[var(--primary)] !rounded-2xl transition-all text-center font-extrabold font-orbitron"
+                  onClick={() => setShowConnectPopup(true)}
+                  type="button"
+                >
+                  Connect Wallet
+                </button>
+              </div>
               {showChainPopup && (
                 <ChainPopup
                   setShowChainPopup={setShowChainPopup}
                   availableChains={availableChains}
-                  chain={chain}
-                  switchChain={switchChain}
+                  chain={disconnectedChain}
+                  switchChain={({ chainId }) => setSelectedChainId(chainId)}
                 />
               )}
               {showConnectPopup && (
@@ -278,7 +310,7 @@ export default function WalletConnect({
                                 connector.name.includes("MetaMask")
                                   ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3ymr3UNKopfI0NmUY95Dr-0589vG-91KuAA&s"
                                   : // "https://raw.githubusercontent.com/MetaMask/brand-resources/master/SVG/metamask-fox.svg"
-                                    connector.name.includes("WalletConnect")
+                                  connector.name.includes("WalletConnect")
                                     ? "https://avatars.githubusercontent.com/u/37784886?s=200&v=4"
                                     : connector.name.includes("Coinbase")
                                       ? "https://avatars.githubusercontent.com/u/18060234?s=200&v=4"
@@ -323,7 +355,7 @@ export default function WalletConnect({
             </>
           );
         }
-        if (chain.unsupported && !allowUnsupported) {
+        if (activeChain?.unsupported && !allowUnsupported) {
           return (
             <>
               <button
@@ -337,8 +369,11 @@ export default function WalletConnect({
                 <ChainPopup
                   setShowChainPopup={setShowChainPopup}
                   availableChains={availableChains}
-                  chain={chain}
-                  switchChain={switchChain}
+                  chain={activeChain}
+                  switchChain={({ chainId }) => {
+                    setSelectedChainId(chainId);
+                    switchChain({ chainId });
+                  }}
                 />
               )}
             </>
@@ -347,7 +382,7 @@ export default function WalletConnect({
         return (
           <>
             <ChainChangeHandler
-              chain={chain}
+              chain={activeChain}
               onChainChange={onChainChange}
               chains={chains}
               switchChain={switchChain}
@@ -360,15 +395,15 @@ export default function WalletConnect({
                 onClick={() => setShowChainPopup(true)}
                 type="button"
               >
-                {chain ? (
+                {activeChain ? (
                   <>
                     <img
                       src={
-                        chainIcons[chain.name.toLowerCase()] ||
-                        chain.iconUrl ||
+                        chainIcons[activeChain.name.toLowerCase()] ||
+                        activeChain.iconUrl ||
                         dummyImage
                       }
-                      alt={chain.name}
+                      alt={activeChain.name}
                       className="md:w-6 md:h-6 w-4 h-4 object-contain rounded-full"
                       onError={(e) => (e.currentTarget.src = dummyImage)}
                     />
@@ -411,8 +446,11 @@ export default function WalletConnect({
               <ChainPopup
                 setShowChainPopup={setShowChainPopup}
                 availableChains={availableChains}
-                chain={chain}
-                switchChain={switchChain}
+                chain={activeChain}
+                switchChain={({ chainId }) => {
+                  setSelectedChainId(chainId);
+                  switchChain({ chainId });
+                }}
               />
             )}
           </>
