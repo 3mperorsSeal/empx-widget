@@ -225,8 +225,6 @@ const Amount = ({
                   showPriceAlert ||
                   swapStatus === "APPROVING"
                 }
-                usdValueTokenA={usdValueTokenA}
-                usdValueTokenB={usdValueTokenB}
                 className="gtw relative w-full rounded-xl py-4 bg-[var(--primary)] hover:text-white flex gap-4 items-center mt-6 justify-center border border-[var(--primary)] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
               >
                 {/* <div className="w-full absolute md:top-2 top-2 md:-left-3 -left-3 z-[1] bg-transparent border-2 !border-[var(--border-color)] rounded-xl h-[58px]"></div> */}

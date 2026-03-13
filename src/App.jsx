@@ -43,9 +43,11 @@ const ChainSwitcher = ({ children }) => {
 
     if (!hasInitialized) {
       if (isConnected) {
+        setSelectedChainId(targetChainId);
         if (chainId !== targetChainId && supportedChainIds.includes(targetChainId)) {
           switchChain?.({ chainId: targetChainId });
         } else if (!supportedChainIds.includes(chainId)) {
+          setSelectedChainId(pulsechain.id);
           switchChain?.({ chainId: pulsechain.id });
         }
       } else {
@@ -56,9 +58,13 @@ const ChainSwitcher = ({ children }) => {
       // Re-run if config.chain changes (Builder mode)
       if (isConnected) {
         if (chainId && !supportedChainIds.includes(chainId)) {
+          setSelectedChainId(pulsechain.id);
           switchChain?.({ chainId: pulsechain.id });
         } else if (configChainChanged && chainId !== targetChainId && config.chain) {
+          setSelectedChainId(targetChainId);
           switchChain?.({ chainId: targetChainId });
+        } else if (configChainChanged && config.chain) {
+          setSelectedChainId(targetChainId);
         }
       } else {
         if (configChainChanged && selectedChainId !== targetChainId) {

@@ -288,11 +288,11 @@ const Token = ({ onClose, onSelect }) => {
             ))}
           </div>
 
-          <div className="mt-3 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">
+          <div className="mt-8 relative px-[10px] h-[54px] w-full flex gap-2 items-center border !border-[var(--border-color)] rounded-xl">
             <input
               type="text"
               placeholder="Search token name or paste address"
-              className="bg-transparent rounded-[4.83px] h-[43px] text-white md:max-w-[490px] w-full px-5 outline-none border-none text-white/opacity-70 text-sm font-normal roboto leading-tight tracking-wide"
+              className="bg-transparent rounded-[4.83px] h-[43px] text-white md:max-w-[490px] w-full px-5 outline-none border-none text-white/opacity-70 text-sm font-normal font-orbitron leading-tight tracking-wide"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />

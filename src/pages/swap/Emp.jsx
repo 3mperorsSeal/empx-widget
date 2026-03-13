@@ -1498,6 +1498,14 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           <Transaction
             transactionHash={swapHash}
             onClose={() => setSwapSuccess(false)}
+            amountIn={amountIn}
+            amountOut={parseFloat(amountOut).toFixed(6)}
+            tokenA={selectedTokenA}
+            tokenB={selectedTokenB}
+            rate={getRateDisplay()}
+            minReceived={parseFloat(minToReceiveAfterFee).toFixed(6)}
+            usdValueTokenA={usdValueTokenA}
+            usdValueTokenB={usdValueTokenB}
           />
         )}
       </div>
@@ -1545,13 +1553,13 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           href="https://empx.io"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-xs font-orbitron text-[var(--primary)] hover:text-[var(--primary-color)] transition-colors opacity-70 hover:opacity-100"
+          className="text-md font-orbitron text-[var(--primary)] hover:text-[var(--primary-color)] transition-colors opacity-70 hover:opacity-100"
         >
           Powered by
           <img
             src={empLogo}
             alt="Empx Logo"
-            className="inline-block ml-1 md:w-12 w-8 align-middle"
+            className="inline-block md:w-20 w-20 align-middle"
           />
         </a>
       </div>
