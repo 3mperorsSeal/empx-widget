@@ -781,6 +781,7 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
           executeTradeInfo,
           chainId,
           config.integratorId,
+          protocolFee,
         );
 
         setAmountVisible(false);
