@@ -68,8 +68,9 @@ const getTradePayload = (tradeInfo: TradeInfo) => ({
 const getSwapArgs = (
   tradeInfo: TradeInfo,
   userAddress: Address,
+  fee: bigint = DEFAULT_ROUTER_FEE,
 ) => {
-  const baseArgs = [getTradePayload(tradeInfo), userAddress, DEFAULT_ROUTER_FEE] as const;
+  const baseArgs = [getTradePayload(tradeInfo), userAddress, fee] as const;
   return baseArgs;
 };
 
@@ -77,11 +78,12 @@ const getSwapArgsWithIntegrator = (
   tradeInfo: TradeInfo,
   userAddress: Address,
   integratorId: `0x${string}`,
+  fee: bigint = DEFAULT_ROUTER_FEE,
 ) => {
   return [
     getTradePayload(tradeInfo),
     userAddress,
-    DEFAULT_ROUTER_FEE,
+    fee,
     integratorId,
   ] as const;
 };
@@ -130,21 +132,29 @@ const swapFromEth = async (
   tradeInfo: TradeInfo,
   userAddress: Address,
   integratorId?: `0x${string}`,
+  fee: bigint = DEFAULT_ROUTER_FEE,
 ) => {
   try {
     const {routerAddress} = getCurrentChainConfig(chainId);
-    const abi = integratorId
-      ? SWAP_ROUTER_INTEGRATOR_ABI
-      : SWAP_ROUTER_ABI;
-    let result = await writeContract(config, {
-      abi,
-      address: routerAddress,
-      functionName: chainId === 369 ? "swapNoSplitFromPLS" : "swapNoSplitFromETH",
-      args: integratorId
-        ? getSwapArgsWithIntegrator(tradeInfo, userAddress, integratorId)
-        : getSwapArgs(tradeInfo, userAddress),
-      value: tradeInfo.amountIn,
-    });
+    const fnName = chainId === 369 ? "swapNoSplitFromPLS" : "swapNoSplitFromETH";
+    let result: `0x${string}`;
+    if (integratorId) {
+      result = await writeContract(config, {
+        abi: SWAP_ROUTER_INTEGRATOR_ABI,
+        address: routerAddress,
+        functionName: fnName,
+        args: getSwapArgsWithIntegrator(tradeInfo, userAddress, integratorId, fee),
+        value: tradeInfo.amountIn,
+      });
+    } else {
+      result = await writeContract(config, {
+        abi: SWAP_ROUTER_ABI,
+        address: routerAddress,
+        functionName: fnName,
+        args: getSwapArgs(tradeInfo, userAddress, fee),
+        value: tradeInfo.amountIn,
+      });
+    }
     await waitForTransaction(result);
     return {
       success: true,
@@ -161,20 +171,27 @@ const swapToEth = async (
   tradeInfo: TradeInfo,
   userAddress: Address,
   integratorId?: `0x${string}`,
+  fee: bigint = DEFAULT_ROUTER_FEE,
 ) => {
   try {
     const {routerAddress} = getCurrentChainConfig(chainId);
-    const abi = integratorId
-      ? SWAP_ROUTER_INTEGRATOR_ABI
-      : SWAP_ROUTER_ABI;
-    let result = await writeContract(config, {
-      abi,
-      address: routerAddress,
-      functionName: chainId === 369 ? "swapNoSplitToPLS" : "swapNoSplitToETH",
-      args: integratorId
-        ? getSwapArgsWithIntegrator(tradeInfo, userAddress, integratorId)
-        : getSwapArgs(tradeInfo, userAddress),
-    });
+    const fnName = chainId === 369 ? "swapNoSplitToPLS" : "swapNoSplitToETH";
+    let result: `0x${string}`;
+    if (integratorId) {
+      result = await writeContract(config, {
+        abi: SWAP_ROUTER_INTEGRATOR_ABI,
+        address: routerAddress,
+        functionName: fnName,
+        args: getSwapArgsWithIntegrator(tradeInfo, userAddress, integratorId, fee),
+      });
+    } else {
+      result = await writeContract(config, {
+        abi: SWAP_ROUTER_ABI,
+        address: routerAddress,
+        functionName: fnName,
+        args: getSwapArgs(tradeInfo, userAddress, fee),
+      });
+    }
     await waitForTransaction(result);
     return {
       success: true,
@@ -235,20 +252,26 @@ const swap = async (
   tradeInfo: TradeInfo,
   userAddress: Address,
   integratorId?: `0x${string}`,
+  fee: bigint = DEFAULT_ROUTER_FEE,
 ) => {
   try {
     const {routerAddress} = getCurrentChainConfig(chainId);
-    const abi = integratorId
-      ? SWAP_ROUTER_INTEGRATOR_ABI
-      : SWAP_ROUTER_ABI;
-    let result = await writeContract(config, {
-      abi,
-      address: routerAddress,
-      functionName: "swapNoSplit",
-      args: integratorId
-        ? getSwapArgsWithIntegrator(tradeInfo, userAddress, integratorId)
-        : getSwapArgs(tradeInfo, userAddress),
-    });
+    let result: `0x${string}`;
+    if (integratorId) {
+      result = await writeContract(config, {
+        abi: SWAP_ROUTER_INTEGRATOR_ABI,
+        address: routerAddress,
+        functionName: "swapNoSplit",
+        args: getSwapArgsWithIntegrator(tradeInfo, userAddress, integratorId, fee),
+      });
+    } else {
+      result = await writeContract(config, {
+        abi: SWAP_ROUTER_ABI,
+        address: routerAddress,
+        functionName: "swapNoSplit",
+        args: getSwapArgs(tradeInfo, userAddress, fee),
+      });
+    }
     await waitForTransaction(result);
     return {
       success: true,
@@ -286,6 +309,7 @@ export const swapTokens = async (
   tradeInfo: TradeInfo,
   chainId: number,
   integratorId?: string | null,
+  protocolFee?: number,
 ) => {
   try {
     const {wethAddress} = getCurrentChainConfig(chainId);
@@ -293,6 +317,7 @@ export const swapTokens = async (
     if (integratorId && !validatedIntegratorId) {
       console.warn("Ignoring invalid integratorId. Expected bytes32 hex string.");
     }
+    const fee = protocolFee != null ? BigInt(protocolFee) : DEFAULT_ROUTER_FEE;
     setStatus("LOADING");
     const defaultResponse = {
       success: false,
@@ -325,19 +350,19 @@ export const swapTokens = async (
     ) {
       swapResponse = await swapNoSplitToEth(chainId, tradeInfo, userAddress);
     } else if (tokenInAddress === EMPTY_ADDRESS) {
-      swapResponse = await swapFromEth(chainId, tradeInfo, userAddress, validatedIntegratorId);
+      swapResponse = await swapFromEth(chainId, tradeInfo, userAddress, validatedIntegratorId, fee);
     } else if (tokenOutAddress === EMPTY_ADDRESS) {
-      swapResponse = await swapToEth(chainId, tradeInfo, userAddress, validatedIntegratorId);
+      swapResponse = await swapToEth(chainId, tradeInfo, userAddress, validatedIntegratorId, fee);
     } else {
-      swapResponse = await swap(chainId, tradeInfo, userAddress, validatedIntegratorId);
+      swapResponse = await swap(chainId, tradeInfo, userAddress, validatedIntegratorId, fee);
       toast.success("Transaction Successful");
     }
     setStatus("SWAPPED");
     setSwapHash(swapResponse.data);
     return swapResponse;
-  } catch (error) {
+  } catch (error: any) {
     if (
-      error.message &&
+      error?.message &&
       error.message.includes("EmpsealRouter: Insufficient output amount")
     ) {
       setStatus("ERROR");
