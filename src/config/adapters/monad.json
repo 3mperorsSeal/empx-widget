@@ -1,0 +1,38 @@
+[
+  {
+    "name": "LB2Adapter",
+    "address": "0x2F21FF788e14A531847E6658aFBD725555757da5"
+  },
+  {
+    "name": "AtlantisAlgebraAdapter",
+    "address": "0xb93f9418876b595454f6A3aB0718fFB68F76B330"
+  },
+  {
+    "name": "CapricornV3Adapter",
+    "address": "0x4bF29b3D063BE84a8206fb65050DA3E21239Ff12"
+  },
+  {
+    "name": "OctoswapV2Adapter",
+    "address": "0x5D5Ce53eE21694834cb6C70030b24937340E9C81"
+  },
+  {
+    "name": "UniswapV2Adapter",
+    "address": "0xcD05Ae7369e14D0Fd232F0D3C025D9703B779d80"
+  },
+  {
+    "name": "UniswapV3Adapter",
+    "address": "0x365Ac3b1aB01e34339E3Ff1d94934bFEcB7933e0"
+  },
+  {
+    "name": "PancakeV3Adapter",
+    "address": "0x4482933CfbD06Efe305Ab8Fd2c077ebfD8bFF818"
+  },
+  {
+    "name": "Curve3PoolAdapter",
+    "address": "0x8A5CAEF153e4Dc59A89aAfEBbC5725726617860a"
+  },
+  {
+    "name": "Curve4PoolAdapter",
+    "address": "0x27E729De58e29017BEa774a578930Ed47Fefed02"
+  }
+]

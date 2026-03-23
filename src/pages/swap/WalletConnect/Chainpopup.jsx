@@ -37,6 +37,7 @@ const ChainPopup = ({
     polygon: Polygon, // local import
     "op mainnet": OP, // local import
     berachain: Berachain, // local import
+    monad: "https://www.geckoterminal.com/_next/image?url=https%3A%2F%2Fassets.geckoterminal.com%2Fmxy95kpjer9bgo8k4jr366qx7qyj&w=64&q=75",
     "cronos mainnet":
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK7JCGpwklwB4QMz4g7NoNTd1Epuyi48zgS91loU1-b2RHCK5W",
     base: Base, // local import

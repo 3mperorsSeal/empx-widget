@@ -13,6 +13,7 @@ import { WETH } from "./abis/wethBaseABI";
 import { WSEI } from "./abis/wseiABI";
 import { WBERA } from "./abis/wberaABI";
 import { WRBTC } from "./abis/wrbtcABI";
+import { WMON } from "./abis/wmonABI";
 
 import { config } from "../Wagmi/config";
 import { getChainConfig } from "./getChainConfig";
@@ -36,6 +37,8 @@ const getWrappedTokenABI = (chainId: number) => {
       return WBERA;
     case 30: // rootstock
       return WRBTC;
+    case 143: // monad
+      return WMON;
     case 369: // Pulsechain
     default:
       return WPLS;

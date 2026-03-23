@@ -10,6 +10,7 @@ export const fetchTokenPrice = async (tokenAddress, wethAddress, chainId) => {
     1329: "sei-network",
     80094: "berachain",
     30: "rootstock",
+    143: "monad",
   };
   const networkSlug = chainNetworkMap[Number(chainId)];
   if (!networkSlug) return null;

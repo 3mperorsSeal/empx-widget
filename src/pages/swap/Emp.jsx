@@ -26,6 +26,7 @@ import {
   SEI_ROUTER_ABI,
   BERA_ROUTER_ABI,
   ROOTSTOCK_ROUTER_ABI,
+  MONAD_ROUTER_ABI,
 } from "../../utils/abis/empSealRouterAbi";
 import { EmpsealRouterV7 } from "../../utils/lite/EmpsealRouterV7";
 import { formatUnits } from "viem";
@@ -51,6 +52,7 @@ import { WETH } from "../../utils/abis/wethBaseABI";
 import { WSEI } from "../../utils/abis/wseiABI";
 import { WBERA } from "../../utils/abis/wberaABI";
 import { WRBTC } from "../../utils/abis/wrbtcABI";
+import { WMON } from "../../utils/abis/wmonABI";
 
 import { fetchTokenPrice } from "../../utils/priceFetcher";
 
@@ -68,6 +70,8 @@ const getWrappedTokenABI = (chainId) => {
       return WBERA;
     case 30:
       return WRBTC;
+    case 143:
+      return WMON;
     case 369:
     default:
       return WPLS;
@@ -88,6 +92,8 @@ const getRouterABI = (chainId) => {
       return BERA_ROUTER_ABI;
     case 30:
       return ROOTSTOCK_ROUTER_ABI;
+    case 143:
+      return MONAD_ROUTER_ABI;
     case 369:
     default:
       return PLS_ROUTER_ABI;
