@@ -101,6 +101,7 @@ export default function WalletConnect({
     pulse: Pulse,
     pulsechain: Pulse,
     sonic: Sonic,
+    monad: "https://www.geckoterminal.com/_next/image?url=https%3A%2F%2Fassets.geckoterminal.com%2Fmxy95kpjer9bgo8k4jr366qx7qyj&w=64&q=75",
     "bnb smart chain": BNB, // local import
     "arbitrum one": Arbitrum, // local import
     avalanche: Avalanche, // local import
