@@ -64,6 +64,8 @@ const Token = ({ onClose, onSelect }) => {
         return "https://mainnet.ethereumpow.org";
       case 146:
         return "https://rpc.soniclabs.com";
+      case 143: 
+        return "https://rpc.monad.xyz";
       default:
         return null;
     }

@@ -35,6 +35,7 @@ const ChainSwitcher = ({ children }) => {
       berachain: 80094,
       sei: sei.id,
       rootstock: rootstock.id,
+      monad: 143,
     };
     const targetChainId = chainMap[config.chain?.toLowerCase()] || pulsechain.id;
     const supportedChainIds = Object.values(chainMap);
