@@ -17,39 +17,51 @@ import { ChainProvider, useSelectedChainId, useSetSelectedChainId } from "./hook
 // ChainSwitcher logic
 const ChainSwitcher = ({ children }) => {
   const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
+  const { chains: walletChains, switchChain } = useSwitchChain();
   const { isConnected } = useAccount();
   const config = useWidgetConfig();
   const selectedChainId = useSelectedChainId();
   const setSelectedChainId = useSetSelectedChainId();
 
   const [hasInitialized, setHasInitialized] = useState(false);
-  const prevConfigChainRef = useRef(config.chain);
+  const configChainKey = config.chain ?? "";
+  const prevConfigChainRef = useRef(configChainKey);
 
   useEffect(() => {
+    const normalizedConfigChain = config.chain?.toLowerCase().trim();
     const chainMap = {
       pulsechain: pulsechain.id,
+      pulse: pulsechain.id,
       sonic: sonic.id,
       ethw: 10001,
+      ethereumpow: 10001,
       base: 8453,
       berachain: 80094,
       sei: sei.id,
+      "sei-network": sei.id,
       rootstock: rootstock.id,
       monad: 143,
+      mon: 143,
     };
-    const targetChainId = chainMap[config.chain?.toLowerCase()] || pulsechain.id;
     const supportedChainIds = Object.values(chainMap);
+    const walletSupportedChainIds = walletChains.map((walletChain) => walletChain.id);
+    const targetChainId = chainMap[normalizedConfigChain] || pulsechain.id;
 
-    const configChainChanged = prevConfigChainRef.current !== config.chain;
+    const configChainChanged = prevConfigChainRef.current !== configChainKey;
 
     if (!hasInitialized) {
       if (isConnected) {
         setSelectedChainId(targetChainId);
-        if (chainId !== targetChainId && supportedChainIds.includes(targetChainId)) {
+        if (
+          chainId !== targetChainId &&
+          walletSupportedChainIds.includes(targetChainId)
+        ) {
           switchChain?.({ chainId: targetChainId });
         } else if (!supportedChainIds.includes(chainId)) {
           setSelectedChainId(pulsechain.id);
-          switchChain?.({ chainId: pulsechain.id });
+          if (walletSupportedChainIds.includes(pulsechain.id)) {
+            switchChain?.({ chainId: pulsechain.id });
+          }
         }
       } else {
         setSelectedChainId(targetChainId);
@@ -60,10 +72,14 @@ const ChainSwitcher = ({ children }) => {
       if (isConnected) {
         if (chainId && !supportedChainIds.includes(chainId)) {
           setSelectedChainId(pulsechain.id);
-          switchChain?.({ chainId: pulsechain.id });
+          if (walletSupportedChainIds.includes(pulsechain.id)) {
+            switchChain?.({ chainId: pulsechain.id });
+          }
         } else if (configChainChanged && chainId !== targetChainId && config.chain) {
           setSelectedChainId(targetChainId);
-          switchChain?.({ chainId: targetChainId });
+          if (walletSupportedChainIds.includes(targetChainId)) {
+            switchChain?.({ chainId: targetChainId });
+          }
         } else if (configChainChanged && config.chain) {
           setSelectedChainId(targetChainId);
         }
@@ -74,8 +90,18 @@ const ChainSwitcher = ({ children }) => {
       }
     }
 
-    prevConfigChainRef.current = config.chain;
-  }, [chainId, isConnected, switchChain, config.chain, hasInitialized, selectedChainId, setSelectedChainId]);
+    prevConfigChainRef.current = configChainKey;
+  }, [
+    chainId,
+    isConnected,
+    walletChains,
+    switchChain,
+    config.chain,
+    configChainKey,
+    hasInitialized,
+    selectedChainId,
+    setSelectedChainId,
+  ]);
 
   return children;
 };

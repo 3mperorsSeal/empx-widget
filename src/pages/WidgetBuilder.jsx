@@ -1,6 +1,13 @@
 import { useMemo, useState } from "react";
 import { DEFAULT_WIDGET_CONFIG } from "../widget/useWidgetConfig";
 
+const CHAIN_OPTIONS = [
+  { label: "Pulsechain", value: "pulsechain" },
+  { label: "Sonic", value: "sonic" },
+  { label: "Base", value: "base" },
+  { label: "Monad", value: "monad" },
+];
+
 const WidgetBuilder = () => {
   const [chain, setChain] = useState(DEFAULT_WIDGET_CONFIG.chain);
   const [background, setBackground] = useState(
@@ -151,14 +158,18 @@ const WidgetBuilder = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 min-w-0">
               <label className="flex flex-col gap-2 text-sm text-white/80">
-                Chain
-                <input
-                  type="text"
+                Default Chain
+                <select
                   value={chain}
                   onChange={(event) => setChain(event.target.value)}
-                  placeholder={DEFAULT_WIDGET_CONFIG.chain}
-                  className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full capitalize"
-                />
+                  className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full"
+                >
+                  {CHAIN_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
               </label>
 
               <label className="flex flex-col gap-2 text-sm text-white/80">
@@ -347,6 +358,7 @@ const WidgetBuilder = () => {
               }}
             >
               <iframe
+                key={widgetUrl}
                 title="EmpX Widget Preview"
                 src={widgetUrl}
                 width="100%"
