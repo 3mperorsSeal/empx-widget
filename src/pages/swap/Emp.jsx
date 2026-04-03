@@ -864,8 +864,9 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
 
   useEffect(() => {
     setSelectedPercentage("");
-    setAmountIn("");
-  }, [selectedTokenA]);
+    const configuredAmountIn = config.defaultAmountIn?.trim();
+    setAmountIn(configuredAmountIn || "");
+  }, [selectedTokenA, config.defaultAmountIn]);
 
   const handleCopyAddress = async (address) => {
     try {
@@ -998,7 +999,6 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
   };
   useEffect(() => {
     setSelectedPercentageBuy("");
-    setAmountIn("");
     setAmountOut("0");
   }, [selectedTokenB]);
   // In your Emp component, add loading state

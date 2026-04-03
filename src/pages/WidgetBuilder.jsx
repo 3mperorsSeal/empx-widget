@@ -22,6 +22,7 @@ const WidgetBuilder = () => {
   const [integratorId, setIntegratorId] = useState("");
   const [tokenIn, setTokenIn] = useState("");
   const [tokenOut, setTokenOut] = useState("");
+  const [amountIn, setAmountIn] = useState("");
   const [width, setWidth] = useState(450);
   const [height, setHeight] = useState(900);
   const [copied, setCopied] = useState("");
@@ -50,6 +51,9 @@ const WidgetBuilder = () => {
     if (tokenOut.trim()) {
       params.set("to", tokenOut.trim());
     }
+    if (amountIn.trim()) {
+      params.set("amountIn", amountIn.trim());
+    }
 
     const baseUrl = window.location.origin;
     return `${baseUrl}/?${params.toString()}`;
@@ -61,6 +65,7 @@ const WidgetBuilder = () => {
     integratorId,
     tokenIn,
     tokenOut,
+    amountIn,
   ]);
 
   const iframeCode = useMemo(() => {
@@ -92,6 +97,7 @@ const WidgetBuilder = () => {
     setIntegratorId("");
     setTokenIn("");
     setTokenOut("");
+    setAmountIn("");
     setWidth(450);
     setHeight(900);
   };
@@ -271,6 +277,17 @@ const WidgetBuilder = () => {
                   placeholder="0x... token address"
                   className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white text-xs font-mono w-full focus:outline-none focus:border-white/30"
                   title={tokenOut}
+                />
+              </label>
+
+              <label className="flex flex-col gap-2 text-sm text-white/80 md:col-span-2">
+                Amount In (optional)
+                <input
+                  type="text"
+                  value={amountIn}
+                  onChange={(event) => setAmountIn(event.target.value)}
+                  placeholder="0.0"
+                  className="bg-black/70 border border-white/10 rounded-lg px-3 py-2 text-white w-full"
                 />
               </label>
             </div>
