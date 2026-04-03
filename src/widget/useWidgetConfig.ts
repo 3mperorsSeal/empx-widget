@@ -17,6 +17,7 @@ export const parseWidgetConfig = (params: URLSearchParams) => ({
   // Token selection
   defaultTokenIn: params.get('from'),
   defaultTokenOut: params.get('to'),
+  defaultAmountIn: params.get('amountIn')?.trim() || null,
 
   // Fee (disabled - using internal protocol fees)
   // feePercent: Number(params.get('feePercent') || '0'),
