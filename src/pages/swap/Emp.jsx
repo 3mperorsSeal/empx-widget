@@ -32,6 +32,7 @@ import { EmpsealRouterV7 } from "../../utils/lite/EmpsealRouterV7";
 import { formatUnits } from "viem";
 import Tokens from "../tokenList.json";
 import { useStore } from "../../redux/store/routeStore";
+import TokenLogo from "../../components/TokenLogo.jsx";
 import Transaction from "./Transaction";
 import { Copy, Check, InfoIcon, ArrowDownUp } from "lucide-react";
 import { useChainConfig } from "../../hooks/useChainConfig";
@@ -1106,14 +1107,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                           >
                             {selectedTokenA ? (
                               <>
-                                <img
-                                  className="md:w-5 md:h-5 w-4 h-4"
-                                  src={
-                                    selectedTokenA.image ||
-                                    selectedTokenA.logoURI
-                                  }
-                                  alt={selectedTokenA.name}
-                                />
+                                <TokenLogo
+                                    token={selectedTokenA}
+                                    className="md:w-5 md:h-5 w-4 h-4"
+                                  />
                                 <div className="text-white font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
                                   {selectedTokenA.ticker ||
                                     selectedTokenA.symbol}
@@ -1310,14 +1307,10 @@ const Emp = ({ setPadding, setBestRoute, onTokensChange }) => {
                           >
                             {selectedTokenB ? (
                               <>
-                                <img
-                                  className="md:w-5 md:h-5 w-4 h-4"
-                                  src={
-                                    selectedTokenB.image ||
-                                    selectedTokenB.logoURI
-                                  }
-                                  alt={selectedTokenB.name}
-                                />
+                                <TokenLogo
+                                    token={selectedTokenB}
+                                    className="md:w-5 md:h-5 w-4 h-4"
+                                  />
                                 <div className="text-white font-bold font-orbitron leading-normal bg-[var(--bg-color)] appearance-none outline-none">
                                   {selectedTokenB.ticker ||
                                     selectedTokenB.symbol}

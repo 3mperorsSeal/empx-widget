@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import Arrow from "../../assets/icons/downarrow.svg";
 import { ERC20_ABI } from "./tokenFetch";
 import { useChainConfig } from "../../hooks/useChainConfig";
+import TokenLogo from "../../components/TokenLogo.jsx";
 import { useMulticallBalances } from "../../hooks/useMulticallBalances";
 import Web3 from "web3";
 import EL from "../../assets/images/emp-logo.png";
@@ -16,19 +17,16 @@ const TokenListItem = ({ token, balance, isLoading, onClick }) => {
       className="flex justify-between items-center mt-2 cursor-pointer hoverclip md:p-2 p-1 rounded-xl"
       onClick={() => onClick(token)}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-1">
         <div className="flex justify-center items-center rounded-full p-1">
-          <img
-            src={token.logoURI || token.image || EL}
-            alt={token.name}
-            className="w-6 h-6 object-contain rounded-full"
-            onError={(event) => {
-              event.currentTarget.src = EL;
-            }}
+          <TokenLogo
+            token={token}
+            className="md:w-6 md:h-6 w-4 h-4 object-contain"
+            fallbackImg={EL}
           />
         </div>
         <div>
-          <div className="text-[#FFD484] font-orbitron font-bold md:text-base text-xs leading-relaxed tracking-wide">
+          <div className="text-[#FFD484] font-orbitron font-bold md:text-base text-xs font-orbitron leading-relaxed tracking-wide">
             {token.name}
           </div>
           <div className="text-white text-xs font-orbitron">
@@ -265,24 +263,21 @@ const Token = ({ onClose, onSelect }) => {
             </h2>
           </div>
           <div className="grid md:grid-cols-5 grid-cols-4 gap-2 mt-4 md:px-2 px-1">
-            {featureTokens.slice(0, 10).map((token) => (
+            {featureTokens.slice(0, 10).map((token, index) => (
               <div
-                key={token.address}
-                className="flex flex-row items-center cursor-pointer font-orbitron md:rounded-xl rounded-lg border !border-[var(--border-color)] md:p-[12px] px-1 py-1.5"
+                key={index}
+                className="flex flex-row items-center cursor-pointer font-orbitron md:rounded-xl rounded-lg border border-[#FF9900] md:p-[12px] px-1 py-1.5"
                 onClick={() => handleFeaturedTokenClick(token)}
               >
                 <span className="flex items-center">
                   <div className="relative flex justify-center items-center">
-                    <img
-                      src={token.logoURI || token.image || EL}
-                      alt={token.name}
-                      className="w-4 h-4 rounded-full relative z-10 p-[1px] object-contain"
-                      onError={(event) => {
-                        event.currentTarget.src = EL;
-                      }}
+                    <TokenLogo
+                      token={token}
+                      className="md:w-5 md:h-5 w-3 h-3 rounded-full relative z-10 p-[1px] object-contain flex shrink-0"
+                      fallbackImg={EL}
                     />
                   </div>
-                  <p className="text-white font-black text-xs mt-0 ms-2 font-orbitron">
+                  <p className="text-white font-black md:text-[12px] text-[9px] mt-0 ms-2 font-orbitron truncate md:w-14 w-10">
                     {token.symbol || token.ticker}
                   </p>
                 </span>
